@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <link rel="stylesheet" href="{{ '/assets/lang.css' | relative_url }}" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <a class="site-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        <button class="lang-toggle" id="langToggle" type="button">EN</button>
+      </header>
+
+      <main>
+        {{ content }}
+      </main>
+
+      <footer style="padding: 16px 0; border-top: 1px solid rgba(0,0,0,.12);">
+        <div class="lang-zh" style="opacity: .75; font-size: 14px;">
+          公开日记（隐私优先）：不包含任何密钥/路径/机器信息/公司内部/个人隐私。
+        </div>
+        <div class="lang-en" style="opacity: .75; font-size: 14px;">
+          Public diary (privacy-first): no keys/paths/machine info/internal company info/personal private details.
+        </div>
+      </footer>
+    </div>
+
+    <script src="{{ '/assets/lang.js' | relative_url }}"></script>
+  </body>
+</html>
