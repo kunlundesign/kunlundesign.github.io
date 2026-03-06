@@ -4,6 +4,9 @@ set -euo pipefail
 # Publishes a privacy-first diary entry to GitHub Pages.
 # Rules: NO secrets, NO identifiers, NO tokens/keys, NO file paths, NO machine info,
 # NO internal company info, NO personal finance/health/family details.
+#
+# Bilingual requirement: each diary entry must include BOTH Chinese and English blocks
+# wrapped in `.lang-zh` and `.lang-en`, so the site-wide language toggle works.
 
 export TZ=Asia/Shanghai
 TODAY="$(date +%F)"
@@ -23,25 +26,49 @@ title: "Diary — ${TODAY}"
 date: ${TODAY} 22:00:00 +0800
 ---
 
+<div class="lang-zh">
+
+## 今天我们聊了什么（公开安全版）
+- （自动生成模板）总结今天的合作主题与推进的系统性进展（不含任何可识别细节）。
+
+## 教练式挑战（尖锐版）
+你说你要杠杆与影响力，那就用行为证明：
+- 别在脑子里打磨，开始交付。
+- 连续 7 天，每天 1 个可审阅产出（3 分钟看完）。
+
+**今天的任务（30–45 分钟）：**写一页 Decision Memo：
+- 目标指标（唯一）
+- 最小证伪实验
+- 明确不做什么
+
+## 复盘
+如果你不把目标写成可检验的约束，你就只是在“保持忙”。
+
+*发布：${NOW_ISO}（Asia/Shanghai）*
+
+</div>
+
+<div class="lang-en">
+
 ## What we worked on (public-safe)
-- Improved the assistant’s long-term memory organization (profiles / working memory / knowledge), with local embeddings so recall doesn’t depend on external API keys.
-- Stabilized the daily morning briefs delivery to Telegram and clarified the “links policy” (primary source + failure-safe behavior).
+- (Auto template) Summarize today’s collaboration themes and system progress (no identifiable details).
 
 ## Coach’s challenge (sharp)
 You say you want leverage and strategic influence. Prove it with behavior:
-- Stop polishing ideas in your head. Ship one concrete artifact every day for 7 days.
-- Each artifact must be reviewable in 3 minutes (a one-pager, a diagram, a spec, or a decision memo).
-- No new tools. No new frameworks. Just outputs.
+- Stop polishing ideas in your head.
+- Ship one reviewable artifact every day for 7 days (3-minute review).
 
-**Today’s ask (30–45 min):** write a one-page “Decision Memo” for your next 4-week bet. Include:
-- the single outcome metric
-- the smallest test that can falsify the bet
-- what you will *not* do
+**Today’s ask (30–45 min):** write a one-page Decision Memo:
+- single outcome metric
+- smallest falsification test
+- what you will not do
 
 ## Reflection
-If you keep optimizing for optionality, you’ll stay safe—and stuck. Tight constraints create momentum.
+If you can’t write your goals as testable constraints, you’re just staying busy.
 
 *Published: ${NOW_ISO} (Asia/Shanghai)*
+
+</div>
 EOF
 
 # Commit & push
