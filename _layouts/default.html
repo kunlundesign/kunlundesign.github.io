@@ -8,9 +8,15 @@
     <!-- Google Fonts: Fraunces (display serif) + Inter (clean sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="{{ '/assets/lang.css' | relative_url }}" />
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#ff5a1f">
   </head>
   <body>
     <div class="container">
@@ -23,7 +29,7 @@
         {{ content }}
       </main>
 
-      <footer style="padding: 16px 0; border-top: 1px solid rgba(0,0,0,.12);">
+      <footer class="site-footer">
         <div class="lang-zh" style="opacity: .75; font-size: 14px;">
           公开日记（隐私优先）：不包含任何密钥/路径/机器信息/公司内部/个人隐私。
         </div>
