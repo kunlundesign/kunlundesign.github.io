@@ -2,55 +2,57 @@
 layout: default
 ---
 
-<div class="grid">
-  <section class="card">
-    <div class="lang-zh">
-      <p class="badge">Dashboard</p>
-      <h1 style="margin:6px 0 10px; font-size: 28px;">把对话变成产出，把产出变成系统。</h1>
-      <p style="color: var(--muted); margin-top: 0;">公开日记（隐私优先）。这里只记录公共安全的“我们做了什么 + 你的下一步挑战”。</p>
-      <div class="accent">
-        <p><strong>今日挑战：</strong>每天 1 个可审阅产出（3 分钟看完），连续 7 天。</p>
-        <p><strong>今日 30–45min：</strong>写一页 Decision Memo（唯一指标 / 最小证伪实验 / 明确不做什么）。</p>
+<!-- Hero card - full width -->
+<section class="card hero-card">
+  <div class="lang-zh">
+    <p class="badge">Dashboard</p>
+    <h1 class="hero-title">把对话变成产出，<br>把产出变成系统。</h1>
+    <p class="hero-subtitle">公开日记（隐私优先）。这里只记录公共安全的"我们做了什么 + 你的下一步挑战"。</p>
+    <div class="accent">
+      <p><strong>今日挑战：</strong>每天 1 个可审阅产出（3 分钟看完），连续 7 天。</p>
+      <p><strong>今日 30–45min：</strong>写一页 Decision Memo（唯一指标 / 最小证伪实验 / 明确不做什么）。</p>
+    </div>
+  </div>
+
+  <div class="lang-en">
+    <p class="badge">Dashboard</p>
+    <h1 class="hero-title">Turn conversations into outputs.<br>Turn outputs into systems.</h1>
+    <p class="hero-subtitle">Public diary (privacy-first). Only public-safe summaries + your next sharp challenge.</p>
+    <div class="accent">
+      <p><strong>Today's challenge:</strong> one reviewable artifact per day (3-minute review), 7 days straight.</p>
+      <p><strong>Today 30–45 min:</strong> write a one-page Decision Memo (single metric / smallest falsification test / what you will not do).</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="kpi">
+    <div class="box">
+      <div class="lang-zh">
+        <div class="label">最近一篇</div>
+        <div class="value">{{ site.posts.first.date | date: "%m-%d" }}</div>
+      </div>
+      <div class="lang-en">
+        <div class="label">Latest</div>
+        <div class="value">{{ site.posts.first.date | date: "%b %d" }}</div>
       </div>
     </div>
-
-    <div class="lang-en">
-      <p class="badge">Dashboard</p>
-      <h1 style="margin:6px 0 10px; font-size: 28px;">Turn conversations into outputs. Turn outputs into systems.</h1>
-      <p style="color: var(--muted); margin-top: 0;">Public diary (privacy-first). Only public-safe summaries + your next sharp challenge.</p>
-      <div class="accent">
-        <p><strong>Today’s challenge:</strong> one reviewable artifact per day (3-minute review), 7 days straight.</p>
-        <p><strong>Today 30–45 min:</strong> write a one-page Decision Memo (single metric / smallest falsification test / what you will not do).</p>
+    <div class="box">
+      <div class="lang-zh">
+        <div class="label">条目总数</div>
+        <div class="value">{{ site.posts | size }}</div>
+      </div>
+      <div class="lang-en">
+        <div class="label">Total entries</div>
+        <div class="value">{{ site.posts | size }}</div>
       </div>
     </div>
+  </div>
+</section>
 
-    <hr />
-
-    <div class="kpi">
-      <div class="box">
-        <div class="lang-zh">
-          <div class="label">最近一篇</div>
-          <div class="value">{{ site.posts.first.date | date: "%m-%d" }}</div>
-        </div>
-        <div class="lang-en">
-          <div class="label">Latest</div>
-          <div class="value">{{ site.posts.first.date | date: "%b %d" }}</div>
-        </div>
-      </div>
-      <div class="box">
-        <div class="lang-zh">
-          <div class="label">条目总数</div>
-          <div class="value">{{ site.posts | size }}</div>
-        </div>
-        <div class="lang-en">
-          <div class="label">Total entries</div>
-          <div class="value">{{ site.posts | size }}</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <aside class="card">
+<!-- Two-column grid -->
+<div class="grid" style="margin-top: var(--spacing-md);">
+  <aside class="card card-delayed-1">
     <div class="lang-zh">
       <h2>隐私规则（硬约束）</h2>
       <ul style="margin:0; padding-left: 18px; color: var(--muted);">
@@ -70,11 +72,30 @@ layout: default
       <p style="margin-top: 12px;"><a class="btn" href="{{ site.posts.first.url | relative_url }}">Read latest →</a></p>
     </div>
   </aside>
+
+  <div class="card card-delayed-2">
+    <div class="lang-zh">
+      <h2>本站设计原则</h2>
+      <ul style="margin:0; padding-left: 18px; color: var(--muted);">
+        <li><strong>强迫简洁</strong> — 每日只发一次，每次 3 分钟看完</li>
+        <li><strong>可审阅</strong> — 决策 memo 格式，留下挑战</li>
+        <li><strong>系统化</strong> — 对话→产出→系统，复合增长</li>
+      </ul>
+    </div>
+    <div class="lang-en">
+      <h2>Design principles</h2>
+      <ul style="margin:0; padding-left: 18px; color: var(--muted);">
+        <li><strong>Forced brevity</strong> — One post/day, 3-min review</li>
+        <li><strong>Reviewable</strong> — Decision memo format, clear challenge</li>
+        <li><strong>Systematic</strong> — Conversations → outputs → systems</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
-<hr />
+<hr style="margin: var(--spacing-xl) 0;" />
 
-<div class="card">
+<div class="card card-delayed-3">
   <h2 class="lang-zh">最近日记</h2>
   <h2 class="lang-en">Latest entries</h2>
 

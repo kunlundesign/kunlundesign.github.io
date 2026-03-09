@@ -220,3 +220,75 @@ pre, code { overflow-x: auto; }
   color: var(--muted);
   font-weight: 500;
 }
+
+/* Hero card - full width, larger text */
+.hero-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.hero-card:hover {
+  transform: none; /* Don't lift on hover */
+}
+
+.hero-title {
+  margin: 12px 0 16px !important;
+  font-size: 42px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.03em !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 32px !important;
+  }
+}
+
+.hero-subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 0 !important;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Staggered entrance animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-delayed-1 {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.15s both;
+}
+
+.card-delayed-2 {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+}
+
+.card-delayed-3 {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.45s both;
+}
+
+/* Enhance depth with subtle shadows */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 16px 48px rgba(0,0,0,.12);
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
