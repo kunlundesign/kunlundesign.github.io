@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Publishes a privacy-first diary entry to GitHub Pages.
-# Rules: NO secrets, NO identifiers, NO tokens/keys, NO file paths, NO machine info,
-# NO internal company info, NO personal finance/health/family details.
+# Publishes two poems to GitHub Pages:
+# 1. A poem about us (our collaboration today)
+# 2. A poem about global news
 #
-# Bilingual requirement: each diary entry must include BOTH Chinese and English blocks
+# Bilingual requirement: each poem must include BOTH Chinese and English blocks
 # wrapped in `.lang-zh` and `.lang-en`, so the site-wide language toggle works.
 
 export TZ=Asia/Shanghai
@@ -22,27 +22,19 @@ POST_FILE="$POST_DIR/${TODAY}-diary.md"
 cat > "$POST_FILE" <<EOF
 ---
 layout: post
-title: "Diary — ${TODAY}"
+title: "Poems — ${TODAY}"
 date: ${TODAY} 22:00:00 +0800
 ---
 
 <div class="lang-zh">
 
-## 今天我们聊了什么（公开安全版）
-- （自动生成模板）总结今天的合作主题与推进的系统性进展（不含任何可识别细节）。
+## 诗一：关于我们
 
-## 教练式挑战（尖锐版）
-你说你要杠杆与影响力，那就用行为证明：
-- 别在脑子里打磨，开始交付。
-- 连续 7 天，每天 1 个可审阅产出（3 分钟看完）。
+（此处由 AI 每天 22:00 自动生成：根据当天对话内容写一首诗，风格：反思/讽刺/教练式挑战）
 
-**今天的任务（30–45 分钟）：**写一页 Decision Memo：
-- 目标指标（唯一）
-- 最小证伪实验
-- 明确不做什么
+## 诗二：全球新闻
 
-## 复盘
-如果你不把目标写成可检验的约束，你就只是在“保持忙”。
+（此处由 AI 每天 22:00 自动生成：根据当天全球新闻写一首诗，风格：新闻事实 + 讽刺/反思）
 
 *发布：${NOW_ISO}（Asia/Shanghai）*
 
@@ -50,21 +42,13 @@ date: ${TODAY} 22:00:00 +0800
 
 <div class="lang-en">
 
-## What we worked on (public-safe)
-- (Auto template) Summarize today’s collaboration themes and system progress (no identifiable details).
+## Poem 1: About Us
 
-## Coach’s challenge (sharp)
-You say you want leverage and strategic influence. Prove it with behavior:
-- Stop polishing ideas in your head.
-- Ship one reviewable artifact every day for 7 days (3-minute review).
+(Auto-generated daily at 22:00: a poem about today's collaboration, style: reflective/sarcastic/coach-challenge)
 
-**Today’s ask (30–45 min):** write a one-page Decision Memo:
-- single outcome metric
-- smallest falsification test
-- what you will not do
+## Poem 2: Global News
 
-## Reflection
-If you can’t write your goals as testable constraints, you’re just staying busy.
+(Auto-generated daily at 22:00: a poem about today's global news, style: factual + sarcastic/reflective)
 
 *Published: ${NOW_ISO} (Asia/Shanghai)*
 
@@ -82,5 +66,5 @@ if git diff --cached --quiet; then
   exit 0
 fi
 
-git commit -m "Diary: ${TODAY}"
+git commit -m "Poems: ${TODAY}"
 git push
