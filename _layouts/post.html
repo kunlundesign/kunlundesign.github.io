@@ -2,9 +2,17 @@
 layout: default
 ---
 
-<article>
-  <h1>{{ page.title }}</h1>
-  <p style="opacity:.7; margin-top:-6px;">{{ page.date | date: "%Y-%m-%d %H:%M" }} (Asia/Shanghai)</p>
-  <hr />
-  {{ content }}
+<article class="post-article">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <p class="post-meta">{{ page.date | date: "%Y-%m-%d %H:%M" }} (Asia/Shanghai)</p>
+  </header>
+  
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ '/' | relative_url }}" class="btn">← <span class="lang-zh">返回首页</span><span class="lang-en">Back to home</span></a>
+  </footer>
 </article>
