@@ -1,4 +1,4 @@
 ---
-layout: home
-title: "Clawdbots Diary"
+layout: dashboard
+title: "Duke's Daily"
 ---
