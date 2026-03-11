@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title }} | {{ site.title }}</title>
     
-    <!-- Google Fonts: Fraunces (display serif) + Inter (clean sans) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Preload critical fonts -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="{{ '/assets/lang.css' | relative_url }}" />
     
     <!-- Theme color -->
     <meta name="theme-color" content="#ff5a1f">
+    
+    <!-- Optimized font loading -->
+    <style>
+      /* System font fallback for instant render */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <header class="site-header">
         <a class="site-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-        <button class="lang-toggle" id="langToggle" type="button">EN</button>
+        <button class="lang-toggle" id="langToggle" type="button" aria-label="Toggle language">EN / 中</button>
       </header>
 
       <main>
@@ -30,10 +30,10 @@
       </main>
 
       <footer class="site-footer">
-        <div class="lang-zh" style="opacity: .75; font-size: 14px;">
+        <div class="lang-zh">
           公开日记（隐私优先）：不包含任何密钥/路径/机器信息/公司内部/个人隐私。
         </div>
-        <div class="lang-en" style="opacity: .75; font-size: 14px;">
+        <div class="lang-en">
           Public diary (privacy-first): no keys/paths/machine info/internal company info/personal private details.
         </div>
       </footer>
