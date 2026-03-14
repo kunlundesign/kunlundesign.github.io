@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'zh' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/game.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/lang.css' | relative_url }}">
+</head>
+<body data-lang="zh">
+  
+  <div class="container">
+    <!-- Game Header with Stats -->
+    <header class="site-header">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <a href="{{ '/' | relative_url }}" class="site-title">DUKE'S ARCADE</a>
+        <button class="lang-toggle" onclick="toggleLang()">
+          <span class="lang-zh">EN</span>
+          <span class="lang-en">中文</span>
+        </button>
+      </div>
+      
+      <!-- Game Stats Bar -->
+      <div class="game-stats">
+        <div class="stat-bar">
+          <div class="stat-label">
+            <span class="lang-zh">连续更新</span>
+            <span class="lang-en">Streak</span>
+            <span id="streak-days">{{ site.posts.size }}</span>
+          </div>
+          <div class="stat-progress">
+            <div class="stat-fill hp" style="width: {{ site.posts.size | times: 2 | at_most: 100 }}%;"></div>
+          </div>
+        </div>
+        
+        <div class="stat-bar">
+          <div class="stat-label">
+            <span class="lang-zh">完成度</span>
+            <span class="lang-en">Progress</span>
+            <span>{{ site.posts.size }}/100</span>
+          </div>
+          <div class="stat-progress">
+            <div class="stat-fill mp" style="width: {{ site.posts.size }}%;"></div>
+          </div>
+        </div>
+        
+        <div class="stat-bar">
+          <div class="stat-label">
+            <span class="lang-zh">经验值</span>
+            <span class="lang-en">EXP</span>
+            <span>LV {{ site.posts.size | divided_by: 10 }}</span>
+          </div>
+          <div class="stat-progress">
+            <div class="stat-fill exp" style="width: {{ site.posts.size | modulo: 10 | times: 10 }}%;"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      {{ content }}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="lang-zh">
+        <p>🎮 Duke 的游戏化日记系统 | 2026 持续运行中...</p>
+        <p style="margin-top: 8px; font-size: 12px;">
+          <span style="color: var(--neon-cyan);">▲▲▼▼◀▶◀▶BA</span> 试试 Konami Code？
+        </p>
+      </div>
+      <div class="lang-en">
+        <p>🎮 Duke's Gamified Diary System | Running since 2026...</p>
+        <p style="margin-top: 8px; font-size: 12px;">
+          <span style="color: var(--neon-cyan);">▲▲▼▼◀▶◀▶BA</span> Try the Konami Code?
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Easter Egg: Secret Achievement Popup -->
+  <div id="secret-achievement" class="secret-achievement" style="display: none;">
+    <p class="lang-zh">🏆 秘密成就解锁！</p>
+    <p class="lang-en">🏆 Secret Achievement Unlocked!</p>
+    <p class="lang-zh">你找到了隐藏彩蛋！</p>
+    <p class="lang-en">You found the Easter Egg!</p>
+  </div>
+
+  <!-- Language Toggle Script -->
+  <script src="{{ '/assets/lang.js' | relative_url }}"></script>
+  
+  <!-- Game Enhancement Scripts -->
+  <script>
+    // Konami Code Easter Egg
+    let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          activateKonamiCode();
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
+
+    function activateKonamiCode() {
+      document.body.classList.add('konami-active');
+      showSecretAchievement();
+      
+      // Play a fun sound effect (if you add one)
+      // new Audio('/assets/sounds/achievement.mp3').play();
+      
+      setTimeout(() => {
+        document.body.classList.remove('konami-active');
+      }, 3000);
+    }
+
+    function showSecretAchievement() {
+      const popup = document.getElementById('secret-achievement');
+      popup.style.display = 'block';
+      popup.classList.add('show');
+      
+      setTimeout(() => {
+        popup.style.display = 'none';
+        popup.classList.remove('show');
+      }, 3000);
+    }
+
+    // Button click sound effect simulation
+    document.querySelectorAll('.btn, .lang-toggle').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Visual feedback
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 100);
+      });
+    });
+
+    // Random floating particles on hover
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        createParticles(this);
+      });
+    });
+
+    function createParticles(element) {
+      const colors = ['var(--neon-pink)', 'var(--neon-cyan)', 'var(--neon-yellow)', 'var(--neon-green)'];
+      const rect = element.getBoundingClientRect();
+      
+      for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = rect.left + Math.random() * rect.width + 'px';
+        particle.style.top = rect.top + Math.random() * rect.height + 'px';
+        particle.style.width = '4px';
+        particle.style.height = '4px';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '10000';
+        particle.style.transition = 'all 1s ease-out';
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${-100 - Math.random() * 50}px)`;
+          particle.style.opacity = '0';
+        }, 10);
+        
+        setTimeout(() => {
+          particle.remove();
+        }, 1000);
+      }
+    }
+
+    // Streak counter animation on load
+    window.addEventListener('load', function() {
+      const streakElement = document.getElementById('streak-days');
+      if (streakElement) {
+        animateCounter(streakElement);
+      }
+    });
+
+    function animateCounter(element) {
+      const target = parseInt(element.textContent);
+      let current = 0;
+      const increment = Math.ceil(target / 30);
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        element.textContent = current;
+      }, 50);
+    }
+  </script>
+</body>
+</html>
