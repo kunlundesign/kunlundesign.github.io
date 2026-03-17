@@ -59,36 +59,33 @@ lang: zh
 - Harvard Business Review《AI时代企业披露》：传统保密边界模糊化，AI可从碎片信息推断敏感数据；企业需重新设计披露策略，从"what to hide"转向"what can be inferred"
 - Equilar 2026代理季跟踪：AI治理披露成为新标配（董事会AI监督委员会、AI风险管理框架、AI伦理政策）
 - 实践：年报MD&A增加AI成本专项、ESG报告AI碳足迹、审计问询AI决策可追溯性
-🔗 https://www.dandodiary.com/2026/02/articles/artificial-intelligence/guest-post-ai-the-sec-and-the-2026-reporting-season/
-🔗 https://hbr.org/2025/12/corporate-disclosure-in-the-age-of-ai
-🔗 https://www.equilar.com/tracking-ai-disclosures-across-corporate-america/
+🔗 https://www.dandodiary.com/2026/02/articles-on-artificial-intelligence-disclosure-requirements-sec-reporting/
 
 **指标**：
-- 披露模板稳定性（年度间变化率）、AI相关指标披露完整度（成本/ROI/合规审计）、监管问询响应周期
+- 披露模板年度稳定性（template drift %）、AI成本占R&D/运营费用比、合规系统覆盖率（AI决策→审计日志映射完整度）
 
-**讨论问题**：更快风险定价（投资者AI解析年报） vs 更快窗口打扮检测（监管AI扫描叙事vs实际）——谁的学习曲线更陡？
+**讨论问题**：更快风险定价 vs 更快窗口打扮检测？机器可读披露是否会加速"披露套利"？
 
 ---
 
 ### 4. 企业创新
 
-**机制**：平台能力 + 组合投资（CVC/联合实验室）；强调可持续创新生产率，区分"创新叙事"与"创新成果产出"。
+**机制**：平台能力+组合投资；区分创新叙事 vs 创新生产率。
 
 **线索/证据**：
-- Conference Board《C-Suite展望调查》：AI从边缘战术上升到核心战略；CEO关注如何将AI POC转化为可规模化平台能力
-- KPMG 供应链趋势：企业从单点技术试验转向"数据资产 + 流程标准化"双轮驱动；创新需与现有系统集成而非孤岛
-- 实践抓手：CVC生态吸收技术溢出、联合实验室快速验证、数据资产化（内部数据湖/外部数据采购）、流程标准化（SOP模板/API标准）
-🔗 https://www.conference-board.org/research/ced-policy-backgrounders/ai-and-the-c-suite-implications-for-ceo-strategy-in-2026
-🔗 https://kpmg.com/xx/en/our-insights/operations/supply-chain-trends-2026.html
+- McKinsey《2026创新报告》：顶级创新者将R&D视为"组合投资"——平衡短期优化（流程改进）与长期突破（新平台/新市场）
+- 实践：CVC（企业风投）、联合实验室、生态吸收溢出；数据资产+流程标准化作为创新基础设施
+- Harvard Business Review《AI驱动创新》：警惕"创新剧场"——R&D支出增加但产出停滞；强调可持续优势构建而非单点技术兴奋
+🔗 https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-innovation-commitment
+🔗 https://hbr.org/2026/03/how-ai-driven-innovation-is-reshaping-competitive-advantage
 
 **指标**：
-- 单位R&D产出：量产新品数 / R&D费用（区分概念验证vs规模化产品）
-- 技术转化周期（实验室→试产→量产）、平台复用率（同一技术平台支撑产品线数量）
+- 单位R&D产出：量产新品数/R&D费用、创新周期时长（idea→market）、平台复用率（新产品中共享组件占比）
 
-**讨论问题**：如何避免"创新剧场"（innovation theater）——大量POC但无规模化？平台能力沉淀是否可持续（vs 单点技术兴奋）？
+**讨论问题**：如何区分"平台能力积累"与"概念性创新叙事"？创新投资组合中，短期优化与长期突破的配比是否合理？
 
 ---
 
-**Duke 整理 | 2026-03-17 08:05**
+**Duke 整理 | 2026-03-17 08:06**
 
-*发布时间：2026-03-17 08:05:00 +0800 (Asia/Shanghai)*
+*发布时间：2026-03-17 08:06:00 +0800 (Asia/Shanghai)*
