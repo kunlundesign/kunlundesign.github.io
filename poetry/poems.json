@@ -1,0 +1,74 @@
+{
+  "poems": [
+    {
+      "id": 1,
+      "title": "黄鹤楼送孟浩然之广陵",
+      "author": "李白",
+      "dynasty": "唐",
+      "content": ["故人西辞黄鹤楼，", "烟花三月下扬州。", "孤帆远影碧空尽，", "唯见长江天际流。"],
+      "location": "黄鹤楼",
+      "coords": [114.3, 30.6],
+      "province": "湖北",
+      "city": "武汉",
+      "year": 730,
+      "background": "开元十八年（730年）三月，李白在黄鹤楼送别好友孟浩然前往扬州。",
+      "image": "yellow-crane-night.jpg"
+    },
+    {
+      "id": 2,
+      "title": "早发白帝城",
+      "author": "李白",
+      "dynasty": "唐",
+      "content": ["朝辞白帝彩云间，", "千里江陵一日还。", "两岸猿声啼不住，", "轻舟已过万重山。"],
+      "location": "白帝城",
+      "coords": [109.55, 31.04],
+      "province": "重庆",
+      "city": "奉节",
+      "year": 759,
+      "background": "乾元二年（759年），李白流放夜郎途中遇赦，乘舟东下时所作。",
+      "image": "guilin-v2.jpg"
+    },
+    {
+      "id": 3,
+      "title": "望庐山瀑布",
+      "author": "李白",
+      "dynasty": "唐",
+      "content": ["日照香炉生紫烟，", "遥看瀑布挂前川。", "飞流直下三千尺，", "疑是银河落九天。"],
+      "location": "庐山",
+      "coords": [115.97, 29.56],
+      "province": "江西",
+      "city": "九江",
+      "year": 756,
+      "background": "李白游历庐山时被瀑布的壮观景象所震撼。",
+      "image": "guilin-v2.jpg"
+    },
+    {
+      "id": 4,
+      "title": "登金陵凤凰台",
+      "author": "李白",
+      "dynasty": "唐",
+      "content": ["凤凰台上凤凰游，", "凤去台空江自流。", "吴宫花草埋幽径，", "晋代衣冠成古丘。"],
+      "location": "凤凰台",
+      "coords": [118.78, 32.04],
+      "province": "江苏",
+      "city": "南京",
+      "year": 747,
+      "background": "李白登临金陵凤凰台，怀古伤今之作。",
+      "image": "guilin-v2.jpg"
+    },
+    {
+      "id": 5,
+      "title": "静夜思",
+      "author": "李白",
+      "dynasty": "唐",
+      "content": ["床前明月光，", "疑是地上霜。", "举头望明月，", "低头思故乡。"],
+      "location": "扬州",
+      "coords": [119.42, 32.39],
+      "province": "江苏",
+      "city": "扬州",
+      "year": 726,
+      "background": "李白客居扬州时，月夜思乡之作。",
+      "image": "guilin-v2.jpg"
+    }
+  ]
+}
