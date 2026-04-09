@@ -1,5 +1,9 @@
 /*! 三国志 Giscus 自定义主题 */
 
+.gsc-main {
+  padding: 0 16px !important;
+}
+
 main {
   --color-canvas-default: #1a1612 !important;
   --color-canvas-subtle: #241f1a !important;
@@ -23,6 +27,12 @@ main {
 /* 主容器 */
 .gsc-main {
   font-family: 'Noto Serif SC', 'PingFang SC', serif !important;
+  padding: 16px 20px !important;
+}
+
+/* 评论计数区域 */
+.gsc-header {
+  padding: 8px 0 !important;
 }
 
 /* 评论框 */
