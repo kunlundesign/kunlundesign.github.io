@@ -1004,6 +1004,17 @@
     .legend-dot.capital { background: var(--accent-gold); color: var(--accent-gold); }
     .legend-dot.death { background: #666; color: #666; }
 
+    /* Giscus 愿望榜自定义样式 */
+    .giscus {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .giscus-frame {
+      border: 1px solid var(--border) !important;
+      border-radius: 0 !important;
+    }
+
     /* 遗迹收集 */
     .attractions-section {
       background: var(--bg-primary);
@@ -1345,14 +1356,14 @@
       data-reactions-enabled="1"
       data-emit-metadata="0"
       data-input-position="top"
-      data-theme="dark"
+      data-theme="https://kunlundesign.github.io/sanguozhi/giscus-theme.css"
       data-lang="zh-CN"
       crossorigin="anonymous"
       async>
     </script>
   </section>
 
-  <footer
+  <footer>
     <div class="footer-brand">三国志</div>
     <div class="footer-stats">
       <div class="footer-stat">

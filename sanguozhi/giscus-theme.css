@@ -1,0 +1,118 @@
+/*! 三国志 Giscus 自定义主题 */
+
+main {
+  --color-canvas-default: #1a1612 !important;
+  --color-canvas-subtle: #241f1a !important;
+  --color-canvas-inset: #2a2420 !important;
+  --color-border-default: rgba(201, 165, 92, 0.3) !important;
+  --color-border-muted: rgba(201, 165, 92, 0.15) !important;
+  --color-fg-default: #e8e4df !important;
+  --color-fg-muted: #a09080 !important;
+  --color-fg-subtle: #7a6a5a !important;
+  --color-accent-fg: #c9a55c !important;
+  --color-accent-emphasis: #c9a55c !important;
+  --color-btn-bg: #2a2420 !important;
+  --color-btn-border: rgba(201, 165, 92, 0.3) !important;
+  --color-btn-hover-bg: #3a3430 !important;
+  --color-btn-primary-bg: #c9a55c !important;
+  --color-btn-primary-text: #1a1612 !important;
+  --color-btn-primary-hover-bg: #d9b56c !important;
+  --color-neutral-muted: rgba(201, 165, 92, 0.1) !important;
+}
+
+/* 主容器 */
+.gsc-main {
+  font-family: 'Noto Serif SC', 'PingFang SC', serif !important;
+}
+
+/* 评论框 */
+.gsc-comment-box {
+  background: #241f1a !important;
+  border: 1px solid rgba(201, 165, 92, 0.2) !important;
+  border-radius: 0 !important;
+}
+
+.gsc-comment-box-tabs {
+  background: #1a1612 !important;
+  border-bottom: 1px solid rgba(201, 165, 92, 0.2) !important;
+}
+
+.gsc-comment-box-textarea {
+  background: #2a2420 !important;
+  border: 1px solid rgba(201, 165, 92, 0.2) !important;
+  border-radius: 0 !important;
+  color: #e8e4df !important;
+}
+
+.gsc-comment-box-textarea:focus {
+  border-color: #c9a55c !important;
+  box-shadow: 0 0 0 1px #c9a55c !important;
+}
+
+/* 评论列表 */
+.gsc-comment {
+  background: #241f1a !important;
+  border: 1px solid rgba(201, 165, 92, 0.15) !important;
+  border-radius: 0 !important;
+}
+
+.gsc-comment:hover {
+  border-color: rgba(201, 165, 92, 0.3) !important;
+}
+
+/* 头像 */
+.gsc-comment-author-avatar img {
+  border-radius: 0 !important;
+}
+
+/* 按钮 */
+.gsc-comment-box-buttons button,
+.gsc-reply-box-buttons button {
+  border-radius: 0 !important;
+  font-family: 'Noto Serif SC', serif !important;
+}
+
+/* 反应按钮 */
+.gsc-reactions-button {
+  border-radius: 0 !important;
+  background: #2a2420 !important;
+  border: 1px solid rgba(201, 165, 92, 0.2) !important;
+}
+
+.gsc-reactions-button:hover {
+  background: #3a3430 !important;
+  border-color: #c9a55c !important;
+}
+
+/* 登录提示 */
+.gsc-login-box {
+  background: #241f1a !important;
+  border: 1px solid rgba(201, 165, 92, 0.2) !important;
+  border-radius: 0 !important;
+}
+
+/* 空状态 */
+.gsc-empty {
+  color: #a09080 !important;
+}
+
+/* 链接 */
+a {
+  color: #c9a55c !important;
+}
+
+a:hover {
+  color: #d9b56c !important;
+}
+
+/* 时间戳 */
+.gsc-comment-header-author-timestamp {
+  color: #7a6a5a !important;
+}
+
+/* 回复框 */
+.gsc-reply-box {
+  background: #1a1612 !important;
+  border: 1px solid rgba(201, 165, 92, 0.15) !important;
+  border-radius: 0 !important;
+}
