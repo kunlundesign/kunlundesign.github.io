@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>长坂坡之战 · 交互战场</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .scene-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scene-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #1a1612 0%, #1a1a2a 50%, #1a1612 100%);
+      z-index: -2;
+    }
+
+    .scene-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/changban.jpg') center/cover;
+      opacity: 0.3;
+      filter: sepia(30%) brightness(0.6);
+    }
+
+    .dust-overlay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(0deg, rgba(150, 120, 80, 0.3) 0%, transparent 100%);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .dust-overlay.active {
+      opacity: 1;
+      animation: dustStorm 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes dustStorm {
+      from { opacity: 0.5; transform: translateX(-5px); }
+      to { opacity: 0.8; transform: translateX(5px); }
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(180deg, rgba(26, 22, 18, 0.95) 0%, transparent 100%);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover { color: var(--text-primary); }
+
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: var(--accent-gold);
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .scene-year {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .narrative-panel {
+      background: rgba(26, 22, 18, 0.95);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    .narrative-text {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: var(--text-primary);
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    .narrative-text .highlight {
+      color: var(--accent-gold);
+      font-weight: 500;
+    }
+
+    .narrative-text .danger {
+      color: var(--accent-red);
+      font-weight: 500;
+    }
+
+    .speaker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .speaker-avatar {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--accent-gold);
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .speaker-name {
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .speaker-title {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+      transform: translateX(8px);
+    }
+
+    .choice-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent-gold);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .choice-text { flex: 1; }
+
+    .choice-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+    }
+
+    .quiz-panel { display: none; width: 100%; }
+    .quiz-panel.active { display: block; }
+
+    .quiz-question {
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .quiz-option {
+      padding: 1rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--accent-green);
+      background: rgba(90, 138, 90, 0.2);
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--accent-red);
+      background: rgba(179, 60, 60, 0.2);
+    }
+
+    .quiz-option.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .ending-panel { display: none; width: 100%; text-align: center; }
+    .ending-panel.active { display: block; }
+
+    .ending-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ending-title.victory {
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px rgba(201, 165, 92, 0.5);
+    }
+
+    .ending-title.defeat {
+      color: var(--accent-red);
+      text-shadow: 0 0 20px rgba(179, 60, 60, 0.5);
+    }
+
+    .ending-desc {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .history-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .history-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+    }
+
+    .history-card-title {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .history-card-text {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+    }
+
+    .action-btns { display: flex; gap: 1rem; margin-top: 2rem; }
+
+    .action-btn {
+      padding: 1rem 2rem;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .action-btn.primary {
+      background: var(--accent-gold);
+      border: none;
+      color: var(--bg-primary);
+    }
+
+    .action-btn.primary:hover { background: #d9b56c; }
+
+    .action-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .action-btn.secondary:hover { border-color: var(--accent-gold); }
+
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--bg-secondary);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gold);
+      transition: width 0.5s ease;
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-in { animation: slideIn 0.4s ease forwards; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (max-width: 768px) {
+      .narrative-panel { padding: 1.5rem; }
+      .scene-title { font-size: 1.4rem; }
+      .ending-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-container">
+    <div class="scene-bg"></div>
+    <div class="dust-overlay" id="dustOverlay"></div>
+
+    <div class="top-bar">
+      <a href="index.html#attractions" class="back-btn">← 返回遗迹</a>
+      <div style="text-align: center;">
+        <div class="scene-title">长坂坡之战</div>
+        <div class="scene-year">建安十三年 · 公元208年</div>
+      </div>
+      <div style="width: 80px;"></div>
+    </div>
+
+    <div class="main-content">
+      <!-- 开场叙事 -->
+      <div class="narrative-panel fade-in" id="intro">
+        <div class="narrative-text">
+          <span class="highlight">建安十三年</span>，曹操南下，刘琮举荆州而降。刘备携民渡江，十余万百姓相随，日行不过十里。
+        </div>
+        <div class="narrative-text">
+          曹操遣<span class="danger">虎豹骑</span>精锐追击，一日一夜急行三百里，于<span class="highlight">长坂坡</span>追及刘备。刘备仓皇而逃，妻离子散，军民大乱。
+        </div>
+        <div class="narrative-text">
+          甘夫人与幼子<span class="highlight">阿斗</span>失散于乱军之中。赵云发现主母不见，单枪匹马，杀入曹军万马军中...
+        </div>
+        <div class="narrative-text" style="color: var(--accent-gold);">
+          "子龙！子龙何在！"
+        </div>
+        <button class="action-btn primary" onclick="showChoices()" style="margin-top: 1rem;">
+          进入战场
+        </button>
+      </div>
+
+      <!-- 选择面板 -->
+      <div class="narrative-panel" id="choicesPanel" style="display: none;">
+        <div class="speaker">
+          <img src="images/zhaoyun.png" alt="赵云" class="speaker-avatar">
+          <div class="speaker-info">
+            <span class="speaker-name">赵云</span>
+            <span class="speaker-title">常山赵子龙</span>
+          </div>
+        </div>
+        <div class="narrative-text">
+          赵云于乱军中寻得甘夫人，护送至安全处后，又闻糜夫人怀抱阿斗，困于土墙之下，身受重伤。
+        </div>
+        <div class="narrative-text">
+          糜夫人将阿斗托付赵云，投井而亡。赵云将阿斗护于怀中，面对曹军重重包围...
+        </div>
+        <div class="choices" id="mainChoices">
+          <button class="choice-btn slide-in" onclick="selectPath('charge')" style="animation-delay: 0.1s">
+            <span class="choice-icon">壹</span>
+            <div class="choice-text">
+              七进七出，杀透重围
+              <div class="choice-hint">以一敌万，护主突围</div>
+            </div>
+          </button>
+          <button class="choice-btn slide-in" onclick="selectPath('hide')" style="animation-delay: 0.2s">
+            <span class="choice-icon">贰</span>
+            <div class="choice-text">
+              寻找间隙，隐蔽突围
+              <div class="choice-hint">避敌锋芒，保全少主</div>
+            </div>
+          </button>
+          <button class="choice-btn slide-in" onclick="selectPath('bridge')" style="animation-delay: 0.3s">
+            <span class="choice-icon">叁</span>
+            <div class="choice-text">
+              绕往当阳桥，与张飞会合
+              <div class="choice-hint">兄弟联手，共抗曹军</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 问答面板 -->
+      <div class="narrative-panel quiz-panel" id="quizPanel">
+        <div class="speaker" id="quizSpeaker"></div>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+      </div>
+
+      <!-- 结局面板 -->
+      <div class="narrative-panel ending-panel" id="endingPanel">
+        <div class="ending-title" id="endingTitle"></div>
+        <div class="ending-desc" id="endingDesc"></div>
+        <div class="history-card">
+          <div class="history-card-header">📜 历史真相</div>
+          <div class="history-card-title" id="historyTitle"></div>
+          <div class="history-card-text" id="historyText"></div>
+        </div>
+        <div class="action-btns">
+          <button class="action-btn secondary" onclick="restart()">重新挑战</button>
+          <button class="action-btn primary" onclick="location.href='index.html#attractions'">返回遗迹</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = {
+      charge: {
+        speaker: { name: '赵云', title: '常山赵子龙', avatar: 'images/zhaoyun.png' },
+        intro: '赵云怀抱阿斗，单骑冲阵。曹军万马军中，刀枪如林。',
+        question: '"曹军势大，当以何法杀出重围？"',
+        options: [
+          { text: '借青釭剑之利，斩将夺旗，打开血路', correct: true },
+          { text: '直取曹操中军，擒贼先擒王', correct: false },
+          { text: '四处冲杀，打乱敌阵', correct: false },
+          { text: '佯装投降，趁机突围', correct: false }
+        ],
+        correctResponse: '赵云手持青釭剑，连斩曹营名将五十余员！曹操于山上观战，惊问："此将何人？"左右答曰："常山赵子龙也！"',
+        wrongResponse: '曹军层层围堵，赵云虽勇，终是寡不敌众。眼看陷入重围...'
+      },
+      hide: {
+        speaker: { name: '赵云', title: '常山赵子龙', avatar: 'images/zhaoyun.png' },
+        intro: '赵云欲寻间隙，隐蔽突围。然曹军虎豹骑精锐，四面八方皆是敌军。',
+        question: '"曹军追兵甚急，如何方能全身而退？"',
+        options: [
+          { text: '勇往直前，以气势压人', correct: true },
+          { text: '等待夜幕降临，乘夜突围', correct: false },
+          { text: '寻找地形复杂之处躲藏', correct: false },
+          { text: '丢弃盔甲，混入败兵之中', correct: false }
+        ],
+        correctResponse: '赵云知隐蔽无用，乃大喝一声，挺枪跃马，直冲曹阵！曹军见其勇猛，竟无人敢挡！',
+        wrongResponse: '赵云犹豫之间，曹军已然合围。只得拼死一战。'
+      },
+      bridge: {
+        speaker: { name: '张飞', title: '燕人张翼德', avatar: 'images/zhangfei.png' },
+        intro: '赵云向当阳桥方向突围。张飞早已在桥头等候，见赵云血透战袍，怀抱幼主而来。',
+        question: '"三弟！曹军追兵将至，当如何阻敌？"',
+        options: [
+          { text: '据桥而守，喝退曹军', correct: true },
+          { text: '毁桥断路，阻止追兵', correct: false },
+          { text: '设伏于桥头，杀敌援手', correct: false },
+          { text: '兄弟二人共同断后', correct: false }
+        ],
+        correctResponse: '张飞立于桥头，环眼圆睁，厉声大喝："燕人张翼德在此！谁敢与我决一死战！"声如巨雷，曹军人马俱惊，竟无一人敢进！',
+        wrongResponse: '张飞虽勇，然曹军势大。独木桥难支万军...'
+      }
+    };
+
+    const endings = {
+      victory: {
+        title: '单骑救主',
+        desc: '赵云七进七出，怀抱幼主阿斗，杀透曹军重围！张飞据桥断后，一声怒喝，喝退曹军百万兵！刘备见赵云归来，感激涕零，将阿斗掷于地曰："为汝这孺子，几损我一员大将！"',
+        historyTitle: '长坂坡之战的历史与演义',
+        historyText: '历史上赵云确于长坂坡救出阿斗，但"七进七出"是演义虚构。《三国志》载："及先主为曹公所追于当阳长阪，弃妻子南走，云身抱弱子，即后主也，保护甘夫人，即后主母也，皆得免难。"张飞据水断桥确有其事，但喝退百万兵则是艺术加工。'
+      },
+      defeat: {
+        title: '功亏一篑',
+        desc: '曹军追兵太急，赵云力战不支。幸得张飞及时接应，方才脱险。阿斗虽保全性命，但赵云身受重伤...',
+        historyTitle: '赵云的忠勇',
+        historyText: '赵云追随刘备近三十年，长坂坡之战是其最辉煌的时刻。此战后，刘备赞其"一身都是胆"。赵云后来成为蜀汉五虎上将之一，以忠诚勇武著称于世。'
+      }
+    };
+
+    let currentPath = '';
+    let progress = 0;
+
+    function updateProgress(value) {
+      progress = value;
+      document.getElementById('progressFill').style.width = value + '%';
+    }
+
+    function showChoices() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('choicesPanel').style.display = 'block';
+      document.getElementById('choicesPanel').classList.add('fade-in');
+      updateProgress(25);
+    }
+
+    function selectPath(path) {
+      currentPath = path;
+      const data = quizData[path];
+      
+      document.getElementById('choicesPanel').style.display = 'none';
+      const quizPanel = document.getElementById('quizPanel');
+      quizPanel.style.display = 'block';
+      quizPanel.classList.add('active', 'fade-in');
+
+      document.getElementById('quizSpeaker').innerHTML = `
+        <img src="${data.speaker.avatar}" alt="${data.speaker.name}" class="speaker-avatar">
+        <div class="speaker-info">
+          <span class="speaker-name">${data.speaker.name}</span>
+          <span class="speaker-title">${data.speaker.title}</span>
+        </div>
+      `;
+
+      document.getElementById('quizQuestion').innerHTML = `
+        <p style="margin-bottom: 1rem; color: var(--text-secondary);">${data.intro}</p>
+        <p>${data.question}</p>
+      `;
+
+      const optionsHtml = data.options.map((opt, i) => `
+        <button class="quiz-option" onclick="checkAnswer(${i}, ${opt.correct})">
+          ${String.fromCharCode(65 + i)}. ${opt.text}
+        </button>
+      `).join('');
+      document.getElementById('quizOptions').innerHTML = optionsHtml;
+
+      updateProgress(50);
+    }
+
+    function checkAnswer(index, isCorrect) {
+      const options = document.querySelectorAll('.quiz-option');
+      const data = quizData[currentPath];
+      
+      options.forEach((opt, i) => {
+        opt.classList.add('disabled');
+        if (data.options[i].correct) {
+          opt.classList.add('correct');
+        } else if (i === index && !isCorrect) {
+          opt.classList.add('wrong');
+        }
+      });
+
+      updateProgress(75);
+
+      setTimeout(() => {
+        const response = isCorrect ? data.correctResponse : data.wrongResponse;
+        document.getElementById('quizQuestion').innerHTML += `
+          <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: ${isCorrect ? 'var(--accent-gold)' : 'var(--accent-red)'};">
+            ${response}
+          </p>
+        `;
+
+        document.getElementById('quizOptions').innerHTML += `
+          <button class="action-btn primary" style="margin-top: 1.5rem;" onclick="showEnding(${isCorrect})">
+            ${isCorrect ? '突出重围' : '拼死一战'}
+          </button>
+        `;
+      }, 800);
+    }
+
+    function showEnding(isVictory) {
+      const ending = isVictory ? endings.victory : endings.defeat;
+      
+      document.getElementById('quizPanel').classList.remove('active');
+      document.getElementById('quizPanel').style.display = 'none';
+      
+      const endingPanel = document.getElementById('endingPanel');
+      endingPanel.style.display = 'block';
+      endingPanel.classList.add('active', 'fade-in');
+
+      document.getElementById('endingTitle').textContent = ending.title;
+      document.getElementById('endingTitle').classList.add(isVictory ? 'victory' : 'defeat');
+      document.getElementById('endingDesc').textContent = ending.desc;
+      document.getElementById('historyTitle').textContent = ending.historyTitle;
+      document.getElementById('historyText').textContent = ending.historyText;
+
+      if (isVictory) {
+        document.getElementById('dustOverlay').classList.add('active');
+      }
+
+      updateProgress(100);
+    }
+
+    function restart() {
+      document.getElementById('intro').style.display = 'block';
+      document.getElementById('choicesPanel').style.display = 'none';
+      document.getElementById('quizPanel').style.display = 'none';
+      document.getElementById('quizPanel').classList.remove('active');
+      document.getElementById('endingPanel').style.display = 'none';
+      document.getElementById('endingPanel').classList.remove('active');
+      document.getElementById('endingTitle').classList.remove('victory', 'defeat');
+      document.getElementById('dustOverlay').classList.remove('active');
+      
+      currentPath = '';
+      updateProgress(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
