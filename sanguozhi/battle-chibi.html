@@ -447,8 +447,8 @@
       }
     }
   </style>
-</head>
-<body>
+<style>.page-loading{position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1612;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}.page-loading.hide{opacity:0;pointer-events:none}.loader{width:40px;height:40px;border:2px solid rgba(201,165,92,0.2);border-top-color:#c9a55c;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head>
+<body><div class="page-loading" id="pageLoading"><div class="loader"></div></div>
   <div class="scene-container">
     <div class="scene-bg"></div>
     <div class="fire-overlay" id="fireOverlay"></div>
@@ -584,7 +584,7 @@
         wrongResponse: '周瑜皱眉道："此计难成。曹军水寨严密，寻常火攻难以奏效..."'
       },
       spy: {
-        speaker: { name: '鲁肃', title: '东吴谋士', avatar: 'images/sunquan.png' },
+        speaker: { name: '鲁肃', title: '东吴谋士', avatar: 'images/sunquan.jpg' },
         intro: '鲁肃找到你，神色凝重：',
         question: '"曹操帐下有二将，本为荆州降将，深谙水战。曹操疑其有二心，你可知是哪二人？"',
         options: [
@@ -740,5 +740,5 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
-</body>
+<script>window.addEventListener("load",function(){document.getElementById("pageLoading").classList.add("hide")})</script></body>
 </html>

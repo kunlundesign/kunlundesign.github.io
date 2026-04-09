@@ -400,8 +400,8 @@
       .ending-title { font-size: 2rem; }
     }
   </style>
-</head>
-<body>
+<style>.page-loading{position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1612;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}.page-loading.hide{opacity:0;pointer-events:none}.loader{width:40px;height:40px;border:2px solid rgba(201,165,92,0.2);border-top-color:#c9a55c;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head>
+<body><div class="page-loading" id="pageLoading"><div class="loader"></div></div>
   <div class="scene-container">
     <div class="scene-bg"></div>
     <div class="dust-overlay" id="dustOverlay"></div>
@@ -677,5 +677,5 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
-</body>
+<script>window.addEventListener("load",function(){document.getElementById("pageLoading").classList.add("hide")})</script></body>
 </html>
