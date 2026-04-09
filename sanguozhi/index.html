@@ -1040,6 +1040,27 @@
       border-color: var(--accent-gold);
     }
 
+    .attraction-tile.has-battle {
+      cursor: pointer;
+    }
+
+    .attraction-tile.has-battle::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, rgba(179, 60, 60, 0.2) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .attraction-tile.has-battle:hover::after {
+      opacity: 1;
+    }
+
+    .attraction-tile.has-battle .tile-status.unlocked {
+      background: var(--accent-red);
+    }
+
     .attraction-tile img {
       width: 100%;
       height: 100%;
@@ -1504,7 +1525,7 @@
     ];
 
     const attractions = [
-      { name: '赤壁', location: '湖北 · 咸宁', image: 'images/attraction-chibi.jpg', unlocked: true },
+      { name: '赤壁', location: '湖北 · 咸宁', image: 'images/attraction-chibi.jpg', unlocked: true, battle: 'battle-chibi.html' },
       { name: '武侯祠', location: '四川 · 成都', image: 'images/attraction-wuhou.jpg', unlocked: true },
       { name: '白帝城', location: '重庆 · 奉节', image: 'images/attraction-baidi.jpg', unlocked: true },
       { name: '古隆中', location: '湖北 · 襄阳', image: 'images/attraction-longzhong.jpg', unlocked: true },
@@ -1734,10 +1755,10 @@
 
     function initAttractions() {
       document.getElementById('attractionsGrid').innerHTML = attractions.map(a => `
-        <div class="attraction-tile">
+        <div class="attraction-tile${a.battle ? ' has-battle' : ''}" ${a.battle ? `onclick="location.href='${a.battle}'"` : ''}>
           <img src="${a.image}" alt="${a.name}">
           <div class="tile-content">
-            <span class="tile-status ${a.unlocked ? 'unlocked' : 'locked'}">${a.unlocked ? '已解锁' : '未解锁'}</span>
+            <span class="tile-status ${a.unlocked ? 'unlocked' : 'locked'}">${a.unlocked ? (a.battle ? '⚔️ 进入战场' : '已解锁') : '未解锁'}</span>
             <h3 class="tile-name">${a.name}</h3>
             <p class="tile-location">${a.location}</p>
           </div>
