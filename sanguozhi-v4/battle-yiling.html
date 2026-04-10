@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夷陵之战 · 交互战场</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .scene-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scene-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #1a1612 0%, #2a1a12 50%, #1a1612 100%);
+      z-index: -2;
+    }
+
+    .scene-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/baidi.jpg') center/cover;
+      opacity: 0.3;
+      filter: sepia(30%) brightness(0.6);
+    }
+
+    .fire-overlay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(0deg, rgba(255, 100, 30, 0.4) 0%, rgba(255, 150, 50, 0.2) 40%, transparent 100%);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .fire-overlay.active {
+      opacity: 1;
+      animation: fireRage 0.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes fireRage {
+      from { opacity: 0.7; }
+      to { opacity: 1; }
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(180deg, rgba(26, 22, 18, 0.95) 0%, transparent 100%);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover { color: var(--text-primary); }
+
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: var(--accent-gold);
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .scene-year {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .narrative-panel {
+      background: rgba(26, 22, 18, 0.95);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    .narrative-text {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: var(--text-primary);
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    .narrative-text .highlight {
+      color: var(--accent-gold);
+      font-weight: 500;
+    }
+
+    .narrative-text .danger {
+      color: var(--accent-red);
+      font-weight: 500;
+    }
+
+    .speaker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .speaker-avatar {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--accent-gold);
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .speaker-name {
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .speaker-title {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+      transform: translateX(8px);
+    }
+
+    .choice-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent-gold);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .choice-text { flex: 1; }
+
+    .choice-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+    }
+
+    .quiz-panel {
+      display: none;
+      width: 100%;
+    }
+
+    .quiz-panel.active { display: block; }
+
+    .quiz-question {
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .quiz-option {
+      padding: 1rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--accent-green);
+      background: rgba(90, 138, 90, 0.2);
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--accent-red);
+      background: rgba(179, 60, 60, 0.2);
+    }
+
+    .quiz-option.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .ending-panel {
+      display: none;
+      width: 100%;
+      text-align: center;
+    }
+
+    .ending-panel.active { display: block; }
+
+    .ending-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ending-title.victory {
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px rgba(201, 165, 92, 0.5);
+    }
+
+    .ending-title.defeat {
+      color: var(--accent-red);
+      text-shadow: 0 0 20px rgba(179, 60, 60, 0.5);
+    }
+
+    .ending-desc {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .history-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .history-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+    }
+
+    .history-card-title {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .history-card-text {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .action-btn {
+      padding: 1rem 2rem;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .action-btn.primary {
+      background: var(--accent-gold);
+      border: none;
+      color: var(--bg-primary);
+    }
+
+    .action-btn.primary:hover { background: #d9b56c; }
+
+    .action-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .action-btn.secondary:hover { border-color: var(--accent-gold); }
+
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--bg-secondary);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gold);
+      transition: width 0.5s ease;
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease forwards; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-in { animation: slideIn 0.4s ease forwards; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (max-width: 768px) {
+      .narrative-panel { padding: 1.5rem; }
+      .scene-title { font-size: 1.4rem; }
+      .ending-title { font-size: 2rem; }
+    }
+  </style>
+<style>.page-loading{position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1612;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}.page-loading.hide{opacity:0;pointer-events:none}.loader{width:40px;height:40px;border:2px solid rgba(201,165,92,0.2);border-top-color:#c9a55c;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head>
+<body><div class="page-loading" id="pageLoading"><div class="loader"></div></div>
+  <div class="scene-container">
+    <div class="scene-bg"></div>
+    <div class="fire-overlay" id="fireOverlay"></div>
+
+    <div class="top-bar">
+      <a href="index.html#battlefield" class="back-btn">← 返回沙场</a>
+      <div style="text-align: center;">
+        <div class="scene-title">夷陵之战</div>
+        <div class="scene-year">章武二年 · 公元222年</div>
+      </div>
+      <div style="width: 80px;"></div>
+    </div>
+
+    <div class="main-content">
+      <!-- 开场叙事 -->
+      <div class="narrative-panel fade-in" id="intro">
+        <div class="narrative-text">
+          <span class="highlight">章武元年</span>，关羽败走麦城，为东吴所害。刘备悲愤交加，誓要为二弟报仇雪恨。
+        </div>
+        <div class="narrative-text">
+          诸葛亮、赵云苦劝不听。刘备尽起蜀中七十万大军，御驾亲征，顺江东下，誓灭东吴。
+        </div>
+        <div class="narrative-text">
+          蜀军连战连捷，势如破竹。东吴大都督<span class="highlight">陆逊</span>却避而不战，坚守不出。刘备屯兵于<span class="danger">夷陵山林之中</span>，连营七百里。
+        </div>
+        <div class="narrative-text" style="color: var(--accent-gold);">
+          时值盛夏，暑气逼人。蜀军士气渐怠，陆逊终于等到了他想要的战机...
+        </div>
+        <button class="action-btn primary" onclick="showChoices()" style="margin-top: 1rem;">
+          进入战场
+        </button>
+      </div>
+
+      <!-- 选择面板 (东吴视角) -->
+      <div class="narrative-panel" id="choicesPanel" style="display: none;">
+        <div class="speaker">
+          <img src="images/luxun.jpg" alt="陆逊" class="speaker-avatar">
+          <div class="speaker-info">
+            <span class="speaker-name">陆逊</span>
+            <span class="speaker-title">东吴大都督</span>
+          </div>
+        </div>
+        <div class="narrative-text">
+          "刘备连营七百里，依山傍林，犯了兵家大忌。吾已等候多时，今夜便是破敌之机！"
+        </div>
+        <div class="narrative-text">
+          "诸将听令！尔等以为，当以何计破蜀？"
+        </div>
+        <div class="choices" id="mainChoices">
+          <button class="choice-btn slide-in" onclick="selectPath('fire')" style="animation-delay: 0.1s">
+            <span class="choice-icon">壹</span>
+            <div class="choice-text">
+              火烧连营，一战而定
+              <div class="choice-hint">趁夜放火，借风势焚尽蜀营</div>
+            </div>
+          </button>
+          <button class="choice-btn slide-in" onclick="selectPath('ambush')" style="animation-delay: 0.2s">
+            <span class="choice-icon">贰</span>
+            <div class="choice-text">
+              设伏夹击，断其归路
+              <div class="choice-hint">分兵包抄，截断蜀军退路</div>
+            </div>
+          </button>
+          <button class="choice-btn slide-in" onclick="selectPath('challenge')" style="animation-delay: 0.3s">
+            <span class="choice-icon">叁</span>
+            <div class="choice-text">
+              正面迎战，以勇取胜
+              <div class="choice-hint">趁蜀军疲惫，一鼓作气</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 问答面板 -->
+      <div class="narrative-panel quiz-panel" id="quizPanel">
+        <div class="speaker" id="quizSpeaker"></div>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+      </div>
+
+      <!-- 结局面板 -->
+      <div class="narrative-panel ending-panel" id="endingPanel">
+        <div class="ending-title" id="endingTitle"></div>
+        <div class="ending-desc" id="endingDesc"></div>
+        <div class="history-card">
+          <div class="history-card-header">📜 历史真相</div>
+          <div class="history-card-title" id="historyTitle"></div>
+          <div class="history-card-text" id="historyText"></div>
+        </div>
+        <div class="action-btns">
+          <button class="action-btn secondary" onclick="restart()">重新挑战</button>
+          <button class="action-btn primary" onclick="location.href='index.html#battlefield'">返回沙场</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = {
+      fire: {
+        speaker: { name: '陆逊', title: '东吴大都督', avatar: 'images/luxun.jpg' },
+        intro: '陆逊点头道："火攻之计正合我意。然火攻须观天时地利，将军可知，今夜最利于火攻者为何？"',
+        question: '"盛夏之时，山林茂密，蜀营连绵。火攻需借何势方能奏效？"',
+        options: [
+          { text: '东南风起，顺风纵火，火势难遏', correct: true },
+          { text: '月黑之夜，敌军难以发现', correct: false },
+          { text: '子时兵疲，趁敌酣睡', correct: false },
+          { text: '多点同时放火，令敌首尾不顾', correct: false }
+        ],
+        correctResponse: '陆逊大笑："正是！今夜东南风起，顺风放火，七百里连营顷刻间化为灰烬！传令三军，今夜子时，火烧连营！"',
+        wrongResponse: '陆逊摇头："火攻之要，在于借风势。若风向不利，反伤自身。将军还需深思。"'
+      },
+      ambush: {
+        speaker: { name: '朱然', title: '东吴将军', avatar: 'images/luxun.jpg' },
+        intro: '朱然进言道："都督英明，伏兵夹击确为良策。然蜀军七十万之众，当于何处设伏？"',
+        question: '"蜀军连营七百里，若要断其归路，当截于何处？"',
+        options: [
+          { text: '白帝城，扼守蜀道咽喉', correct: true },
+          { text: '夷陵山口，两侧夹击', correct: false },
+          { text: '长江水道，断其粮草', correct: false },
+          { text: '遍设伏兵，处处皆围', correct: false }
+        ],
+        correctResponse: '陆逊颔首："白帝城确为要地。然火攻可一战而定，何须舍近求远？"',
+        wrongResponse: '陆逊道："蜀军势大，分兵设伏恐难奏效。不如火攻，毕其功于一役。"'
+      },
+      challenge: {
+        speaker: { name: '韩当', title: '东吴宿将', avatar: 'images/luxun.jpg' },
+        intro: '韩当抱拳道："都督，我军避战已久，将士早已憋闷。正面迎战，可振士气！"',
+        question: '"兵法云：以逸待劳。今蜀军远来，我军以逸待劳，正面迎战胜算如何？"',
+        options: [
+          { text: '蜀军虽疲，然哀兵必胜，不可轻敌', correct: true },
+          { text: '蜀军远来疲惫，我军必胜', correct: false },
+          { text: '趁其立足未稳，一鼓作气', correct: false },
+          { text: '刘备御驾亲征，士气正盛', correct: false }
+        ],
+        correctResponse: '陆逊道："韩老将军所言极是。刘备为弟报仇，哀兵之势不可小觑。正面交锋，胜负难料。不如火攻，可保全胜！"',
+        wrongResponse: '陆逊叹道："轻敌乃兵家大忌。刘备久经沙场，岂是易与之辈？"'
+      }
+    };
+
+    const endings = {
+      victory: {
+        title: '火烧连营',
+        desc: '东南风起，吴军四面纵火。七百里连营顷刻间化为火海，蜀军死伤无数，溃不成军。刘备败走白帝城，一病不起。夷陵一战，蜀汉元气大伤，三国鼎立之势就此奠定。',
+        historyTitle: '夷陵之战的历史意义',
+        historyText: '夷陵之战是三国三大战役之一（官渡、赤壁、夷陵），也是刘备一生最惨痛的失败。此战蜀汉精锐尽失，刘备郁郁而终，白帝托孤。战后诸葛亮重修吴蜀联盟，"和吴抗曹"成为蜀汉基本国策。陆逊以火攻之计，一战成名，成为东吴继周瑜之后最杰出的统帅。'
+      },
+      defeat: {
+        title: '功亏一篑',
+        desc: '战机稍纵即逝，风向突变，火势蔓延不利。蜀军趁机反扑，吴军被迫后撤。两军再次陷入对峙...',
+        historyTitle: '如果夷陵之战失败',
+        historyText: '若陆逊未能火烧连营，蜀军继续东进，东吴将面临灭顶之灾。孙权可能被迫向曹魏称臣，三国格局将彻底改写。正是陆逊的这场大胜，保住了东吴的基业，也让诸葛亮有机会重修吴蜀联盟。'
+      }
+    };
+
+    let currentPath = '';
+    let progress = 0;
+
+    function updateProgress(value) {
+      progress = value;
+      document.getElementById('progressFill').style.width = value + '%';
+    }
+
+    function showChoices() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('choicesPanel').style.display = 'block';
+      document.getElementById('choicesPanel').classList.add('fade-in');
+      updateProgress(25);
+    }
+
+    function selectPath(path) {
+      currentPath = path;
+      const data = quizData[path];
+      
+      document.getElementById('choicesPanel').style.display = 'none';
+      const quizPanel = document.getElementById('quizPanel');
+      quizPanel.style.display = 'block';
+      quizPanel.classList.add('active', 'fade-in');
+
+      document.getElementById('quizSpeaker').innerHTML = `
+        <img src="${data.speaker.avatar}" alt="${data.speaker.name}" class="speaker-avatar">
+        <div class="speaker-info">
+          <span class="speaker-name">${data.speaker.name}</span>
+          <span class="speaker-title">${data.speaker.title}</span>
+        </div>
+      `;
+
+      document.getElementById('quizQuestion').innerHTML = `
+        <p style="margin-bottom: 1rem; color: var(--text-secondary);">${data.intro}</p>
+        <p>${data.question}</p>
+      `;
+
+      const optionsHtml = data.options.map((opt, i) => `
+        <button class="quiz-option" onclick="checkAnswer(${i}, ${opt.correct})">
+          ${String.fromCharCode(65 + i)}. ${opt.text}
+        </button>
+      `).join('');
+      document.getElementById('quizOptions').innerHTML = optionsHtml;
+
+      updateProgress(50);
+    }
+
+    function checkAnswer(index, isCorrect) {
+      const options = document.querySelectorAll('.quiz-option');
+      const data = quizData[currentPath];
+      
+      options.forEach((opt, i) => {
+        opt.classList.add('disabled');
+        if (data.options[i].correct) {
+          opt.classList.add('correct');
+        } else if (i === index && !isCorrect) {
+          opt.classList.add('wrong');
+        }
+      });
+
+      updateProgress(75);
+
+      setTimeout(() => {
+        const response = isCorrect ? data.correctResponse : data.wrongResponse;
+        document.getElementById('quizQuestion').innerHTML += `
+          <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: ${isCorrect ? 'var(--accent-gold)' : 'var(--accent-red)'};">
+            ${response}
+          </p>
+        `;
+
+        document.getElementById('quizOptions').innerHTML += `
+          <button class="action-btn primary" style="margin-top: 1.5rem;" onclick="showEnding(${isCorrect})">
+            ${isCorrect ? '火烧连营' : '收兵再议'}
+          </button>
+        `;
+      }, 800);
+    }
+
+    function showEnding(isVictory) {
+      const ending = isVictory ? endings.victory : endings.defeat;
+      
+      document.getElementById('quizPanel').classList.remove('active');
+      document.getElementById('quizPanel').style.display = 'none';
+      
+      const endingPanel = document.getElementById('endingPanel');
+      endingPanel.style.display = 'block';
+      endingPanel.classList.add('active', 'fade-in');
+
+      document.getElementById('endingTitle').textContent = ending.title;
+      document.getElementById('endingTitle').classList.add(isVictory ? 'victory' : 'defeat');
+      document.getElementById('endingDesc').textContent = ending.desc;
+      document.getElementById('historyTitle').textContent = ending.historyTitle;
+      document.getElementById('historyText').textContent = ending.historyText;
+
+      if (isVictory) {
+        document.getElementById('fireOverlay').classList.add('active');
+      }
+
+      updateProgress(100);
+    }
+
+    function restart() {
+      document.getElementById('intro').style.display = 'block';
+      document.getElementById('choicesPanel').style.display = 'none';
+      document.getElementById('quizPanel').style.display = 'none';
+      document.getElementById('quizPanel').classList.remove('active');
+      document.getElementById('endingPanel').style.display = 'none';
+      document.getElementById('endingPanel').classList.remove('active');
+      document.getElementById('endingTitle').classList.remove('victory', 'defeat');
+      document.getElementById('fireOverlay').classList.remove('active');
+      
+      currentPath = '';
+      updateProgress(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+<script>window.addEventListener("load",function(){document.getElementById("pageLoading").classList.add("hide")})</script></body>
+</html>
