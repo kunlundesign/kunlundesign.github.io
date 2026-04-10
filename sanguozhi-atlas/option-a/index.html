@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三国志·舆图 | 方案A 古卷轴</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wei: #4a6b8a;
+      --shu: #8a3c3c;
+      --wu: #3c7a4a;
+      --gold: #c9a55c;
+      --gold-light: #e8d4a8;
+      --parchment: #d4c4a8;
+      --parchment-dark: #b8a888;
+      --ink: #2a2418;
+      --ink-light: #4a4038;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: #1a1612;
+      color: var(--ink);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 开场动画 - 卷轴展开 */
+    .scroll-intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a1612;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 1s;
+    }
+
+    .scroll-intro.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scroll-wrapper {
+      position: relative;
+      width: 80%;
+      max-width: 900px;
+    }
+
+    .scroll-rod {
+      position: absolute;
+      width: 100%;
+      height: 30px;
+      background: linear-gradient(180deg, #8b7355 0%, #5c4a3a 50%, #3d3228 100%);
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      z-index: 10;
+    }
+
+    .scroll-rod.top { top: 0; }
+    .scroll-rod.bottom { bottom: 0; }
+
+    .scroll-rod::before,
+    .scroll-rod::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #a08060 0%, #6b5040 100%);
+      border-radius: 50%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    }
+
+    .scroll-rod::before { left: -25px; }
+    .scroll-rod::after { right: -25px; }
+
+    .scroll-content {
+      background: linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+      animation: scrollUnroll 1.5s ease-out forwards;
+      transform-origin: top center;
+    }
+
+    @keyframes scrollUnroll {
+      from {
+        max-height: 0;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        opacity: 0;
+      }
+      to {
+        max-height: 500px;
+        padding-top: 60px;
+        padding-bottom: 60px;
+        opacity: 1;
+      }
+    }
+
+    .scroll-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 4rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+    }
+
+    .scroll-subtitle {
+      font-size: 1rem;
+      color: var(--ink-light);
+      letter-spacing: 0.5em;
+      margin-bottom: 3rem;
+    }
+
+    /* 势力印章选择 */
+    .seal-select {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+    }
+
+    .seal {
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      transition: all 0.4s;
+      position: relative;
+    }
+
+    .seal:hover {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    .seal-stamp {
+      width: 100%;
+      height: 100%;
+      border: 4px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 3rem;
+      transform: rotate(-8deg);
+      position: relative;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .seal.wei .seal-stamp { border-color: var(--wei); color: var(--wei); }
+    .seal.shu .seal-stamp { border-color: var(--shu); color: var(--shu); }
+    .seal.wu .seal-stamp { border-color: var(--wu); color: var(--wu); }
+
+    .seal-stamp::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .seal-label {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      white-space: nowrap;
+    }
+
+    /* 主地图界面 */
+    .map-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+      display: none;
+      flex-direction: column;
+    }
+
+    .map-screen.active {
+      display: flex;
+    }
+
+    /* 顶部导航 */
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(180deg, rgba(212, 196, 168, 0.98) 0%, rgba(212, 196, 168, 0.9) 100%);
+      border-bottom: 2px solid var(--parchment-dark);
+      z-index: 100;
+    }
+
+    .current-faction {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faction-seal-mini {
+      width: 45px;
+      height: 45px;
+      border: 3px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      transform: rotate(-5deg);
+    }
+
+    .faction-seal-mini.wei { border-color: var(--wei); color: var(--wei); }
+    .faction-seal-mini.shu { border-color: var(--shu); color: var(--shu); }
+    .faction-seal-mini.wu { border-color: var(--wu); color: var(--wu); }
+
+    .faction-title h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.6rem;
+      color: var(--ink);
+    }
+
+    .faction-title p {
+      font-size: 0.75rem;
+      color: var(--ink-light);
+      letter-spacing: 0.2em;
+    }
+
+    /* 势力切换 */
+    .faction-switcher {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .switch-btn {
+      width: 36px;
+      height: 36px;
+      border: 2px solid;
+      background: transparent;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      opacity: 0.5;
+    }
+
+    .switch-btn:hover,
+    .switch-btn.active {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .switch-btn.wei { border-color: var(--wei); color: var(--wei); }
+    .switch-btn.shu { border-color: var(--shu); color: var(--shu); }
+    .switch-btn.wu { border-color: var(--wu); color: var(--wu); }
+
+    /* 古地图主体 */
+    .ancient-map {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: 
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
+        linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    }
+
+    /* 地图装饰 - 山川 */
+    .map-terrain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .mountain {
+      position: absolute;
+      font-size: 2rem;
+      color: var(--ink);
+      opacity: 0.3;
+    }
+
+    .river {
+      position: absolute;
+      width: 200px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(74, 107, 138, 0.4), transparent);
+      transform: rotate(-15deg);
+    }
+
+    /* 战役烽火点 */
+    .battle-point {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .battle-point:hover {
+      transform: scale(1.2);
+      z-index: 100;
+    }
+
+    .fire-marker {
+      width: 40px;
+      height: 50px;
+      position: relative;
+    }
+
+    .fire {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 30px;
+      background: radial-gradient(ellipse at bottom, #ff6b35 0%, #f7931e 40%, transparent 70%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: fireFlicker 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes fireFlicker {
+      from { transform: translateX(-50%) scale(1) rotate(-2deg); opacity: 0.9; }
+      to { transform: translateX(-50%) scale(1.1) rotate(2deg); opacity: 1; }
+    }
+
+    .fire::before {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 18px;
+      background: radial-gradient(ellipse at bottom, #ffdd57 0%, #ff9500 60%, transparent 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+
+    .fire-base {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 15px;
+      background: var(--ink);
+      clip-path: polygon(20% 100%, 0% 0%, 100% 0%, 80% 100%);
+    }
+
+    .battle-label {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      white-space: nowrap;
+      text-shadow: 1px 1px 0 var(--parchment);
+    }
+
+    .battle-point.locked .fire {
+      background: radial-gradient(ellipse at bottom, #666 0%, #444 40%, transparent 70%);
+      animation: none;
+    }
+
+    .battle-point.locked .fire::before {
+      background: radial-gradient(ellipse at bottom, #888 0%, #555 60%, transparent 100%);
+    }
+
+    .battle-point.locked .battle-label {
+      color: var(--ink-light);
+    }
+
+    /* 战役详情弹窗 */
+    .battle-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 22, 18, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .battle-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-scroll {
+      background: linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+      padding: 3rem;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transform: scale(0.9);
+      transition: transform 0.4s;
+    }
+
+    .battle-modal.active .modal-scroll {
+      transform: scale(1);
+    }
+
+    .modal-scroll::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .modal-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-year {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-bottom: 2rem;
+      letter-spacing: 0.2em;
+    }
+
+    .modal-desc {
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--ink);
+      text-align: justify;
+      margin-bottom: 2rem;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .modal-btn {
+      padding: 0.8rem 2rem;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid var(--ink);
+    }
+
+    .modal-btn.primary {
+      background: var(--ink);
+      color: var(--parchment);
+    }
+
+    .modal-btn.primary:hover {
+      background: var(--ink-light);
+    }
+
+    .modal-btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .modal-btn.secondary:hover {
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* 装饰边框 */
+    .corner-brush {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      opacity: 0.3;
+    }
+
+    .corner-brush.tl { top: 10px; left: 10px; border-top: 3px solid var(--ink); border-left: 3px solid var(--ink); }
+    .corner-brush.tr { top: 10px; right: 10px; border-top: 3px solid var(--ink); border-right: 3px solid var(--ink); }
+    .corner-brush.bl { bottom: 10px; left: 10px; border-bottom: 3px solid var(--ink); border-left: 3px solid var(--ink); }
+    .corner-brush.br { bottom: 10px; right: 10px; border-bottom: 3px solid var(--ink); border-right: 3px solid var(--ink); }
+  </style>
+</head>
+<body>
+  <!-- 开场卷轴 -->
+  <div class="scroll-intro" id="scrollIntro">
+    <div class="scroll-wrapper">
+      <div class="scroll-rod top"></div>
+      <div class="scroll-content">
+        <h1 class="scroll-title">三国舆图</h1>
+        <p class="scroll-subtitle">选择势力 · 览阅天下</p>
+        
+        <div class="seal-select">
+          <div class="seal wei" onclick="selectFaction('wei')">
+            <div class="seal-stamp">魏</div>
+            <div class="seal-label">曹魏</div>
+          </div>
+          <div class="seal shu" onclick="selectFaction('shu')">
+            <div class="seal-stamp">蜀</div>
+            <div class="seal-label">蜀汉</div>
+          </div>
+          <div class="seal wu" onclick="selectFaction('wu')">
+            <div class="seal-stamp">吴</div>
+            <div class="seal-label">东吴</div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-rod bottom"></div>
+    </div>
+  </div>
+
+  <!-- 地图主界面 -->
+  <div class="map-screen" id="mapScreen">
+    <div class="map-header">
+      <div class="current-faction">
+        <div class="faction-seal-mini shu" id="currentSeal">蜀</div>
+        <div class="faction-title">
+          <h1 id="factionName">蜀汉</h1>
+          <p>兴复汉室 · 还于旧都</p>
+        </div>
+      </div>
+      <div class="faction-switcher">
+        <button class="switch-btn wei" onclick="switchFaction('wei')">魏</button>
+        <button class="switch-btn shu active" onclick="switchFaction('shu')">蜀</button>
+        <button class="switch-btn wu" onclick="switchFaction('wu')">吴</button>
+      </div>
+    </div>
+
+    <div class="ancient-map" id="ancientMap">
+      <div class="corner-brush tl"></div>
+      <div class="corner-brush tr"></div>
+      <div class="corner-brush bl"></div>
+      <div class="corner-brush br"></div>
+
+      <!-- 蜀汉战役 -->
+      <div class="battle-point shu-battle" style="left: 18%; top: 55%;" onclick="openBattle('taoyuan')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">桃园</div>
+      </div>
+
+      <div class="battle-point shu-battle" style="left: 45%; top: 48%;" onclick="openBattle('changban')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">长坂坡</div>
+      </div>
+
+      <div class="battle-point shu-battle" style="left: 30%; top: 35%;" onclick="openBattle('dingjun')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">定军山</div>
+      </div>
+
+      <div class="battle-point shu-battle" style="left: 52%; top: 55%;" onclick="openBattle('chibi')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">赤壁</div>
+      </div>
+
+      <div class="battle-point shu-battle" style="left: 48%; top: 65%;" onclick="openBattle('yiling')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">夷陵</div>
+      </div>
+
+      <!-- 曹魏战役 -->
+      <div class="battle-point wei-battle" style="left: 55%; top: 28%;" onclick="openBattle('guandu')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">官渡</div>
+      </div>
+
+      <div class="battle-point wei-battle" style="left: 65%; top: 42%;" onclick="openBattle('hefei')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">合肥</div>
+      </div>
+
+      <!-- 东吴战役 -->
+      <div class="battle-point wu-battle" style="left: 75%; top: 55%;" onclick="openBattle('shiting')">
+        <div class="fire-marker">
+          <div class="fire"></div>
+          <div class="fire-base"></div>
+        </div>
+        <div class="battle-label">石亭</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 战役弹窗 -->
+  <div class="battle-modal" id="battleModal">
+    <div class="modal-scroll">
+      <h2 class="modal-title" id="modalTitle">桃园结义</h2>
+      <p class="modal-year" id="modalYear">中平元年 · 公元184年</p>
+      <p class="modal-desc" id="modalDesc">
+        刘备、关羽、张飞于桃园之中结为异姓兄弟，誓同生死，共图大业。
+      </p>
+      <div class="modal-btns">
+        <button class="modal-btn secondary" onclick="closeModal()">返回舆图</button>
+        <button class="modal-btn primary" onclick="startBattle()">开始战役</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const factions = {
+      wei: { name: '曹魏', symbol: '魏', motto: '挟天子以令诸侯' },
+      shu: { name: '蜀汉', symbol: '蜀', motto: '兴复汉室 · 还于旧都' },
+      wu: { name: '东吴', symbol: '吴', motto: '据江东以观天下' }
+    };
+
+    const battles = {
+      taoyuan: { title: '桃园结义', year: '中平元年 · 公元184年', desc: '刘备、关羽、张飞于桃园之中结为异姓兄弟，誓同生死，共图大业。此后三人同心协力，开创蜀汉基业。' },
+      changban: { title: '长坂坡', year: '建安十三年 · 公元208年', desc: '赵云于百万军中七进七出，单骑救出幼主阿斗；张飞据水断桥，一声怒吼，喝退曹军。' },
+      dingjun: { title: '定军山', year: '建安二十四年 · 公元219年', desc: '老将黄忠居高临下，一刀斩杀曹魏大将夏侯渊。此战奠定刘备汉中王之位。' },
+      chibi: { title: '赤壁之战', year: '建安十三年 · 公元208年', desc: '孙刘联军以火攻大破曹军，奠定三分天下之势。周瑜、诸葛亮联手，以少胜多，成就千古传奇。' },
+      yiling: { title: '夷陵之战', year: '章武二年 · 公元222年', desc: '陆逊火烧连营七百里，刘备兵败白帝城。此战使蜀汉元气大伤，刘备亦于白帝城托孤而终。' },
+      guandu: { title: '官渡之战', year: '建安五年 · 公元200年', desc: '曹操以少胜多，火烧乌巢，大败袁绍。此战奠定曹操统一北方的基础。' },
+      hefei: { title: '合肥之战', year: '建安二十年 · 公元215年', desc: '张辽威震逍遥津，以八百精兵突袭孙权十万大军。此战后，江东小儿闻张辽之名不敢夜啼。' },
+      shiting: { title: '石亭之战', year: '太和二年 · 公元228年', desc: '陆逊诈降诱敌，大败曹休。此战是东吴对曹魏的重大胜利，巩固了东吴的江淮防线。' }
+    };
+
+    let currentFaction = 'shu';
+
+    function selectFaction(faction) {
+      currentFaction = faction;
+      document.getElementById('scrollIntro').classList.add('hidden');
+      setTimeout(() => {
+        document.getElementById('mapScreen').classList.add('active');
+        updateFactionDisplay(faction);
+      }, 500);
+    }
+
+    function switchFaction(faction) {
+      currentFaction = faction;
+      updateFactionDisplay(faction);
+      
+      document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.switch-btn.${faction}`).classList.add('active');
+    }
+
+    function updateFactionDisplay(faction) {
+      const data = factions[faction];
+      const seal = document.getElementById('currentSeal');
+      seal.textContent = data.symbol;
+      seal.className = `faction-seal-mini ${faction}`;
+      document.getElementById('factionName').textContent = data.name;
+
+      // 显示/隐藏对应势力的战役点
+      document.querySelectorAll('.battle-point').forEach(point => {
+        if (point.classList.contains(`${faction}-battle`)) {
+          point.style.display = 'block';
+        } else {
+          point.style.display = 'none';
+        }
+      });
+      
+      // 显示共享战役（赤壁、夷陵对蜀吴都显示）
+      if (faction === 'shu' || faction === 'wu') {
+        document.querySelectorAll('.battle-point').forEach(point => {
+          const label = point.querySelector('.battle-label').textContent;
+          if (label === '赤壁' || label === '夷陵') {
+            point.style.display = 'block';
+          }
+        });
+      }
+    }
+
+    function openBattle(battleId) {
+      const battle = battles[battleId];
+      if (!battle) return;
+      
+      document.getElementById('modalTitle').textContent = battle.title;
+      document.getElementById('modalYear').textContent = battle.year;
+      document.getElementById('modalDesc').textContent = battle.desc;
+      document.getElementById('battleModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('battleModal').classList.remove('active');
+    }
+
+    function startBattle() {
+      // 连接到实际战役页面
+      alert('进入战役！');
+      closeModal();
+    }
+  </script>
+</body>
+</html>
