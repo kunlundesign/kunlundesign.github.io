@@ -88,117 +88,10 @@
       line-height: 1.381;
     }
 
-    /* Hero Screenshot */
-    .hero-screenshot {
-      max-width: 1100px;
-      margin: 40px auto 0;
-      padding: 0 22px;
-    }
-    .screenshot-frame {
-      background: var(--bg-secondary);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-    .screenshot-inner {
-      background: var(--bg-primary);
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .screenshot-bar {
-      height: 36px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      gap: 8px;
-    }
-    .screenshot-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ff5f57;
-    }
-    .screenshot-dot:nth-child(2) { background: #febc2e; }
-    .screenshot-dot:nth-child(3) { background: #28c840; }
-    .screenshot-content {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      min-height: 320px;
-    }
-    .screenshot-sidebar {
-      background: var(--bg-secondary);
-      padding: 16px;
-      border-right: 1px solid var(--border);
-    }
-    .screenshot-sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-bottom: 4px;
-      font-size: 13px;
-    }
-    .screenshot-sidebar-item.active {
-      background: var(--bg-primary);
-    }
-    .screenshot-sidebar-item .icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-    }
-    .screenshot-main {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .screenshot-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-    .screenshot-tab {
-      padding: 8px 12px;
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-    .screenshot-tab.active {
-      color: var(--text-primary);
-      font-weight: 500;
-      border-bottom: 1px solid var(--text-primary);
-      margin-bottom: -1px;
-    }
-    .screenshot-colors {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-    .screenshot-color {
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .screenshot-color-preview {
-      height: 48px;
-    }
-    .screenshot-color-info {
-      padding: 8px 10px;
-      background: var(--bg-secondary);
-      font-size: 11px;
-    }
-
     /* Browser Section */
     .browser-section {
-      padding: 60px 22px 80px;
-      max-width: 1100px;
+      padding: 40px 22px 80px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .section-header {
@@ -216,12 +109,13 @@
     }
     .browser {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 280px 1fr;
       background: var(--bg-primary);
-      border-radius: 12px;
+      border-radius: 16px;
       border: 1px solid var(--border);
       overflow: hidden;
-      min-height: 500px;
+      min-height: 560px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
     }
 
     /* Sidebar */
@@ -1046,76 +940,14 @@
     </div>
   </nav>
 
-  <!-- 1. Hero + Product Screenshot -->
+  <!-- 1. Hero -->
   <section class="hero">
     <h1>Product design skills<br>for AI agents</h1>
     <p>Generate high-quality UIs aligned with MAI standards.</p>
   </section>
 
-  <div class="hero-screenshot">
-    <div class="screenshot-frame">
-      <div class="screenshot-inner">
-        <div class="screenshot-bar">
-          <div class="screenshot-dot"></div>
-          <div class="screenshot-dot"></div>
-          <div class="screenshot-dot"></div>
-        </div>
-        <div class="screenshot-content">
-          <div class="screenshot-sidebar">
-            <div class="screenshot-sidebar-item active">
-              <div class="icon" style="background:#f5f5f7">🏠</div>
-              <span>MAI Universal</span>
-            </div>
-            <div class="screenshot-sidebar-item">
-              <div class="icon" style="background:#e8f4e8">🧩</div>
-              <span>MAI UI</span>
-            </div>
-            <div class="screenshot-sidebar-item">
-              <div class="icon" style="background:#e8f0ff">✨</div>
-              <span>MAI Copilot</span>
-            </div>
-            <div class="screenshot-sidebar-item">
-              <div class="icon" style="background:#e5f1fb">💠</div>
-              <span>Fluent UI</span>
-            </div>
-          </div>
-          <div class="screenshot-main">
-            <div class="screenshot-tabs">
-              <div class="screenshot-tab active">Colors</div>
-              <div class="screenshot-tab">Typography</div>
-              <div class="screenshot-tab">Buttons</div>
-              <div class="screenshot-tab">Cards</div>
-            </div>
-            <div class="screenshot-colors">
-              <div class="screenshot-color">
-                <div class="screenshot-color-preview" style="background:#1d1d1f"></div>
-                <div class="screenshot-color-info">Brand</div>
-              </div>
-              <div class="screenshot-color">
-                <div class="screenshot-color-preview" style="background:#0066cc"></div>
-                <div class="screenshot-color-info">Accent</div>
-              </div>
-              <div class="screenshot-color">
-                <div class="screenshot-color-preview" style="background:#ffffff;border-bottom:1px solid #e5e5e5"></div>
-                <div class="screenshot-color-info">Background</div>
-              </div>
-              <div class="screenshot-color">
-                <div class="screenshot-color-preview" style="background:#d2d2d7"></div>
-                <div class="screenshot-color-info">Border</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- 2. Skills Browser -->
   <section class="browser-section" id="skills">
-    <div class="section-header">
-      <h2 class="section-title">Browse Skills</h2>
-      <p class="section-subtitle">Explore design systems and export to your AI workflow.</p>
-    </div>
     <div class="browser">
       <aside class="sidebar">
         <div class="sidebar-search">
