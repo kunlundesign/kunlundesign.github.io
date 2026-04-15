@@ -131,12 +131,23 @@
     /* Browser Section */
     .browser-section {
       padding: 0 48px 80px;
+      max-width: 100%;
+    }
+    .browser {
+      display: grid;
+      grid-template-columns: 280px 1fr;
       max-width: 1400px;
       margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      min-height: 580px;
     }
+
     .section-header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
     .section-title {
       font-size: 32px;
@@ -146,15 +157,6 @@
     .section-subtitle {
       font-size: 17px;
       color: var(--text-secondary);
-    }
-    .browser {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      background: var(--bg-primary);
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      min-height: 580px;
     }
 
     /* Sidebar */
