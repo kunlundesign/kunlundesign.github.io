@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAI Skills — Direction 1: Warm Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      /* Warm palette - tinted toward terracotta */
+      --bg-cream: oklch(97% 0.015 55);
+      --bg-warm: oklch(93% 0.025 55);
+      --bg-surface: oklch(99% 0.008 55);
+      --text-primary: oklch(25% 0.04 55);
+      --text-secondary: oklch(40% 0.03 55);
+      --text-muted: oklch(55% 0.02 55);
+      --accent: oklch(55% 0.14 35);
+      --accent-hover: oklch(48% 0.14 35);
+      --border: oklch(88% 0.02 55);
+      --border-strong: oklch(82% 0.025 55);
+      
+      /* Spacing scale */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --space-3xl: 64px;
+      --space-4xl: 96px;
+    }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Typography */
+    .display { 
+      font-family: 'Literata', Georgia, serif;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    
+    .heading-lg {
+      font-family: 'Literata', Georgia, serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+    
+    .heading-md {
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    
+    .body-lg { font-size: 1.125rem; line-height: 1.7; }
+    .body { font-size: 1rem; line-height: 1.6; }
+    .caption { font-size: 0.8125rem; line-height: 1.5; }
+    .overline { 
+      font-size: 0.6875rem; 
+      font-weight: 600;
+      letter-spacing: 0.1em; 
+      text-transform: uppercase;
+    }
+    
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+    
+    /* Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: oklch(97% 0.015 55 / 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .nav-logo {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: var(--space-xl);
+    }
+    
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .nav-link:hover { color: var(--text-primary); }
+    
+    /* Hero */
+    .hero {
+      padding: var(--space-4xl) 0 var(--space-3xl);
+      text-align: center;
+    }
+    
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--bg-warm);
+      border-radius: 100px;
+      margin-bottom: var(--space-lg);
+    }
+    
+    .hero-eyebrow span {
+      color: var(--text-muted);
+    }
+    
+    .hero h1 {
+      max-width: 14ch;
+      margin: 0 auto var(--space-md);
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 45ch;
+      margin: 0 auto var(--space-xl);
+    }
+    
+    .hero-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-cream);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      box-shadow: inset 0 0 0 1px var(--border-strong);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-warm);
+    }
+    
+    /* Browser Section */
+    .browser-section {
+      padding: 0 0 var(--space-4xl);
+    }
+    
+    .browser {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      background: var(--bg-surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      min-height: 600px;
+      box-shadow: 
+        0 1px 2px oklch(25% 0.04 55 / 0.04),
+        0 4px 16px oklch(25% 0.04 55 / 0.06);
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      background: var(--text-primary);
+      color: var(--bg-cream);
+      padding: var(--space-lg) 0;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-header {
+      padding: 0 var(--space-lg) var(--space-lg);
+      border-bottom: 1px solid oklch(100% 0 0 / 0.08);
+    }
+    
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: oklch(100% 0 0 / 0.06);
+      border: 1px solid oklch(100% 0 0 / 0.1);
+      border-radius: 8px;
+      padding: var(--space-sm) var(--space-md);
+    }
+    
+    .search-box input {
+      background: none;
+      border: none;
+      color: oklch(85% 0.01 55);
+      font-size: 0.875rem;
+      width: 100%;
+      outline: none;
+    }
+    
+    .search-box input::placeholder {
+      color: oklch(60% 0.02 55);
+    }
+    
+    .sidebar-title {
+      padding: var(--space-lg) var(--space-lg) var(--space-sm);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: oklch(60% 0.02 55);
+    }
+    
+    .skills-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 var(--space-sm);
+    }
+    
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    
+    .skill-item:hover {
+      background: oklch(100% 0 0 / 0.06);
+    }
+    
+    .skill-item.active {
+      background: oklch(100% 0 0 / 0.1);
+    }
+    
+    .skill-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .skill-info { flex: 1; min-width: 0; }
+    
+    .skill-name {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .skill-desc {
+      font-size: 0.75rem;
+      color: oklch(65% 0.02 55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .content-header {
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    
+    .content-icon {
+      font-size: 1.5rem;
+    }
+    
+    .content-title-group { flex: 1; }
+    
+    .content-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    
+    .content-subtitle {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    
+    .content-actions {
+      display: flex;
+      gap: var(--space-sm);
+    }
+    
+    .action-btn {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+    
+    .action-btn:hover {
+      background: var(--bg-warm);
+      color: var(--text-primary);
+    }
+    
+    .action-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    
+    .action-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-xl);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .tab {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .tab:hover {
+      color: var(--text-secondary);
+    }
+    
+    .tab.active {
+      background: var(--bg-warm);
+      color: var(--text-primary);
+    }
+    
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    .tab-content {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: var(--space-xl);
+    }
+    
+    .tab-content.active { display: block; }
+    
+    /* Colors Section */
+    .section-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .section-heading {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: var(--space-lg);
+    }
+    
+    .color-group {
+      margin-bottom: var(--space-xl);
+    }
+    
+    .color-group-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+    
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--space-md);
+    }
+    
+    .color-swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .color-swatch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(25% 0.04 55 / 0.1);
+    }
+    
+    .color-preview {
+      height: 72px;
+      display: grid;
+      place-items: center;
+      font-size: 0.6875rem;
+      font-family: 'SF Mono', Consolas, monospace;
+      color: white;
+    }
+    
+    .color-preview.light { color: oklch(35% 0.03 55); }
+    
+    .color-info {
+      padding: var(--space-md);
+    }
+    
+    .color-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .color-value {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'SF Mono', Consolas, monospace;
+    }
+    
+    /* Typography Section */
+    .type-sample {
+      padding: var(--space-lg) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .type-sample:last-child { border-bottom: none; }
+    
+    .type-meta {
+      font-size: 0.6875rem;
+      font-family: 'SF Mono', Consolas, monospace;
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .type-display { 
+      font-family: 'Literata', Georgia, serif;
+      font-size: 3rem; 
+      font-weight: 500; 
+      line-height: 1.1; 
+    }
+    .type-heading { 
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.5rem; 
+      font-weight: 500; 
+      line-height: 1.2; 
+    }
+    .type-body { 
+      font-size: 1rem; 
+      color: var(--text-secondary); 
+      line-height: 1.7;
+      max-width: 65ch;
+    }
+    .type-caption { 
+      font-size: 0.8125rem; 
+      color: var(--text-muted); 
+      line-height: 1.5; 
+    }
+    
+    /* Buttons Section */
+    .button-group {
+      margin-bottom: var(--space-xl);
+    }
+    
+    .button-row {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    
+    .demo-btn {
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    
+    /* Showcase Section */
+    .showcase-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl);
+      background: var(--bg-warm);
+      border-radius: 12px;
+      min-height: 400px;
+    }
+    
+    .showcase-frame {
+      width: 100%;
+      max-width: 640px;
+      background: var(--bg-surface);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px oklch(25% 0.04 55 / 0.15);
+    }
+    
+    /* Dashboard Preview */
+    .dash-preview {
+      padding: var(--space-lg);
+    }
+    
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+    
+    .dash-title {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+    
+    .dash-btn {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--text-primary);
+      color: var(--bg-cream);
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .stat-card {
+      padding: var(--space-md);
+      background: var(--bg-cream);
+      border-radius: 10px;
+    }
+    
+    .stat-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    
+    .stat-value {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    
+    .stat-change {
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+    
+    .chart-area {
+      background: var(--bg-cream);
+      border-radius: 10px;
+      padding: var(--space-md);
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-sm);
+    }
+    
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--accent), oklch(65% 0.12 35));
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s ease-out;
+    }
+    
+    /* Why Section */
+    .why-section {
+      padding: var(--space-4xl) 0;
+      background: var(--bg-warm);
+    }
+    
+    .why-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+    }
+    
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+    
+    .why-card {
+      background: var(--bg-surface);
+      padding: var(--space-xl);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    
+    .why-icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-md);
+    }
+    
+    .why-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .why-desc {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Team Section */
+    .team-section {
+      padding: var(--space-4xl) 0;
+    }
+    
+    .team-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+    }
+    
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3xl);
+      flex-wrap: wrap;
+    }
+    
+    .team-member {
+      text-align: center;
+    }
+    
+    .team-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--bg-warm);
+      display: grid;
+      place-items: center;
+      margin: 0 auto var(--space-md);
+      font-size: 1.5rem;
+    }
+    
+    .team-name {
+      font-weight: 500;
+    }
+    
+    /* Footer */
+    .footer {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .footer-text {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    
+    /* Responsive */
+    @media (max-width: 900px) {
+      .browser { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .why-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-brand">
+        <div class="nav-logo">M</div>
+        <span>MAI Skills</span>
+      </a>
+      <div class="nav-links">
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#why" class="nav-link">Why</a>
+        <a href="#team" class="nav-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero container">
+    <div class="hero-eyebrow">
+      <span class="overline">Studio 8</span>
+      <span>·</span>
+      <span class="overline">Design Skills</span>
+    </div>
+    <h1 class="display">Product design skills for AI agents</h1>
+    <p class="hero-subtitle">Generate high-quality UIs aligned with MAI standards. Every color, font, and component — connected.</p>
+    <div class="hero-actions">
+      <a href="#skills" class="btn btn-primary">Browse Skills</a>
+      <a href="#" class="btn btn-secondary">View Repository →</a>
+    </div>
+  </section>
+
+  <section class="browser-section container" id="skills">
+    <div class="browser">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="search-box">
+            <span>🔍</span>
+            <input type="text" placeholder="Search skills..." id="searchInput">
+          </div>
+        </div>
+        <div class="sidebar-title">Design Systems</div>
+        <div class="skills-list" id="skillsList"></div>
+      </aside>
+
+      <div class="main-content">
+        <header class="content-header">
+          <span class="content-icon" id="headerIcon">🏠</span>
+          <div class="content-title-group">
+            <div class="content-title" id="headerTitle">MAI Universal</div>
+            <div class="content-subtitle" id="headerSubtitle">Warm terracotta accent, editorial style</div>
+          </div>
+          <div class="content-actions">
+            <button class="action-btn primary">★ Save</button>
+            <button class="action-btn">Copy SKILL.md</button>
+          </div>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="colors">Colors</button>
+          <button class="tab" data-tab="typography">Typography</button>
+          <button class="tab" data-tab="buttons">Buttons</button>
+          <button class="tab" data-tab="showcase">Showcase</button>
+        </div>
+
+        <div class="content-area">
+          <div class="tab-content active" id="tab-colors">
+            <div class="section-label">01 / Colors</div>
+            <h2 class="section-heading">Color Palette</h2>
+            
+            <div class="color-group">
+              <div class="color-group-title">Brand</div>
+              <div class="color-grid" id="brandColors"></div>
+            </div>
+            
+            <div class="color-group">
+              <div class="color-group-title">Surface</div>
+              <div class="color-grid" id="surfaceColors"></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-typography">
+            <div class="section-label">02 / Typography</div>
+            <h2 class="section-heading">Type Scale</h2>
+            
+            <div class="type-sample">
+              <div class="type-meta">Display · Literata 48px / 1.1</div>
+              <div class="type-display">Display Heading</div>
+            </div>
+            <div class="type-sample">
+              <div class="type-meta">Heading · Literata 24px / 1.2</div>
+              <div class="type-heading">Section Heading</div>
+            </div>
+            <div class="type-sample">
+              <div class="type-meta">Body · Hanken Grotesk 16px / 1.7</div>
+              <div class="type-body">Body text optimized for comfortable reading. The combination of Literata for display and Hanken Grotesk for body creates a warm, editorial feel that balances professionalism with approachability.</div>
+            </div>
+            <div class="type-sample">
+              <div class="type-meta">Caption · Hanken Grotesk 13px / 1.5</div>
+              <div class="type-caption">Caption text for labels, hints, and secondary information.</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-buttons">
+            <div class="section-label">03 / Buttons</div>
+            <h2 class="section-heading">Button Variants</h2>
+            
+            <div class="button-group">
+              <div class="button-row" id="buttonRow"></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-showcase">
+            <div class="section-label">04 / Showcase</div>
+            <h2 class="section-heading">Dashboard Preview</h2>
+            
+            <div class="showcase-wrapper">
+              <div class="showcase-frame">
+                <div class="dash-preview">
+                  <div class="dash-header">
+                    <div class="dash-title">Analytics</div>
+                    <button class="dash-btn">+ New Report</button>
+                  </div>
+                  <div class="stat-grid">
+                    <div class="stat-card">
+                      <div class="stat-label">Users</div>
+                      <div class="stat-value">24,521</div>
+                      <div class="stat-change">↑ 12.5%</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-label">Revenue</div>
+                      <div class="stat-value">$84.2K</div>
+                      <div class="stat-change">↑ 8.3%</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-label">Sessions</div>
+                      <div class="stat-value">1,429</div>
+                      <div class="stat-change">↑ 23.1%</div>
+                    </div>
+                  </div>
+                  <div class="chart-area">
+                    <div class="chart-bar" style="height: 45%"></div>
+                    <div class="chart-bar" style="height: 62%"></div>
+                    <div class="chart-bar" style="height: 38%"></div>
+                    <div class="chart-bar" style="height: 85%"></div>
+                    <div class="chart-bar" style="height: 54%"></div>
+                    <div class="chart-bar" style="height: 72%"></div>
+                    <div class="chart-bar" style="height: 48%"></div>
+                    <div class="chart-bar" style="height: 91%"></div>
+                    <div class="chart-bar" style="height: 67%"></div>
+                    <div class="chart-bar" style="height: 58%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-section" id="why">
+    <div class="container">
+      <div class="why-header">
+        <div class="section-label">Why MAI Skills?</div>
+        <h2 class="heading-lg">Build better interfaces with AI assistance</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🏛️</div>
+          <div class="why-title">Production quality</div>
+          <div class="why-desc">Generate clean, maintainable code that follows your design system perfectly.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🎨</div>
+          <div class="why-title">Fully customizable</div>
+          <div class="why-desc">Skills adapt to your specific tokens, components, and brand guidelines.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">⚡</div>
+          <div class="why-title">Ship faster</div>
+          <div class="why-desc">From prompt to production-ready UI in minutes, not hours.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team-section" id="team">
+    <div class="container">
+      <div class="team-header">
+        <div class="section-label">Team</div>
+        <h2 class="heading-lg">The minds behind MAI Skills</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-avatar">👤</div>
+          <div class="team-name">Elon Zhang</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">👤</div>
+          <div class="team-name">Yu He</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">👤</div>
+          <div class="team-name">Xiaoting Shao</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">👤</div>
+          <div class="team-name">Kunlun Liu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2024 Microsoft AI Design Skills. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const skills = [
+      { id: 'mai-universal', name: 'MAI Universal', icon: '🏠', color: 'oklch(95% 0.03 55)', desc: 'Warm editorial style' },
+      { id: 'mai-ui', name: 'MAI UI', icon: '🧩', color: 'oklch(92% 0.04 150)', desc: 'Semantic tokens' },
+      { id: 'mai-copilot', name: 'MAI Copilot', icon: '✨', color: 'oklch(92% 0.05 280)', desc: 'Chat patterns' },
+      { id: 'fluent', name: 'Fluent UI', icon: '💠', color: 'oklch(92% 0.06 240)', desc: 'M365 patterns' },
+      { id: 'bing', name: 'Bing ACF', icon: '🔍', color: 'oklch(92% 0.07 25)', desc: 'Answer cards' },
+      { id: 'mai-brand', name: 'MAI Brand', icon: '🎨', color: 'oklch(92% 0.06 350)', desc: 'Marketing pages' },
+    ];
+
+    const colorData = {
+      brand: [
+        { name: 'Primary', value: 'oklch(25% 0.04 55)', hex: '#3B230E', light: false },
+        { name: 'Secondary', value: 'oklch(40% 0.03 55)', hex: '#5F4E41', light: false },
+        { name: 'Accent', value: 'oklch(55% 0.14 35)', hex: '#A25A02', light: false },
+      ],
+      surface: [
+        { name: 'Background', value: 'oklch(97% 0.015 55)', hex: '#FEF9ED', light: true },
+        { name: 'Surface', value: 'oklch(93% 0.025 55)', hex: '#EFE2D1', light: true },
+        { name: 'Border', value: 'oklch(88% 0.02 55)', hex: '#E1DBC6', light: true },
+      ]
+    };
+
+    const buttons = [
+      { label: 'Primary', bg: 'oklch(25% 0.04 55)', color: 'oklch(97% 0.015 55)' },
+      { label: 'Accent', bg: 'oklch(55% 0.14 35)', color: 'white' },
+      { label: 'Secondary', bg: 'transparent', color: 'oklch(25% 0.04 55)', border: 'oklch(82% 0.025 55)' },
+    ];
+
+    let currentSkill = skills[0];
+
+    function renderSkills() {
+      const list = document.getElementById('skillsList');
+      list.innerHTML = skills.map(s => `
+        <div class="skill-item ${s.id === currentSkill.id ? 'active' : ''}" onclick="selectSkill('${s.id}')">
+          <div class="skill-icon" style="background: ${s.color}">${s.icon}</div>
+          <div class="skill-info">
+            <div class="skill-name">${s.name}</div>
+            <div class="skill-desc">${s.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderColors() {
+      document.getElementById('brandColors').innerHTML = colorData.brand.map(c => `
+        <div class="color-swatch">
+          <div class="color-preview ${c.light ? 'light' : ''}" style="background: ${c.value}">${c.hex}</div>
+          <div class="color-info">
+            <div class="color-name">${c.name}</div>
+            <div class="color-value">--${c.name.toLowerCase()}</div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('surfaceColors').innerHTML = colorData.surface.map(c => `
+        <div class="color-swatch">
+          <div class="color-preview ${c.light ? 'light' : ''}" style="background: ${c.value}">${c.hex}</div>
+          <div class="color-info">
+            <div class="color-name">${c.name}</div>
+            <div class="color-value">--${c.name.toLowerCase()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderButtons() {
+      document.getElementById('buttonRow').innerHTML = buttons.map(b => `
+        <button class="demo-btn" style="background: ${b.bg}; color: ${b.color}; ${b.border ? 'box-shadow: inset 0 0 0 1px ' + b.border : ''}">${b.label}</button>
+      `).join('');
+    }
+
+    function selectSkill(id) {
+      currentSkill = skills.find(s => s.id === id);
+      document.getElementById('headerIcon').textContent = currentSkill.icon;
+      document.getElementById('headerTitle').textContent = currentSkill.name;
+      document.getElementById('headerSubtitle').textContent = currentSkill.desc;
+      renderSkills();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.skill-item').forEach(item => {
+        const name = item.querySelector('.skill-name').textContent.toLowerCase();
+        item.style.display = name.includes(q) ? 'flex' : 'none';
+      });
+    });
+
+    renderSkills();
+    renderColors();
+    renderButtons();
+  </script>
+</body>
+</html>
