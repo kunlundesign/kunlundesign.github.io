@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAI Skills — Product design skills for AI agents</title>
+  <style>
+    /* MAI Brand Fonts */
+    @font-face {
+      font-family: 'Bradford';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/BradfordLLWeb-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Bradford';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/BradfordLLWeb-Italic.woff2') format('woff2');
+      font-weight: 400;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: 'Red Hat Mono';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/RedHatMono-Regular.woff2') format('woff2');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Red Hat Mono';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/RedHatMono-Medium.woff2') format('woff2');
+      font-weight: 500;
+    }
+
+    :root {
+      /* MAI Primary Colors */
+      --cream-light: #FEF9ED;
+      --cream: #EFE2D1;
+      --cream-dark: #E1DBC6;
+      --warm-gray: #72675B;
+      --brown: #5F4E41;
+      --dark-brown: #3B230E;
+      
+      /* MAI Orange Spectrum (accent) */
+      --orange-light: #FBCFB9;
+      --orange: #E68863;
+      --orange-medium: #CC653C;
+      --orange-dark: #5F2711;
+      
+      /* Semantic */
+      --text-primary: var(--dark-brown);
+      --text-secondary: var(--warm-gray);
+      --text-muted: var(--brown);
+      --bg-primary: var(--cream-light);
+      --bg-secondary: var(--cream);
+      --bg-elevated: #FFFFFF;
+      --border: var(--cream-dark);
+      --accent: var(--orange-medium);
+      --accent-hover: var(--orange-dark);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Bradford', 'Times New Roman', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(254, 249, 237, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: 'Bradford', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+    .nav-link {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .nav-link:hover { color: var(--text-primary); }
+
+    /* Hero */
+    .hero {
+      padding: 100px 48px 80px;
+      text-align: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Bradford', serif;
+      font-size: 60px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      color: var(--dark-brown);
+    }
+    .hero p {
+      font-family: 'Bradford', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      line-height: 1.4;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 5px;
+      font-family: 'Bradford', serif;
+      font-size: 17px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { 
+      background: var(--bg-secondary);
+      border-color: var(--warm-gray);
+    }
+
+    /* Browser Section */
+    .browser-section {
+      padding: 0 48px 100px;
+      max-width: 100%;
+    }
+    .browser {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: var(--bg-elevated);
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      min-height: 580px;
+      box-shadow: 0 4px 40px rgba(59, 35, 14, 0.08);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-family: 'Bradford', serif;
+      font-size: 36px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      color: var(--dark-brown);
+    }
+    .section-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-search {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 12px 16px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-title {
+      padding: 20px 20px 12px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .skills-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 20px;
+    }
+    .skill-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 4px;
+    }
+    .skill-item:hover { background: rgba(95, 78, 65, 0.06); }
+    .skill-item.active { background: var(--bg-elevated); }
+    .skill-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .skill-info { flex: 1; min-width: 0; }
+    .skill-name {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .skill-desc {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-elevated);
+    }
+    .content-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon { font-size: 18px; }
+    .header-title {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .header-desc {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-left: 8px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+    .action-btn-save {
+      background: var(--accent);
+      color: white;
+    }
+    .action-btn-save:hover { background: var(--accent-hover); }
+    .action-btn-copy {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .action-btn-copy:hover { background: var(--orange-light); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .tab {
+      padding: 14px 18px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 13px;
+      color: var(--text-secondary);
+      border: none;
+      background: none;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .tab:hover { color: var(--text-primary); }
+    .tab.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 18px;
+      right: 18px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      overflow: hidden;
+    }
+    .tab-content {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .tab-content.active { display: block; }
+
+    /* Colors Tab */
+    .colors-content { padding: 32px; }
+    .colors-title {
+      font-family: 'Bradford', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--dark-brown);
+    }
+    .colors-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      max-width: 580px;
+    }
+    .color-swatch {
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .color-preview {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+    }
+    .color-preview.light { color: rgba(59, 35, 14, 0.5); }
+    .color-preview.dark { color: rgba(254, 249, 237, 0.9); }
+    .color-info {
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+    }
+    .color-name {
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    /* Typography Tab */
+    .typography-content { padding: 32px; }
+    .type-section {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .type-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .type-meta {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .type-display { 
+      font-family: 'Bradford', serif;
+      font-size: 42px; 
+      font-weight: 400; 
+      line-height: 1.1; 
+      color: var(--dark-brown);
+      letter-spacing: -0.01em;
+    }
+    .type-heading { 
+      font-family: 'Bradford', serif;
+      font-size: 24px; 
+      font-weight: 400; 
+      line-height: 1.2; 
+      color: var(--brown);
+    }
+    .type-body { 
+      font-family: 'Bradford', serif;
+      font-size: 16px; 
+      color: var(--text-secondary); 
+      line-height: 1.6; 
+      max-width: 460px; 
+    }
+
+    /* Buttons Tab */
+    .buttons-content { padding: 32px; }
+    .buttons-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .demo-btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    /* Cards Tab */
+    .showcase-content {
+      padding: 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+    }
+    .showcase-frame {
+      width: 100%;
+      max-width: 560px;
+      background: var(--bg-elevated);
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(59, 35, 14, 0.08);
+    }
+
+    /* Showcase Previews */
+    .preview-universal {
+      padding: 20px;
+      background: var(--cream-light);
+      min-height: 300px;
+    }
+    .preview-universal .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .preview-universal .dash-title {
+      font-family: 'Bradford', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-universal .dash-btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      border: none;
+    }
+    .preview-universal .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .preview-universal .stat-card {
+      background: white;
+      border-radius: 5px;
+      padding: 16px;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-universal .stat-label {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .preview-universal .stat-value {
+      font-family: 'Bradford', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-top: 4px;
+    }
+    .preview-universal .stat-change {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--orange-medium);
+      margin-top: 4px;
+    }
+    .preview-universal .chart-area {
+      background: white;
+      border-radius: 5px;
+      padding: 16px;
+      height: 90px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-universal .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--orange-medium), var(--orange));
+      border-radius: 3px 3px 0 0;
+    }
+
+    .preview-mai-ui {
+      padding: 20px;
+      background: var(--cream-light);
+      min-height: 300px;
+    }
+    .preview-mai-ui .settings-title {
+      font-family: 'Bradford', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-bottom: 20px;
+    }
+    .preview-mai-ui .settings-card {
+      background: white;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-mai-ui .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--cream);
+    }
+    .preview-mai-ui .setting-item:last-child { border-bottom: none; }
+    .preview-mai-ui .setting-label {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--brown);
+    }
+    .preview-mai-ui .toggle {
+      width: 44px;
+      height: 26px;
+      background: var(--cream-dark);
+      border-radius: 13px;
+      position: relative;
+    }
+    .preview-mai-ui .toggle.on { background: var(--orange-medium); }
+    .preview-mai-ui .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      box-shadow: 0 1px 3px rgba(59, 35, 14, 0.2);
+    }
+    .preview-mai-ui .toggle.on::after { left: 20px; }
+
+    .preview-copilot {
+      padding: 16px;
+      background: var(--cream-light);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-copilot .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+    .preview-copilot .chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-medium));
+    }
+    .preview-copilot .chat-title {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-copilot .chat-status {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--warm-gray);
+    }
+    .preview-copilot .chat-messages {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .preview-copilot .msg {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 5px;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .preview-copilot .msg-ai {
+      background: white;
+      color: var(--brown);
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-copilot .msg-user {
+      background: var(--orange-medium);
+      color: white;
+      margin-left: auto;
+    }
+    .preview-copilot .chat-input {
+      background: white;
+      border-radius: 5px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-copilot .input-text {
+      flex: 1;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--warm-gray);
+    }
+    .preview-copilot .send-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      background: var(--orange-medium);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .preview-fluent {
+      padding: 16px;
+      background: var(--cream-light);
+      min-height: 300px;
+    }
+    .preview-fluent .fl-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .preview-fluent .fl-btn {
+      background: white;
+      border: 1px solid var(--cream-dark);
+      border-radius: 5px;
+      padding: 6px 12px;
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      color: var(--brown);
+    }
+    .preview-fluent .fl-btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .preview-fluent .fl-table {
+      background: white;
+      border-radius: 5px;
+      border: 1px solid var(--cream-dark);
+      overflow: hidden;
+    }
+    .preview-fluent .fl-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 80px 70px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--cream);
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      align-items: center;
+    }
+    .preview-fluent .fl-row:last-child { border-bottom: none; }
+    .preview-fluent .fl-header {
+      background: var(--cream);
+      font-family: 'Red Hat Mono', monospace;
+      font-weight: 500;
+      color: var(--warm-gray);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .preview-fluent .fl-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 3px;
+    }
+    .preview-fluent .fl-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+    }
+    .preview-fluent .fl-status-active { background: var(--orange-light); color: var(--orange-dark); }
+    .preview-fluent .fl-status-draft { background: var(--cream); color: var(--warm-gray); }
+
+    .preview-bing {
+      padding: 20px;
+      background: var(--cream-light);
+      min-height: 300px;
+    }
+    .preview-bing .search-bar {
+      background: white;
+      border-radius: 5px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-bing .search-icon { color: var(--warm-gray); font-size: 14px; }
+    .preview-bing .search-text {
+      flex: 1;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--brown);
+    }
+    .preview-bing .answer-card {
+      background: white;
+      border-radius: 5px;
+      padding: 20px;
+      border: 1px solid var(--cream-dark);
+    }
+    .preview-bing .answer-header {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .preview-bing .answer-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-medium));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+    .preview-bing .answer-title {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-bing .answer-subtitle {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--warm-gray);
+    }
+    .preview-bing .answer-body {
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--brown);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .preview-bing .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .preview-bing .fact-item {
+      background: var(--cream);
+      padding: 12px;
+      border-radius: 5px;
+    }
+    .preview-bing .fact-label {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 9px;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+    }
+    .preview-bing .fact-value {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-top: 4px;
+    }
+
+    .preview-brand {
+      padding: 36px 24px;
+      background: var(--cream);
+      min-height: 300px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .preview-brand .brand-title {
+      font-family: 'Bradford', serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .preview-brand .brand-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--warm-gray);
+      max-width: 300px;
+      margin: 0 auto 20px;
+      line-height: 1.5;
+    }
+    .preview-brand .brand-link {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .preview-brand .brand-link:hover { text-decoration: underline; }
+    .preview-brand .brand-link::after { content: ' →'; }
+
+    /* Why Section */
+    .why-section {
+      padding: 100px 48px;
+      background: var(--bg-secondary);
+    }
+    .why-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .why-card {
+      text-align: center;
+      padding: 24px;
+    }
+    .why-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .why-name {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--dark-brown);
+    }
+    .why-desc {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Quick Start Section */
+    .quickstart-section {
+      padding: 100px 48px;
+      background: var(--bg-primary);
+    }
+    .quickstart-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .quickstart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .quickstart-card {
+      background: var(--bg-elevated);
+      border-radius: 5px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+    }
+    .quickstart-card:hover {
+      box-shadow: 0 4px 24px rgba(59, 35, 14, 0.1);
+    }
+    .quickstart-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cream);
+      padding: 6px 14px;
+      border-radius: 5px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--brown);
+    }
+    .quickstart-badge-icon {
+      font-size: 14px;
+    }
+    .quickstart-title {
+      font-family: 'Bradford', serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      color: var(--dark-brown);
+    }
+    .quickstart-desc {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .quickstart-links {
+      display: flex;
+      gap: 24px;
+    }
+    .quickstart-link {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .quickstart-link:hover { text-decoration: underline; }
+    .quickstart-link::after { content: ' →'; }
+    .quickstart-preview {
+      margin-top: 24px;
+      background: var(--cream);
+      border-radius: 5px;
+      padding: 18px;
+    }
+    .quickstart-code {
+      background: var(--dark-brown);
+      border-radius: 5px;
+      padding: 16px 18px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--cream);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    .quickstart-code .comment { color: var(--warm-gray); }
+    .quickstart-code .keyword { color: var(--orange); }
+    .quickstart-code .string { color: var(--orange-light); }
+
+    /* Team Section */
+    .team-section {
+      padding: 100px 48px;
+      background: var(--bg-secondary);
+      text-align: center;
+    }
+    .team-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: 56px;
+      flex-wrap: wrap;
+    }
+    .team-member {
+      text-align: center;
+    }
+    .team-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 5px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 32px;
+      color: var(--warm-gray);
+      overflow: hidden;
+    }
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-name {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--brown);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 32px 48px;
+      text-align: center;
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
+    }
+    .footer-text {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .footer-links {
+      margin-top: 12px;
+    }
+    .footer-link {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 16px;
+    }
+    .footer-link:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .browser { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .why-grid { grid-template-columns: 1fr; }
+      .quickstart-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 42px; }
+      .section-title { font-size: 28px; }
+      .nav-inner, .hero, .browser-section, .why-section, .quickstart-section, .team-section, .footer {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">MAI Skills</a>
+      <div class="nav-links">
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#quickstart" class="nav-link">Quick Start</a>
+        <a href="#team" class="nav-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">AI Design Skills</div>
+    <h1>Product design skills<br>for AI agents</h1>
+    <p>Generate high-quality UIs aligned with Microsoft AI design standards</p>
+    <div class="hero-actions">
+      <a href="#skills" class="btn btn-primary">Browse Skills</a>
+      <a href="#" class="btn btn-secondary">View Repository</a>
+    </div>
+  </section>
+
+  <!-- Skills Browser -->
+  <section class="browser-section" id="skills">
+    <div class="browser">
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <div class="search-input">
+            <span>⌕</span>
+            <span>Search designs</span>
+          </div>
+        </div>
+        <div class="sidebar-title">6 Design Systems</div>
+        <div class="skills-list" id="skillsList"></div>
+      </aside>
+
+      <div class="main-content">
+        <header class="content-header">
+          <div class="header-info">
+            <span class="header-icon" id="headerIcon">🏠</span>
+            <span class="header-title" id="headerTitle">MAI Universal</span>
+            <span class="header-desc" id="headerDesc">Warm terracotta accent</span>
+          </div>
+          <div class="header-actions">
+            <button class="action-btn action-btn-save">✦ Save</button>
+            <button class="action-btn action-btn-copy">Copy SKILL.md</button>
+          </div>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="colors" onclick="switchTab('colors')">Colors</button>
+          <button class="tab" data-tab="typography" onclick="switchTab('typography')">Typography</button>
+          <button class="tab" data-tab="buttons" onclick="switchTab('buttons')">Buttons</button>
+          <button class="tab" data-tab="cards" onclick="switchTab('cards')">Cards</button>
+        </div>
+
+        <div class="content-area">
+          <div class="tab-content active" id="tab-colors">
+            <div class="colors-content">
+              <h2 class="colors-title">Design System<br><em>Inspired by</em> <span style="color:var(--accent)">MAI</span></h2>
+              <p class="colors-subtitle">Every color, font, and component — connected in one workspace.</p>
+              <div class="color-grid" id="colorGrid"></div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-typography">
+            <div class="typography-content" id="typographyContent"></div>
+          </div>
+          <div class="tab-content" id="tab-buttons">
+            <div class="buttons-content">
+              <div class="buttons-grid" id="buttonsGrid"></div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-cards">
+            <div class="showcase-content">
+              <div class="showcase-frame" id="showcaseFrame"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why MAI Skills -->
+  <section class="why-section" id="why">
+    <div class="why-inner">
+      <div class="section-header">
+        <h2 class="section-title">Why MAI Skills?</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">✦</div>
+          <div class="why-name">Production quality</div>
+          <div class="why-desc">Generate clean, maintainable code that follows your design system perfectly.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">◐</div>
+          <div class="why-name">Fully customizable</div>
+          <div class="why-desc">Skills adapt to your tokens, components, and brand guidelines.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">→</div>
+          <div class="why-name">Developer ready</div>
+          <div class="why-desc">Easy to integrate with your codebase and CI/CD pipelines.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="quickstart-section" id="quickstart">
+    <div class="quickstart-inner">
+      <div class="section-header">
+        <h2 class="section-title">Quick start</h2>
+        <p class="section-subtitle">Get started in minutes with your preferred workflow.</p>
+      </div>
+      <div class="quickstart-grid">
+        <div class="quickstart-card">
+          <div class="quickstart-badge">
+            <span class="quickstart-badge-icon">⌘</span>
+            For AI Coding Agents
+          </div>
+          <h3 class="quickstart-title">VS Code or Claude</h3>
+          <p class="quickstart-desc">Load design skills to VS Code or Claude. Define the structure with the logic layer, then build with the vision layer.</p>
+          <div class="quickstart-links">
+            <a href="#" class="quickstart-link">Download Skills</a>
+          </div>
+          <div class="quickstart-preview">
+            <div class="quickstart-code">
+              <span class="comment"># Add to your project</span><br>
+              <span class="keyword">cp</span> skills/ <span class="string">./your-project/</span><br><br>
+              <span class="comment"># Reference in prompts</span><br>
+              <span class="string">"Use MAI Universal design system"</span>
+            </div>
+          </div>
+        </div>
+        <div class="quickstart-card">
+          <div class="quickstart-badge">
+            <span class="quickstart-badge-icon">◎</span>
+            For Figma Make
+          </div>
+          <h3 class="quickstart-title">Figma Templates</h3>
+          <p class="quickstart-desc">Import MAI Design Skills guidelines into your Figma/FigJam file. AI automatically designs using your defined logic and vision.</p>
+          <div class="quickstart-links">
+            <a href="#" class="quickstart-link">Copy Guidelines</a>
+            <a href="#" class="quickstart-link">Try Templates</a>
+          </div>
+          <div class="quickstart-preview">
+            <div class="quickstart-code">
+              <span class="comment">// Figma MCP connection</span><br>
+              <span class="keyword">import</span> { mai } <span class="keyword">from</span> <span class="string">'@mai/figma'</span><br><br>
+              mai.<span class="keyword">applyDesignSystem</span>(<span class="string">'universal'</span>)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section" id="team">
+    <div class="team-inner">
+      <div class="section-header">
+        <h2 class="section-title">Team</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Elon Zhang</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Yu He</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Xiaoting Shao</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Kunlun Liu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-text">© 2025 Microsoft AI Design Skills</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">GitHub</a>
+      <a href="#" class="footer-link">Documentation</a>
+    </div>
+  </footer>
+
+  <script>
+    const skills = [
+      {
+        id: 'mai-universal',
+        name: 'MAI Universal',
+        icon: '🏠',
+        iconBg: '#EFE2D1',
+        desc: 'Warm terracotta accent, clean editorial style.',
+        colors: [
+          { name: 'Brand', value: '#272320', light: false },
+          { name: 'Accent', value: '#e25a3d', light: false },
+          { name: 'Background', value: '#FEF9ED', light: true },
+          { name: 'Border', value: '#E1DBC6', light: true },
+        ],
+        typography: {
+          display: { size: '42px', weight: 400, sample: 'Bradford Display' },
+          heading: { size: '24px', weight: 400, sample: 'Editorial Warmth' },
+          body: { size: '16px', weight: 400, sample: 'Body text with comfortable line height and warm, human tone.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#CC653C', color: 'white' },
+          { label: 'Secondary', bg: 'transparent', color: '#5F4E41', border: '#E1DBC6' },
+          { label: 'Ghost', bg: 'transparent', color: '#CC653C' },
+        ],
+        showcase: `<div class="preview-universal"><div class="dash-header"><div class="dash-title">Analytics</div><button class="dash-btn">+ New</button></div><div class="dash-grid"><div class="stat-card"><div class="stat-label">Users</div><div class="stat-value">24.5K</div><div class="stat-change">↑ 12.5%</div></div><div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$84K</div><div class="stat-change">↑ 8.3%</div></div><div class="stat-card"><div class="stat-label">Sessions</div><div class="stat-value">1,429</div><div class="stat-change">↑ 23%</div></div></div><div class="chart-area"><div class="chart-bar" style="height:40%"></div><div class="chart-bar" style="height:65%"></div><div class="chart-bar" style="height:45%"></div><div class="chart-bar" style="height:80%"></div><div class="chart-bar" style="height:55%"></div><div class="chart-bar" style="height:70%"></div><div class="chart-bar" style="height:50%"></div><div class="chart-bar" style="height:85%"></div></div></div>`
+      },
+      {
+        id: 'mai-ui',
+        name: 'MAI UI',
+        icon: '🧩',
+        iconBg: '#D7E6D6',
+        desc: 'Production web components with semantic tokens.',
+        colors: [
+          { name: 'Primary', value: '#738C7B', light: false },
+          { name: 'Text', value: '#3B230E', light: false },
+          { name: 'Background', value: '#FEF9ED', light: true },
+          { name: 'Stroke', value: '#E1DBC6', light: true },
+        ],
+        typography: {
+          display: { size: '36px', weight: 400, sample: 'Natural Display' },
+          heading: { size: '22px', weight: 400, sample: 'Calm Professional' },
+          body: { size: '15px', weight: 400, sample: 'Warm neutral tones with gentle accent hues.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#738C7B', color: 'white' },
+          { label: 'Secondary', bg: '#99BFBF', color: '#2E4D4D' },
+          { label: 'Neutral', bg: '#72675B', color: 'white' },
+        ],
+        showcase: `<div class="preview-mai-ui"><div class="settings-title">Settings</div><div class="settings-card"><div class="setting-item"><span class="setting-label">Dark Mode</span><div class="toggle"></div></div><div class="setting-item"><span class="setting-label">Notifications</span><div class="toggle on"></div></div><div class="setting-item"><span class="setting-label">Auto-save</span><div class="toggle on"></div></div><div class="setting-item"><span class="setting-label">Analytics</span><div class="toggle"></div></div></div></div>`
+      },
+      {
+        id: 'mai-copilot',
+        name: 'MAI Copilot',
+        icon: '✨',
+        iconBg: '#CFE6E6',
+        desc: 'Copilot design patterns with Tailwind CSS.',
+        colors: [
+          { name: 'Page', value: '#FEF9ED', light: true },
+          { name: 'Text', value: '#3B230E', light: false },
+          { name: 'Accent', value: '#628C8C', light: false },
+          { name: 'Surface', value: '#FFFFFF', light: true },
+        ],
+        typography: {
+          display: { size: '32px', weight: 400, sample: 'Copilot Display' },
+          heading: { size: '20px', weight: 400, sample: 'Chat Title' },
+          body: { size: '14px', weight: 400, sample: 'Friendly message text with warm neutrals.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#628C8C', color: 'white' },
+          { label: 'Send', bg: 'linear-gradient(135deg, #99BFBF, #628C8C)', color: 'white' },
+          { label: 'Ghost', bg: 'transparent', color: '#628C8C', border: '#628C8C' },
+        ],
+        showcase: `<div class="preview-copilot"><div class="chat-header"><div class="chat-avatar"></div><div><div class="chat-title">Copilot</div><div class="chat-status">Ready to help</div></div></div><div class="chat-messages"><div class="msg msg-ai">Hi! How can I help you today?</div><div class="msg msg-user">Write a proposal</div><div class="msg msg-ai">Sure! Let me ask a few questions...</div></div><div class="chat-input"><span class="input-text">Ask anything...</span><div class="send-btn">↑</div></div></div>`
+      },
+      {
+        id: 'fluent',
+        name: 'Fluent UI',
+        icon: '💠',
+        iconBg: '#E6CAD1',
+        desc: 'Fluent UI React v9 for M365 Copilot.',
+        colors: [
+          { name: 'Brand', value: '#8C5462', light: false },
+          { name: 'Text', value: '#3B230E', light: false },
+          { name: 'Background', value: '#FFFFFF', light: true },
+          { name: 'Surface', value: '#FEF9ED', light: true },
+        ],
+        typography: {
+          display: { size: '30px', weight: 400, sample: 'Fluent Display' },
+          heading: { size: '20px', weight: 500, sample: 'Section Title' },
+          body: { size: '14px', weight: 400, sample: 'Enterprise body text with clear hierarchy.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#8C5462', color: 'white' },
+          { label: 'Secondary', bg: 'transparent', color: '#5F4E41', border: '#E1DBC6' },
+          { label: 'Subtle', bg: 'transparent', color: '#72675B' },
+        ],
+        showcase: `<div class="preview-fluent"><div class="fl-toolbar"><button class="fl-btn fl-btn-primary">+ New</button><button class="fl-btn">Upload</button><button class="fl-btn">More</button></div><div class="fl-table"><div class="fl-row fl-header"><div class="fl-checkbox"></div><div>Name</div><div>Modified</div><div>Status</div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Proposal.docx</div><div>Today</div><div><span class="fl-status fl-status-active">Active</span></div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Budget.xlsx</div><div>Yesterday</div><div><span class="fl-status fl-status-draft">Draft</span></div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Notes.pdf</div><div>Mar 12</div><div><span class="fl-status fl-status-active">Active</span></div></div></div></div>`
+      },
+      {
+        id: 'bing',
+        name: 'Bing ACF',
+        icon: '🔍',
+        iconBg: '#FBCFB9',
+        desc: 'Bing answer cards with ACF design system.',
+        colors: [
+          { name: 'Primary', value: '#E68863', light: false },
+          { name: 'Text', value: '#3B230E', light: false },
+          { name: 'Background', value: '#FEF9ED', light: true },
+          { name: 'Border', value: '#E1DBC6', light: true },
+        ],
+        typography: {
+          display: { size: '26px', weight: 400, sample: 'Answer Title' },
+          heading: { size: '18px', weight: 500, sample: 'Card Heading' },
+          body: { size: '14px', weight: 400, sample: 'Concise answer text for quick scanning.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#E68863', color: 'white' },
+          { label: 'Secondary', bg: '#5F4E41', color: 'white' },
+          { label: 'Outline', bg: 'transparent', color: '#5F4E41', border: '#E1DBC6' },
+        ],
+        showcase: `<div class="preview-bing"><div class="search-bar"><span class="search-icon">⌕</span><span class="search-text">What is machine learning?</span></div><div class="answer-card"><div class="answer-header"><div class="answer-icon">◐</div><div><div class="answer-title">Machine Learning</div><div class="answer-subtitle">AI • Computer Science</div></div></div><div class="answer-body">Systems that learn and improve from experience without explicit programming.</div><div class="facts-grid"><div class="fact-item"><div class="fact-label">Type</div><div class="fact-value">AI</div></div><div class="fact-item"><div class="fact-label">Apps</div><div class="fact-value">10K+</div></div><div class="fact-item"><div class="fact-label">Growth</div><div class="fact-value">42%</div></div></div></div></div>`
+      },
+      {
+        id: 'mai-brand',
+        name: 'MAI Brand',
+        icon: '🎨',
+        iconBg: '#FDE095',
+        desc: 'Creative agency. Organic illustration style.',
+        colors: [
+          { name: 'Primary', value: '#E5B85C', light: false },
+          { name: 'Text', value: '#3B230E', light: false },
+          { name: 'Background', value: '#FEF9ED', light: true },
+          { name: 'Secondary', value: '#72675B', light: false },
+        ],
+        typography: {
+          display: { size: '36px', weight: 400, sample: 'Brand Display' },
+          heading: { size: '24px', weight: 400, sample: 'Marketing Title' },
+          body: { size: '16px', weight: 400, sample: 'Engaging copy for brand content.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#E5B85C', color: '#3B230E' },
+          { label: 'Secondary', bg: 'transparent', color: '#E5B85C', border: '#E5B85C' },
+          { label: 'Ghost', bg: 'transparent', color: '#72675B' },
+        ],
+        showcase: `<div class="preview-brand"><div class="brand-title">Build the future<br>with AI</div><div class="brand-subtitle">Empowering creators to build intelligent experiences.</div><a href="#" class="brand-link">Get started</a></div>`
+      }
+    ];
+
+    let currentSkill = skills[0];
+
+    function renderSkills() {
+      document.getElementById('skillsList').innerHTML = skills.map(s => `
+        <div class="skill-item ${s.id === currentSkill.id ? 'active' : ''}" onclick="selectSkill('${s.id}')">
+          <div class="skill-icon" style="background:${s.iconBg}">${s.icon}</div>
+          <div class="skill-info">
+            <div class="skill-name">${s.name}</div>
+            <div class="skill-desc">${s.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderContent() {
+      document.getElementById('headerIcon').textContent = currentSkill.icon;
+      document.getElementById('headerTitle').textContent = currentSkill.name;
+      document.getElementById('headerDesc').textContent = currentSkill.desc.split(',')[0];
+
+      document.getElementById('colorGrid').innerHTML = currentSkill.colors.map(c => `
+        <div class="color-swatch">
+          <div class="color-preview ${c.light ? 'light' : 'dark'}" style="background:${c.value}">${c.value}</div>
+          <div class="color-info"><div class="color-name">${c.name}</div></div>
+        </div>
+      `).join('');
+
+      const t = currentSkill.typography;
+      document.getElementById('typographyContent').innerHTML = `
+        <div class="type-section"><div class="type-meta">Display · ${t.display.size}</div><div class="type-display">${t.display.sample}</div></div>
+        <div class="type-section"><div class="type-meta">Heading · ${t.heading.size}</div><div class="type-heading">${t.heading.sample}</div></div>
+        <div class="type-section"><div class="type-meta">Body · ${t.body.size}</div><div class="type-body">${t.body.sample}</div></div>
+      `;
+
+      document.getElementById('buttonsGrid').innerHTML = currentSkill.buttons.map(b => `
+        <button class="demo-btn" style="background:${b.bg};color:${b.color};${b.border ? 'border:1.5px solid '+b.border : 'border:none'}">${b.label}</button>
+      `).join('');
+
+      document.getElementById('showcaseFrame').innerHTML = currentSkill.showcase;
+    }
+
+    function selectSkill(id) {
+      currentSkill = skills.find(s => s.id === id);
+      renderSkills();
+      renderContent();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    renderSkills();
+    renderContent();
+  </script>
+</body>
+</html>
