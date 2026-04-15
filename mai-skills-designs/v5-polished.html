@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAI Skills — Product design skills for AI agents</title>
+  <style>
+    /* MAI Brand Fonts */
+    @font-face {
+      font-family: 'Bradford';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/BradfordLLWeb-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Bradford';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/BradfordLLWeb-Italic.woff2') format('woff2');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Red Hat Mono';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/RedHatMono-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Red Hat Mono';
+      src: url('https://kunlundesign.github.io/mai-skills-designs/fonts/RedHatMono-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-display: swap;
+    }
+
+    :root {
+      /* MAI Primary Colors - refined with OKLCH-inspired values */
+      --cream-light: #FBF7F0;
+      --cream: #F0E8DA;
+      --cream-dark: #DED4C3;
+      --warm-gray: #6B5F52;
+      --brown: #544639;
+      --dark-brown: #2E1F12;
+      
+      /* MAI Orange Spectrum (accent) */
+      --orange-light: #FAD4C2;
+      --orange: #E07A50;
+      --orange-medium: #C45A32;
+      --orange-dark: #8B3A1A;
+      
+      /* Semantic */
+      --text-primary: var(--dark-brown);
+      --text-secondary: var(--warm-gray);
+      --text-muted: var(--brown);
+      --bg-page: var(--cream-light);
+      --bg-sidebar: var(--cream);
+      --bg-content: #FFFFFF;
+      --border-light: var(--cream-dark);
+      --border-medium: #C9BBA8;
+      --accent: var(--orange-medium);
+      --accent-hover: var(--orange-dark);
+      
+      /* Spacing scale (4pt) */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --space-3xl: 64px;
+      --space-4xl: 96px;
+      
+      /* Transitions */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-fast: 150ms;
+      --duration-normal: 250ms;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Bradford', Georgia, 'Times New Roman', serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.55;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251, 247, 240, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--space-2xl);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: 'Bradford', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: var(--space-xl);
+    }
+    .nav-link {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--duration-fast) var(--ease-out);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+    .nav-link:hover { color: var(--text-primary); }
+
+    /* Hero */
+    .hero {
+      padding: var(--space-4xl) var(--space-2xl) var(--space-3xl);
+      text-align: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+    }
+    .hero h1 {
+      font-family: 'Bradford', serif;
+      font-size: clamp(42px, 6vw, 64px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: var(--space-lg);
+      color: var(--dark-brown);
+    }
+    .hero p {
+      font-family: 'Bradford', serif;
+      font-size: clamp(18px, 2.5vw, 22px);
+      font-weight: 400;
+      color: var(--text-secondary);
+      max-width: 540px;
+      margin: 0 auto var(--space-xl);
+      line-height: 1.45;
+    }
+    .hero-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 14px 28px;
+      border-radius: 6px;
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: all var(--duration-normal) var(--ease-out);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 1px 2px rgba(46, 31, 18, 0.08);
+    }
+    .btn-primary:hover { 
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(196, 90, 50, 0.25);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-medium);
+    }
+    .btn-secondary:hover { 
+      background: var(--cream);
+      border-color: var(--warm-gray);
+    }
+
+    /* Browser Section */
+    .browser-section {
+      padding: 0 var(--space-2xl) var(--space-4xl);
+      max-width: 100%;
+    }
+    .browser {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: var(--bg-content);
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      min-height: 600px;
+      box-shadow: 
+        0 1px 2px rgba(46, 31, 18, 0.04),
+        0 4px 16px rgba(46, 31, 18, 0.06),
+        0 12px 48px rgba(46, 31, 18, 0.08);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+    .section-title {
+      font-family: 'Bradford', serif;
+      font-size: clamp(28px, 4vw, 38px);
+      font-weight: 400;
+      margin-bottom: var(--space-sm);
+      color: var(--dark-brown);
+      letter-spacing: -0.02em;
+    }
+    .section-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 17px;
+      color: var(--text-secondary);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-medium);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-search {
+      padding: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-content);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 12px var(--space-md);
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+    }
+    .search-input:hover {
+      border-color: var(--border-medium);
+    }
+    .sidebar-title {
+      padding: var(--space-lg) var(--space-lg) var(--space-sm);
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .skills-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 var(--space-sm) var(--space-lg);
+    }
+    .skill-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-sm);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+      margin-bottom: 2px;
+    }
+    .skill-item:hover { 
+      background: rgba(84, 70, 57, 0.06);
+    }
+    .skill-item.active { 
+      background: var(--bg-content);
+      box-shadow: 0 1px 3px rgba(46, 31, 18, 0.08);
+    }
+    .skill-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .skill-info { flex: 1; min-width: 0; padding-top: 2px; }
+    .skill-name {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .skill-desc {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-content);
+    }
+    .content-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-content);
+    }
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .header-icon { font-size: 20px; }
+    .header-title {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .header-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border-light);
+      margin: 0 var(--space-sm);
+    }
+    .header-desc {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .header-actions {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px var(--space-md);
+      border-radius: 6px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+      border: none;
+    }
+    .action-btn-save {
+      background: var(--accent);
+      color: white;
+    }
+    .action-btn-save:hover { background: var(--accent-hover); }
+    .action-btn-copy {
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .action-btn-copy:hover { 
+      background: var(--orange-light);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-content);
+    }
+    .tab {
+      padding: var(--space-md) var(--space-lg);
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      border: none;
+      background: none;
+      cursor: pointer;
+      position: relative;
+      transition: color var(--duration-fast) var(--ease-out);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .tab:hover { color: var(--text-primary); }
+    .tab.active {
+      color: var(--text-primary);
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: var(--space-lg);
+      right: var(--space-lg);
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px 1px 0 0;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      overflow: hidden;
+    }
+    .tab-content {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .tab-content.active { display: block; }
+
+    /* Colors Tab */
+    .colors-content { padding: var(--space-xl); }
+    .colors-title {
+      font-family: 'Bradford', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: var(--space-sm);
+      color: var(--dark-brown);
+      letter-spacing: -0.01em;
+    }
+    .colors-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-xl);
+      line-height: 1.5;
+    }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-md);
+      max-width: 620px;
+    }
+    .color-swatch {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: box-shadow var(--duration-fast) var(--ease-out);
+    }
+    .color-swatch:hover {
+      box-shadow: 0 4px 12px rgba(46, 31, 18, 0.1);
+    }
+    .color-preview {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .color-preview.light { color: rgba(46, 31, 18, 0.5); }
+    .color-preview.dark { color: rgba(251, 247, 240, 0.9); }
+    .color-info {
+      padding: var(--space-sm) var(--space-sm);
+      background: var(--cream-light);
+    }
+    .color-name {
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    /* Typography Tab */
+    .typography-content { padding: var(--space-xl); }
+    .type-section {
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .type-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .type-meta {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .type-display { 
+      font-family: 'Bradford', serif;
+      font-size: 44px; 
+      font-weight: 400; 
+      line-height: 1.1; 
+      color: var(--dark-brown);
+      letter-spacing: -0.02em;
+    }
+    .type-heading { 
+      font-family: 'Bradford', serif;
+      font-size: 26px; 
+      font-weight: 400; 
+      line-height: 1.25; 
+      color: var(--brown);
+    }
+    .type-body { 
+      font-family: 'Bradford', serif;
+      font-size: 16px; 
+      color: var(--text-secondary); 
+      line-height: 1.6; 
+      max-width: 480px; 
+    }
+
+    /* Buttons Tab */
+    .buttons-content { padding: var(--space-xl); }
+    .buttons-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    .demo-btn {
+      padding: 12px var(--space-lg);
+      border-radius: 6px;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+    .demo-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Cards Tab */
+    .showcase-content {
+      padding: var(--space-lg);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream-light);
+    }
+    .showcase-frame {
+      width: 100%;
+      max-width: 580px;
+      background: var(--bg-content);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 
+        0 1px 2px rgba(46, 31, 18, 0.04),
+        0 4px 16px rgba(46, 31, 18, 0.08);
+    }
+
+    /* Showcase Previews - refined */
+    .preview-universal {
+      padding: var(--space-lg);
+      background: var(--cream-light);
+      min-height: 320px;
+    }
+    .preview-universal .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+    .preview-universal .dash-title {
+      font-family: 'Bradford', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-universal .dash-btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px var(--space-md);
+      border-radius: 6px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+    }
+    .preview-universal .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .preview-universal .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: var(--space-md);
+      border: 1px solid var(--border-light);
+    }
+    .preview-universal .stat-label {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .preview-universal .stat-value {
+      font-family: 'Bradford', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-top: 4px;
+      letter-spacing: -0.01em;
+    }
+    .preview-universal .stat-change {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .preview-universal .chart-area {
+      background: white;
+      border-radius: 8px;
+      padding: var(--space-md);
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      border: 1px solid var(--border-light);
+    }
+    .preview-universal .chart-bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      opacity: 0.85;
+    }
+    .preview-universal .chart-bar:nth-child(odd) {
+      opacity: 1;
+    }
+
+    .preview-mai-ui {
+      padding: var(--space-lg);
+      background: var(--cream-light);
+      min-height: 320px;
+    }
+    .preview-mai-ui .settings-title {
+      font-family: 'Bradford', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-bottom: var(--space-lg);
+    }
+    .preview-mai-ui .settings-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .preview-mai-ui .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--cream);
+    }
+    .preview-mai-ui .setting-item:last-child { border-bottom: none; }
+    .preview-mai-ui .setting-label {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--brown);
+    }
+    .preview-mai-ui .toggle {
+      width: 48px;
+      height: 28px;
+      background: var(--cream-dark);
+      border-radius: 14px;
+      position: relative;
+      transition: background var(--duration-fast) var(--ease-out);
+    }
+    .preview-mai-ui .toggle.on { background: var(--accent); }
+    .preview-mai-ui .toggle::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      box-shadow: 0 1px 3px rgba(46, 31, 18, 0.2);
+      transition: left var(--duration-fast) var(--ease-out);
+    }
+    .preview-mai-ui .toggle.on::after { left: 22px; }
+
+    .preview-copilot {
+      padding: var(--space-md);
+      background: var(--cream-light);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-copilot .chat-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .preview-copilot .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--accent);
+    }
+    .preview-copilot .chat-title {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-copilot .chat-status {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--warm-gray);
+    }
+    .preview-copilot .chat-messages {
+      flex: 1;
+      padding: var(--space-md) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .preview-copilot .msg {
+      max-width: 85%;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 12px;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .preview-copilot .msg-ai {
+      background: white;
+      color: var(--brown);
+      border: 1px solid var(--border-light);
+      border-bottom-left-radius: 4px;
+    }
+    .preview-copilot .msg-user {
+      background: var(--accent);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    .preview-copilot .chat-input {
+      background: white;
+      border-radius: 12px;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      border: 1px solid var(--border-light);
+    }
+    .preview-copilot .input-text {
+      flex: 1;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--warm-gray);
+    }
+    .preview-copilot .send-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .preview-fluent {
+      padding: var(--space-md);
+      background: white;
+      min-height: 320px;
+    }
+    .preview-fluent .fl-toolbar {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .preview-fluent .fl-btn {
+      background: var(--cream-light);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 8px var(--space-md);
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--brown);
+    }
+    .preview-fluent .fl-btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .preview-fluent .fl-table {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    .preview-fluent .fl-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 90px 80px;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--cream);
+      font-family: 'Bradford', serif;
+      font-size: 13px;
+      align-items: center;
+    }
+    .preview-fluent .fl-row:last-child { border-bottom: none; }
+    .preview-fluent .fl-header {
+      background: var(--cream-light);
+      font-family: 'Red Hat Mono', monospace;
+      font-weight: 500;
+      color: var(--warm-gray);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .preview-fluent .fl-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border-medium);
+      border-radius: 4px;
+    }
+    .preview-fluent .fl-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .preview-fluent .fl-status-active { background: var(--orange-light); color: var(--orange-dark); }
+    .preview-fluent .fl-status-draft { background: var(--cream); color: var(--warm-gray); }
+
+    .preview-bing {
+      padding: var(--space-lg);
+      background: var(--cream-light);
+      min-height: 320px;
+    }
+    .preview-bing .search-bar {
+      background: white;
+      border-radius: 24px;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(46, 31, 18, 0.06);
+    }
+    .preview-bing .search-icon { color: var(--warm-gray); font-size: 14px; }
+    .preview-bing .search-text {
+      flex: 1;
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--brown);
+    }
+    .preview-bing .answer-card {
+      background: white;
+      border-radius: 12px;
+      padding: var(--space-lg);
+      border: 1px solid var(--border-light);
+    }
+    .preview-bing .answer-header {
+      display: flex;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    .preview-bing .answer-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    .preview-bing .answer-title {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--dark-brown);
+    }
+    .preview-bing .answer-subtitle {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 11px;
+      color: var(--warm-gray);
+    }
+    .preview-bing .answer-body {
+      font-family: 'Bradford', serif;
+      font-size: 14px;
+      color: var(--brown);
+      line-height: 1.55;
+      margin-bottom: var(--space-md);
+    }
+    .preview-bing .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+    }
+    .preview-bing .fact-item {
+      background: var(--cream-light);
+      padding: var(--space-sm);
+      border-radius: 8px;
+    }
+    .preview-bing .fact-label {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 9px;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .preview-bing .fact-value {
+      font-family: 'Bradford', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      margin-top: 2px;
+    }
+
+    .preview-brand {
+      padding: var(--space-2xl) var(--space-lg);
+      background: var(--cream);
+      min-height: 320px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .preview-brand .brand-title {
+      font-family: 'Bradford', serif;
+      font-size: 34px;
+      font-weight: 400;
+      color: var(--dark-brown);
+      line-height: 1.12;
+      margin-bottom: var(--space-md);
+      letter-spacing: -0.02em;
+    }
+    .preview-brand .brand-subtitle {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--warm-gray);
+      max-width: 320px;
+      margin: 0 auto var(--space-lg);
+      line-height: 1.55;
+    }
+    .preview-brand .brand-link {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 400;
+    }
+    .preview-brand .brand-link:hover { text-decoration: underline; }
+    .preview-brand .brand-link::after { content: ' →'; }
+
+    /* Why Section */
+    .why-section {
+      padding: var(--space-4xl) var(--space-2xl);
+      background: var(--bg-sidebar);
+    }
+    .why-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+    .why-card {
+      text-align: center;
+      padding: var(--space-lg);
+    }
+    .why-icon {
+      font-size: 36px;
+      margin-bottom: var(--space-md);
+    }
+    .why-name {
+      font-family: 'Bradford', serif;
+      font-size: 19px;
+      font-weight: 400;
+      margin-bottom: var(--space-sm);
+      color: var(--dark-brown);
+    }
+    .why-desc {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* Quick Start Section */
+    .quickstart-section {
+      padding: var(--space-4xl) var(--space-2xl);
+      background: var(--bg-page);
+    }
+    .quickstart-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .quickstart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+    .quickstart-card {
+      background: var(--bg-content);
+      border-radius: 12px;
+      padding: var(--space-xl);
+      border: 1px solid var(--border-light);
+      transition: box-shadow var(--duration-normal) var(--ease-out);
+    }
+    .quickstart-card:hover {
+      box-shadow: 0 8px 32px rgba(46, 31, 18, 0.1);
+    }
+    .quickstart-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--cream);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      margin-bottom: var(--space-lg);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--brown);
+    }
+    .quickstart-badge-icon {
+      font-size: 14px;
+    }
+    .quickstart-title {
+      font-family: 'Bradford', serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: var(--space-sm);
+      color: var(--dark-brown);
+      letter-spacing: -0.01em;
+    }
+    .quickstart-desc {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+    .quickstart-links {
+      display: flex;
+      gap: var(--space-lg);
+    }
+    .quickstart-link {
+      font-family: 'Bradford', serif;
+      font-size: 15px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .quickstart-link:hover { text-decoration: underline; }
+    .quickstart-link::after { content: ' →'; }
+    .quickstart-preview {
+      margin-top: var(--space-lg);
+      background: var(--cream);
+      border-radius: 8px;
+      padding: var(--space-md);
+    }
+    .quickstart-code {
+      background: var(--dark-brown);
+      border-radius: 8px;
+      padding: var(--space-md) var(--space-lg);
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--cream);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .quickstart-code .comment { color: var(--warm-gray); }
+    .quickstart-code .keyword { color: var(--orange); }
+    .quickstart-code .string { color: var(--orange-light); }
+
+    /* Team Section */
+    .team-section {
+      padding: var(--space-4xl) var(--space-2xl);
+      background: var(--bg-sidebar);
+      text-align: center;
+    }
+    .team-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3xl);
+      flex-wrap: wrap;
+    }
+    .team-member {
+      text-align: center;
+    }
+    .team-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 12px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-md);
+      font-size: 36px;
+      color: var(--warm-gray);
+      overflow: hidden;
+    }
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-name {
+      font-family: 'Bradford', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--brown);
+    }
+
+    /* Footer */
+    .footer {
+      padding: var(--space-xl) var(--space-2xl);
+      text-align: center;
+      background: var(--bg-page);
+      border-top: 1px solid var(--border-light);
+    }
+    .footer-text {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .footer-links {
+      margin-top: var(--space-sm);
+    }
+    .footer-link {
+      font-family: 'Red Hat Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 var(--space-md);
+    }
+    .footer-link:hover { text-decoration: underline; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .browser { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .why-grid { grid-template-columns: 1fr; }
+      .quickstart-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 38px; }
+      .section-title { font-size: 28px; }
+      .nav-inner, .hero, .browser-section, .why-section, .quickstart-section, .team-section, .footer {
+        padding-left: var(--space-lg);
+        padding-right: var(--space-lg);
+      }
+      .team-grid { gap: var(--space-xl); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">MAI Skills</a>
+      <div class="nav-links">
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#quickstart" class="nav-link">Quick Start</a>
+        <a href="#team" class="nav-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">AI Design Skills</div>
+    <h1>Product design skills<br>for AI agents</h1>
+    <p>Generate high-quality UIs aligned with Microsoft AI design standards</p>
+    <div class="hero-actions">
+      <a href="#skills" class="btn btn-primary">Browse Skills</a>
+      <a href="#" class="btn btn-secondary">View Repository</a>
+    </div>
+  </section>
+
+  <!-- Skills Browser -->
+  <section class="browser-section" id="skills">
+    <div class="browser">
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <div class="search-input">
+            <span>⌕</span>
+            <span>Search designs</span>
+          </div>
+        </div>
+        <div class="sidebar-title">6 Design Systems</div>
+        <div class="skills-list" id="skillsList"></div>
+      </aside>
+
+      <div class="main-content">
+        <header class="content-header">
+          <div class="header-info">
+            <span class="header-icon" id="headerIcon">🏠</span>
+            <span class="header-title" id="headerTitle">MAI Universal</span>
+            <span class="header-divider"></span>
+            <span class="header-desc" id="headerDesc">Warm terracotta accent</span>
+          </div>
+          <div class="header-actions">
+            <button class="action-btn action-btn-copy">Copy SKILL.md</button>
+            <button class="action-btn action-btn-save">✦ Save</button>
+          </div>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="colors" onclick="switchTab('colors')">Colors</button>
+          <button class="tab" data-tab="typography" onclick="switchTab('typography')">Typography</button>
+          <button class="tab" data-tab="buttons" onclick="switchTab('buttons')">Buttons</button>
+          <button class="tab" data-tab="cards" onclick="switchTab('cards')">Preview</button>
+        </div>
+
+        <div class="content-area">
+          <div class="tab-content active" id="tab-colors">
+            <div class="colors-content">
+              <h2 class="colors-title">Design System<br><em>Inspired by</em> <span style="color:var(--accent)">MAI</span></h2>
+              <p class="colors-subtitle">Every color, font, and component — connected in one workspace.</p>
+              <div class="color-grid" id="colorGrid"></div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-typography">
+            <div class="typography-content" id="typographyContent"></div>
+          </div>
+          <div class="tab-content" id="tab-buttons">
+            <div class="buttons-content">
+              <div class="buttons-grid" id="buttonsGrid"></div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-cards">
+            <div class="showcase-content">
+              <div class="showcase-frame" id="showcaseFrame"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why MAI Skills -->
+  <section class="why-section" id="why">
+    <div class="why-inner">
+      <div class="section-header">
+        <h2 class="section-title">Why MAI Skills?</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">✦</div>
+          <div class="why-name">Production quality</div>
+          <div class="why-desc">Generate clean, maintainable code that follows your design system perfectly.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">◐</div>
+          <div class="why-name">Fully customizable</div>
+          <div class="why-desc">Skills adapt to your tokens, components, and brand guidelines.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">→</div>
+          <div class="why-name">Developer ready</div>
+          <div class="why-desc">Easy to integrate with your codebase and CI/CD pipelines.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="quickstart-section" id="quickstart">
+    <div class="quickstart-inner">
+      <div class="section-header">
+        <h2 class="section-title">Quick start</h2>
+        <p class="section-subtitle">Get started in minutes with your preferred workflow.</p>
+      </div>
+      <div class="quickstart-grid">
+        <div class="quickstart-card">
+          <div class="quickstart-badge">
+            <span class="quickstart-badge-icon">⌘</span>
+            For AI Coding Agents
+          </div>
+          <h3 class="quickstart-title">VS Code or Claude</h3>
+          <p class="quickstart-desc">Load design skills to VS Code or Claude. Define the structure with the logic layer, then build with the vision layer.</p>
+          <div class="quickstart-links">
+            <a href="#" class="quickstart-link">Download Skills</a>
+          </div>
+          <div class="quickstart-preview">
+            <div class="quickstart-code">
+              <span class="comment"># Add to your project</span><br>
+              <span class="keyword">cp</span> skills/ <span class="string">./your-project/</span><br><br>
+              <span class="comment"># Reference in prompts</span><br>
+              <span class="string">"Use MAI Universal design system"</span>
+            </div>
+          </div>
+        </div>
+        <div class="quickstart-card">
+          <div class="quickstart-badge">
+            <span class="quickstart-badge-icon">◎</span>
+            For Figma Make
+          </div>
+          <h3 class="quickstart-title">Figma Templates</h3>
+          <p class="quickstart-desc">Import MAI Design Skills guidelines into your Figma/FigJam file. AI automatically designs using your defined logic and vision.</p>
+          <div class="quickstart-links">
+            <a href="#" class="quickstart-link">Copy Guidelines</a>
+            <a href="#" class="quickstart-link">Try Templates</a>
+          </div>
+          <div class="quickstart-preview">
+            <div class="quickstart-code">
+              <span class="comment">// Figma MCP connection</span><br>
+              <span class="keyword">import</span> { mai } <span class="keyword">from</span> <span class="string">'@mai/figma'</span><br><br>
+              mai.<span class="keyword">applyDesignSystem</span>(<span class="string">'universal'</span>)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section" id="team">
+    <div class="team-inner">
+      <div class="section-header">
+        <h2 class="section-title">Team</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Elon Zhang</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Yu He</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Xiaoting Shao</div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">◉</div>
+          <div class="team-name">Kunlun Liu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-text">© 2025 Microsoft AI Design Skills</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">GitHub</a>
+      <a href="#" class="footer-link">Documentation</a>
+    </div>
+  </footer>
+
+  <script>
+    const skills = [
+      {
+        id: 'mai-universal',
+        name: 'MAI Universal',
+        icon: '🏠',
+        iconBg: '#F0E8DA',
+        desc: 'Warm terracotta accent, clean editorial style.',
+        colors: [
+          { name: 'Brand', value: '#2E1F12', light: false },
+          { name: 'Accent', value: '#C45A32', light: false },
+          { name: 'Background', value: '#FBF7F0', light: true },
+          { name: 'Border', value: '#DED4C3', light: true },
+        ],
+        typography: {
+          display: { size: '44px', weight: 400, sample: 'Bradford Display' },
+          heading: { size: '26px', weight: 400, sample: 'Editorial Warmth' },
+          body: { size: '16px', weight: 400, sample: 'Body text with comfortable line height and warm, human tone.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#C45A32', color: 'white' },
+          { label: 'Secondary', bg: 'transparent', color: '#544639', border: '#C9BBA8' },
+          { label: 'Ghost', bg: 'transparent', color: '#C45A32' },
+        ],
+        showcase: `<div class="preview-universal"><div class="dash-header"><div class="dash-title">Analytics</div><button class="dash-btn">+ New</button></div><div class="dash-grid"><div class="stat-card"><div class="stat-label">Users</div><div class="stat-value">24.5K</div><div class="stat-change">↑ 12.5%</div></div><div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$84K</div><div class="stat-change">↑ 8.3%</div></div><div class="stat-card"><div class="stat-label">Sessions</div><div class="stat-value">1,429</div><div class="stat-change">↑ 23%</div></div></div><div class="chart-area"><div class="chart-bar" style="height:40%"></div><div class="chart-bar" style="height:65%"></div><div class="chart-bar" style="height:45%"></div><div class="chart-bar" style="height:80%"></div><div class="chart-bar" style="height:55%"></div><div class="chart-bar" style="height:70%"></div><div class="chart-bar" style="height:50%"></div><div class="chart-bar" style="height:85%"></div></div></div>`
+      },
+      {
+        id: 'mai-ui',
+        name: 'MAI UI',
+        icon: '🧩',
+        iconBg: '#D7E6D6',
+        desc: 'Production web components with semantic tokens.',
+        colors: [
+          { name: 'Primary', value: '#5A7A62', light: false },
+          { name: 'Text', value: '#2E1F12', light: false },
+          { name: 'Background', value: '#FBF7F0', light: true },
+          { name: 'Stroke', value: '#DED4C3', light: true },
+        ],
+        typography: {
+          display: { size: '38px', weight: 400, sample: 'Natural Display' },
+          heading: { size: '24px', weight: 400, sample: 'Calm Professional' },
+          body: { size: '15px', weight: 400, sample: 'Warm neutral tones with gentle accent hues.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#5A7A62', color: 'white' },
+          { label: 'Secondary', bg: '#8FB5A8', color: '#2E4D3A' },
+          { label: 'Neutral', bg: '#6B5F52', color: 'white' },
+        ],
+        showcase: `<div class="preview-mai-ui"><div class="settings-title">Settings</div><div class="settings-card"><div class="setting-item"><span class="setting-label">Dark Mode</span><div class="toggle"></div></div><div class="setting-item"><span class="setting-label">Notifications</span><div class="toggle on"></div></div><div class="setting-item"><span class="setting-label">Auto-save</span><div class="toggle on"></div></div><div class="setting-item"><span class="setting-label">Analytics</span><div class="toggle"></div></div></div></div>`
+      },
+      {
+        id: 'mai-copilot',
+        name: 'MAI Copilot',
+        icon: '✨',
+        iconBg: '#CFE6E6',
+        desc: 'Copilot design patterns with Tailwind CSS.',
+        colors: [
+          { name: 'Page', value: '#FBF7F0', light: true },
+          { name: 'Text', value: '#2E1F12', light: false },
+          { name: 'Accent', value: '#4A7A7A', light: false },
+          { name: 'Surface', value: '#FFFFFF', light: true },
+        ],
+        typography: {
+          display: { size: '34px', weight: 400, sample: 'Copilot Display' },
+          heading: { size: '22px', weight: 400, sample: 'Chat Title' },
+          body: { size: '14px', weight: 400, sample: 'Friendly message text with warm neutrals.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#4A7A7A', color: 'white' },
+          { label: 'Send', bg: '#4A7A7A', color: 'white' },
+          { label: 'Ghost', bg: 'transparent', color: '#4A7A7A', border: '#4A7A7A' },
+        ],
+        showcase: `<div class="preview-copilot"><div class="chat-header"><div class="chat-avatar"></div><div><div class="chat-title">Copilot</div><div class="chat-status">Ready to help</div></div></div><div class="chat-messages"><div class="msg msg-ai">Hi! How can I help you today?</div><div class="msg msg-user">Write a proposal</div><div class="msg msg-ai">Sure! Let me ask a few questions...</div></div><div class="chat-input"><span class="input-text">Ask anything...</span><div class="send-btn">↑</div></div></div>`
+      },
+      {
+        id: 'fluent',
+        name: 'Fluent UI',
+        icon: '💠',
+        iconBg: '#E6CAD1',
+        desc: 'Fluent UI React v9 for M365 Copilot.',
+        colors: [
+          { name: 'Brand', value: '#7A4A5A', light: false },
+          { name: 'Text', value: '#2E1F12', light: false },
+          { name: 'Background', value: '#FFFFFF', light: true },
+          { name: 'Surface', value: '#FBF7F0', light: true },
+        ],
+        typography: {
+          display: { size: '32px', weight: 400, sample: 'Fluent Display' },
+          heading: { size: '22px', weight: 500, sample: 'Section Title' },
+          body: { size: '14px', weight: 400, sample: 'Enterprise body text with clear hierarchy.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#7A4A5A', color: 'white' },
+          { label: 'Secondary', bg: 'transparent', color: '#544639', border: '#DED4C3' },
+          { label: 'Subtle', bg: 'transparent', color: '#6B5F52' },
+        ],
+        showcase: `<div class="preview-fluent"><div class="fl-toolbar"><button class="fl-btn fl-btn-primary">+ New</button><button class="fl-btn">Upload</button><button class="fl-btn">More</button></div><div class="fl-table"><div class="fl-row fl-header"><div class="fl-checkbox"></div><div>Name</div><div>Modified</div><div>Status</div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Proposal.docx</div><div>Today</div><div><span class="fl-status fl-status-active">Active</span></div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Budget.xlsx</div><div>Yesterday</div><div><span class="fl-status fl-status-draft">Draft</span></div></div><div class="fl-row"><div class="fl-checkbox"></div><div>Notes.pdf</div><div>Mar 12</div><div><span class="fl-status fl-status-active">Active</span></div></div></div></div>`
+      },
+      {
+        id: 'bing',
+        name: 'Bing ACF',
+        icon: '🔍',
+        iconBg: '#FAD4C2',
+        desc: 'Bing answer cards with ACF design system.',
+        colors: [
+          { name: 'Primary', value: '#E07A50', light: false },
+          { name: 'Text', value: '#2E1F12', light: false },
+          { name: 'Background', value: '#FBF7F0', light: true },
+          { name: 'Border', value: '#DED4C3', light: true },
+        ],
+        typography: {
+          display: { size: '28px', weight: 400, sample: 'Answer Title' },
+          heading: { size: '20px', weight: 500, sample: 'Card Heading' },
+          body: { size: '14px', weight: 400, sample: 'Concise answer text for quick scanning.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#E07A50', color: 'white' },
+          { label: 'Secondary', bg: '#544639', color: 'white' },
+          { label: 'Outline', bg: 'transparent', color: '#544639', border: '#DED4C3' },
+        ],
+        showcase: `<div class="preview-bing"><div class="search-bar"><span class="search-icon">⌕</span><span class="search-text">What is machine learning?</span></div><div class="answer-card"><div class="answer-header"><div class="answer-icon">◐</div><div><div class="answer-title">Machine Learning</div><div class="answer-subtitle">AI • Computer Science</div></div></div><div class="answer-body">Systems that learn and improve from experience without explicit programming.</div><div class="facts-grid"><div class="fact-item"><div class="fact-label">Type</div><div class="fact-value">AI</div></div><div class="fact-item"><div class="fact-label">Apps</div><div class="fact-value">10K+</div></div><div class="fact-item"><div class="fact-label">Growth</div><div class="fact-value">42%</div></div></div></div></div>`
+      },
+      {
+        id: 'mai-brand',
+        name: 'MAI Brand',
+        icon: '🎨',
+        iconBg: '#FDE095',
+        desc: 'Creative agency. Organic illustration style.',
+        colors: [
+          { name: 'Primary', value: '#D4A84A', light: false },
+          { name: 'Text', value: '#2E1F12', light: false },
+          { name: 'Background', value: '#FBF7F0', light: true },
+          { name: 'Secondary', value: '#6B5F52', light: false },
+        ],
+        typography: {
+          display: { size: '38px', weight: 400, sample: 'Brand Display' },
+          heading: { size: '26px', weight: 400, sample: 'Marketing Title' },
+          body: { size: '16px', weight: 400, sample: 'Engaging copy for brand content.' },
+        },
+        buttons: [
+          { label: 'Primary', bg: '#D4A84A', color: '#2E1F12' },
+          { label: 'Secondary', bg: 'transparent', color: '#D4A84A', border: '#D4A84A' },
+          { label: 'Ghost', bg: 'transparent', color: '#6B5F52' },
+        ],
+        showcase: `<div class="preview-brand"><div class="brand-title">Build the future<br>with AI</div><div class="brand-subtitle">Empowering creators to build intelligent experiences.</div><a href="#" class="brand-link">Get started</a></div>`
+      }
+    ];
+
+    let currentSkill = skills[0];
+
+    function renderSkills() {
+      document.getElementById('skillsList').innerHTML = skills.map(s => `
+        <div class="skill-item ${s.id === currentSkill.id ? 'active' : ''}" onclick="selectSkill('${s.id}')">
+          <div class="skill-icon" style="background:${s.iconBg}">${s.icon}</div>
+          <div class="skill-info">
+            <div class="skill-name">${s.name}</div>
+            <div class="skill-desc">${s.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderContent() {
+      document.getElementById('headerIcon').textContent = currentSkill.icon;
+      document.getElementById('headerTitle').textContent = currentSkill.name;
+      document.getElementById('headerDesc').textContent = currentSkill.desc.split(',')[0];
+
+      document.getElementById('colorGrid').innerHTML = currentSkill.colors.map(c => `
+        <div class="color-swatch">
+          <div class="color-preview ${c.light ? 'light' : 'dark'}" style="background:${c.value}">${c.value}</div>
+          <div class="color-info"><div class="color-name">${c.name}</div></div>
+        </div>
+      `).join('');
+
+      const t = currentSkill.typography;
+      document.getElementById('typographyContent').innerHTML = `
+        <div class="type-section"><div class="type-meta">Display · ${t.display.size}</div><div class="type-display">${t.display.sample}</div></div>
+        <div class="type-section"><div class="type-meta">Heading · ${t.heading.size}</div><div class="type-heading">${t.heading.sample}</div></div>
+        <div class="type-section"><div class="type-meta">Body · ${t.body.size}</div><div class="type-body">${t.body.sample}</div></div>
+      `;
+
+      document.getElementById('buttonsGrid').innerHTML = currentSkill.buttons.map(b => `
+        <button class="demo-btn" style="background:${b.bg};color:${b.color};${b.border ? 'border:1.5px solid '+b.border : 'border:none'}">${b.label}</button>
+      `).join('');
+
+      document.getElementById('showcaseFrame').innerHTML = currentSkill.showcase;
+    }
+
+    function selectSkill(id) {
+      currentSkill = skills.find(s => s.id === id);
+      renderSkills();
+      renderContent();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    renderSkills();
+    renderContent();
+  </script>
+</body>
+</html>
