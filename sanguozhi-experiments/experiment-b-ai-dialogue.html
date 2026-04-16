@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三顾茅庐 · AI 对话实验</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    /* 完全复用原版色彩系统 */
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --text-dim: #6a6055;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 实验标签 */
+    .experiment-badge {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-red);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      z-index: 1000;
+    }
+
+    /* 返回按钮 */
+    .back-link {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.3s;
+      z-index: 1000;
+    }
+
+    .back-link:hover {
+      color: var(--accent-gold);
+    }
+
+    /* 主布局 */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 5rem 1rem 1rem;
+    }
+
+    /* 场景介绍 */
+    .scene-intro {
+      text-align: center;
+      padding: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .scene-intro .location {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-intro .title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-intro .desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* 角色选择 */
+    .character-select {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .character-btn {
+      padding: 0.8rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .character-btn:hover,
+    .character-btn.active {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+
+    .character-btn .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* 对话区域 */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      display: flex;
+      gap: 0.75rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .message.user .avatar {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+
+    .message .content {
+      max-width: 70%;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      line-height: 1.8;
+    }
+
+    .message.user .content {
+      background: rgba(90, 138, 90, 0.15);
+      border-color: rgba(90, 138, 90, 0.3);
+    }
+
+    .message .speaker-name {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .message.user .speaker-name {
+      color: var(--accent-green);
+      text-align: right;
+    }
+
+    .message .text {
+      font-size: 1rem;
+    }
+
+    /* 输入区域 */
+    .chat-input-area {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: none;
+      min-height: 50px;
+      max-height: 150px;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .send-btn {
+      padding: 1rem 1.5rem;
+      background: var(--accent-gold);
+      border: none;
+      color: var(--bg-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .send-btn:hover {
+      background: #d4b06a;
+    }
+
+    .send-btn:disabled {
+      background: var(--text-dim);
+      cursor: not-allowed;
+    }
+
+    /* 快捷回复 */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .quick-reply-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quick-reply-btn:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    /* 正在输入指示器 */
+    .typing-indicator {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.5rem;
+    }
+
+    .typing-indicator .dots {
+      display: flex;
+      gap: 4px;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .typing-indicator .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator .dot:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 系统消息 */
+    .system-message {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* 上下文面板 */
+    .context-panel {
+      position: fixed;
+      bottom: 0;
+      right: 1rem;
+      width: 250px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      font-size: 0.75rem;
+      transform: translateY(calc(100% - 40px));
+      transition: transform 0.3s;
+    }
+
+    .context-panel:hover {
+      transform: translateY(0);
+    }
+
+    .context-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      color: var(--accent-gold);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .context-content {
+      padding: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .context-item {
+      margin-bottom: 0.75rem;
+    }
+
+    .context-item label {
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .context-item .value {
+      color: var(--text-primary);
+    }
+
+    /* 模拟 API 状态 */
+    .api-notice {
+      background: rgba(179, 60, 60, 0.1);
+      border: 1px solid rgba(179, 60, 60, 0.3);
+      padding: 1rem;
+      margin: 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--accent-red);
+    }
+  </style>
+</head>
+<body>
+  <div class="experiment-badge">实验 B · AI 对话游戏</div>
+  <a href="../sanguozhi/" class="back-link">← 返回三国志</a>
+
+  <div class="chat-container">
+    <!-- 场景介绍 -->
+    <div class="scene-intro">
+      <div class="location">襄阳 · 隆中 · 草庐之内</div>
+      <div class="title">与孔明对谈</div>
+      <div class="desc">
+        你是刘备，刚刚踏入卧龙岗的草庐。诸葛亮坐在对面，等待你开口。<br>
+        你可以自由对话，询问天下大势，或谈论人生抱负。
+      </div>
+    </div>
+
+    <!-- 角色选择 -->
+    <div class="character-select">
+      <button class="character-btn active" onclick="selectCharacter('zhuge')">
+        <span class="avatar">🪶</span>
+        <span>诸葛亮</span>
+      </button>
+      <button class="character-btn" onclick="selectCharacter('guan')">
+        <span class="avatar">⚔️</span>
+        <span>关羽</span>
+      </button>
+      <button class="character-btn" onclick="selectCharacter('zhang')">
+        <span class="avatar">🔱</span>
+        <span>张飞</span>
+      </button>
+    </div>
+
+    <!-- API 提示 -->
+    <div class="api-notice">
+      ⚠️ 这是实验原型。真实版本需要接入 LLM API（如 Claude/GPT）。<br>
+      当前使用预设回复模拟 AI 对话体验。
+    </div>
+
+    <!-- 对话区域 -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="system-message">
+        — 诸葛亮正在等待你开口 —
+      </div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="chat-input-area">
+      <div class="input-wrapper">
+        <textarea 
+          class="chat-input" 
+          id="chatInput" 
+          placeholder="以刘备的身份说话..."
+          onkeydown="handleKeydown(event)"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+      </div>
+      <div class="quick-replies">
+        <button class="quick-reply-btn" onclick="quickReply('先生久居山野，可知天下大势？')">询问天下大势</button>
+        <button class="quick-reply-btn" onclick="quickReply('备虽不才，愿兴复汉室。先生可愿相助？')">请求出山</button>
+        <button class="quick-reply-btn" onclick="quickReply('曹操势大，孙权据江东，备该何去何从？')">问战略方向</button>
+        <button class="quick-reply-btn" onclick="quickReply('先生以为，何为明主？')">论明主之道</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 上下文面板 -->
+  <div class="context-panel">
+    <div class="context-header">
+      <span>🎭 AI 上下文</span>
+      <span style="font-size: 0.6rem; color: var(--text-dim);">悬停展开</span>
+    </div>
+    <div class="context-content">
+      <div class="context-item">
+        <label>当前角色</label>
+        <div class="value" id="currentCharacter">诸葛亮 (孔明)</div>
+      </div>
+      <div class="context-item">
+        <label>场景</label>
+        <div class="value">建安十二年 · 隆中草庐</div>
+      </div>
+      <div class="context-item">
+        <label>玩家身份</label>
+        <div class="value">刘备 (玄德)</div>
+      </div>
+      <div class="context-item">
+        <label>对话轮数</label>
+        <div class="value" id="turnCount">0</div>
+      </div>
+      <div class="context-item">
+        <label>Memory (关键信息)</label>
+        <div class="value" id="memoryList" style="font-size: 0.7rem; color: var(--text-secondary);">
+          尚无记录
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 游戏状态
+    const state = {
+      currentCharacter: 'zhuge',
+      turnCount: 0,
+      memory: [],
+      conversationHistory: []
+    };
+
+    // 角色配置
+    const characters = {
+      zhuge: {
+        name: '诸葛亮',
+        avatar: '🪶',
+        personality: '智慧、深思、淡泊',
+        systemPrompt: `你是诸葛亮，字孔明，号卧龙。你隐居隆中，虽身在草庐，心系天下。
+你学识渊博，精通兵法谋略，对天下大势有独到见解。
+你说话文雅，常引用经典，但也能直言利害。
+你正在观察刘备是否值得追随。
+保持角色一致性，用古文风格回应。`,
+        responses: {
+          '天下': '将军所问，正是亮日夜思索之事。今曹操已拥百万之众，挟天子以令诸侯，此诚不可与之争锋。孙权据有江东，国险而民附，可用为援而不可图也。唯有荆、益二州，乃用武之地，将军若能取之，霸业可期。',
+          '出山': '亮本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。将军不以亮卑鄙，三顾草庐之中，咨以当世之事，亮敢不竭股肱之力，效犬马之劳？只是...将军果真不惧前路艰险？',
+          '曹操': '曹孟德，治世之能臣，乱世之奸雄也。其人擅兵，更善用人。然其名为汉相，实为汉贼，天下有识之士皆耻与之为伍。将军既为汉室宗亲，正可举义旗以讨之。',
+          '明主': '明主者，知人善任，虚怀若谷，能屈能伸。昔高祖以亭长之身而得天下，非独勇武，实因能用韩、张、萧何之辈。将军仁德之名，播于四海，若能礼贤下士，何愁大业不成？',
+          'default': '将军此言，发人深省。亮虽愚钝，愿闻其详。'
+        }
+      },
+      guan: {
+        name: '关羽',
+        avatar: '⚔️',
+        personality: '忠义、高傲、沉稳',
+        systemPrompt: `你是关羽，字云长。你是刘备的结义兄弟，忠义无双。
+你武艺超群，读《春秋》明大义。你说话不多，但每句都掷地有声。
+你对大哥刘备忠心耿耿，对敌人则傲气凌人。
+保持角色一致性，展现关公的威严与忠义。`,
+        responses: {
+          '天下': '大哥，以你之德，天下英雄谁人不服？曹操虽强，不过汉贼耳。云长愿为大哥开路，斩尽奸佞！',
+          '出山': '大哥慧眼识人，孔明先生确有经天纬地之才。有此军师相助，何愁大业不成？',
+          '曹操': '哼，曹贼虽待我不薄，但云长心中只有大哥。他日阵前相见，定教他知道什么叫忠义！',
+          '明主': '大哥便是明主。云长此生，只认大哥这一位主公。桃园结义之情，生死不渝。',
+          'default': '大哥有何吩咐，云长万死不辞。'
+        }
+      },
+      zhang: {
+        name: '张飞',
+        avatar: '🔱',
+        personality: '豪爽、急躁、直率',
+        systemPrompt: `你是张飞，字翼德。你是刘备的结义兄弟，性如烈火。
+你说话直来直去，不喜欢绕弯子。你敬爱大哥，但脾气火爆。
+你武艺高强，当阳桥前喝退曹军百万。
+保持角色一致性，展现张飞的豪爽与急性子。`,
+        responses: {
+          '天下': '大哥！管他什么天下大势，俺老张只知道，谁挡路就砍谁！给我十万兵，直取许都，把曹贼的脑袋砍下来当夜壶！',
+          '出山': '那诸葛村夫架子忒大！不过...大哥你看人准，既然你说他行，俺老张就信！但他若敢欺负大哥，哼！',
+          '曹操': '曹操那厮！当年长坂桥上，俺吼一声就吓退他百万大军！待俺老张提着丈八蛇矛，杀他个屁滚尿流！',
+          '明主': '什么明主不明主的，俺老张不懂这些。俺只知道，大哥对俺好，俺就跟大哥干到底！',
+          'default': '大哥你说啥就是啥！俺老张听你的！'
+        }
+      }
+    };
+
+    function selectCharacter(charId) {
+      state.currentCharacter = charId;
+      document.querySelectorAll('.character-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.closest('.character-btn').classList.add('active');
+      document.getElementById('currentCharacter').textContent = characters[charId].name;
+      
+      // 添加系统消息
+      addSystemMessage(`你现在正在与${characters[charId].name}对话`);
+    }
+
+    function addSystemMessage(text) {
+      const messagesDiv = document.getElementById('chatMessages');
+      const systemMsg = document.createElement('div');
+      systemMsg.className = 'system-message';
+      systemMsg.textContent = `— ${text} —`;
+      messagesDiv.appendChild(systemMsg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function addMessage(speaker, text, isUser = false) {
+      const messagesDiv = document.getElementById('chatMessages');
+      const char = isUser ? { name: '刘备', avatar: '👤' } : characters[state.currentCharacter];
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user' : ''}`;
+      messageDiv.innerHTML = `
+        <div class="avatar">${char.avatar}</div>
+        <div class="content">
+          <div class="speaker-name">${char.name}</div>
+          <div class="text">${text}</div>
+        </div>
+      `;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const messagesDiv = document.getElementById('chatMessages');
+      const indicator = document.createElement('div');
+      indicator.className = 'typing-indicator';
+      indicator.id = 'typingIndicator';
+      indicator.innerHTML = `
+        <div class="avatar">${characters[state.currentCharacter].avatar}</div>
+        <div class="dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      `;
+      messagesDiv.appendChild(indicator);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) indicator.remove();
+    }
+
+    function generateResponse(userMessage) {
+      // 简单的关键词匹配（实际应用中应调用 LLM API）
+      const char = characters[state.currentCharacter];
+      const responses = char.responses;
+      
+      // 检查关键词
+      for (const [keyword, response] of Object.entries(responses)) {
+        if (keyword !== 'default' && userMessage.includes(keyword)) {
+          return response;
+        }
+      }
+      
+      // 默认回复
+      return responses.default;
+    }
+
+    function updateMemory(userMessage) {
+      // 提取关键信息（简化版，实际应用中需要更复杂的 NLP）
+      if (userMessage.includes('汉室') || userMessage.includes('兴复')) {
+        if (!state.memory.includes('刘备志在兴复汉室')) {
+          state.memory.push('刘备志在兴复汉室');
+        }
+      }
+      if (userMessage.includes('曹操') || userMessage.includes('曹贼')) {
+        if (!state.memory.includes('讨论过曹操')) {
+          state.memory.push('讨论过曹操');
+        }
+      }
+      
+      // 更新显示
+      const memoryList = document.getElementById('memoryList');
+      memoryList.textContent = state.memory.length > 0 ? state.memory.join('\n') : '尚无记录';
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // 显示用户消息
+      addMessage('刘备', message, true);
+      input.value = '';
+
+      // 更新状态
+      state.turnCount++;
+      document.getElementById('turnCount').textContent = state.turnCount;
+      updateMemory(message);
+
+      // 保存对话历史
+      state.conversationHistory.push({ role: 'user', content: message });
+
+      // 显示输入指示器
+      showTypingIndicator();
+      document.getElementById('sendBtn').disabled = true;
+
+      // 模拟 AI 响应延迟
+      setTimeout(() => {
+        hideTypingIndicator();
+        const response = generateResponse(message);
+        addMessage(characters[state.currentCharacter].name, response);
+        state.conversationHistory.push({ role: 'assistant', content: response });
+        document.getElementById('sendBtn').disabled = false;
+      }, 1500 + Math.random() * 1000);
+    }
+
+    function quickReply(text) {
+      document.getElementById('chatInput').value = text;
+      sendMessage();
+    }
+
+    function handleKeydown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 可以添加初始欢迎消息
+      setTimeout(() => {
+        addMessage('诸葛亮', '将军远道而来，亮已恭候多时。不知将军此来，所为何事？');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

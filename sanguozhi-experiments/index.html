@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三国志 · 策略实验</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 4rem 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      color: var(--accent-gold);
+    }
+
+    .experiments {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .experiment-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .experiment-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+    }
+
+    .experiment-card .badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .experiment-card .badge-a {
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+    }
+
+    .experiment-card .badge-b {
+      background: var(--accent-red);
+      color: var(--text-primary);
+    }
+
+    .experiment-card h2 {
+      font-size: 1.3rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .experiment-card .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .experiment-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .experiment-card .features {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .experiment-card .features li {
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .experiment-card .features li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--accent-gold);
+    }
+
+    .experiment-card a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .experiment-card a:hover {
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+    }
+
+    .report-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .report-section h3 {
+      color: var(--accent-gold);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .report-section p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    .report-link {
+      color: var(--accent-gold);
+      text-decoration: none;
+    }
+
+    .report-link:hover {
+      text-decoration: underline;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      color: var(--accent-gold);
+      font-weight: 500;
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      .experiments {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../sanguozhi/" class="back-link">← 返回三国志主站</a>
+    
+    <div class="header">
+      <h1>策略实验室</h1>
+      <p>探索三国志网站的两个发展方向</p>
+    </div>
+
+    <div class="experiments">
+      <div class="experiment-card">
+        <span class="badge badge-a">实验 A</span>
+        <h2>交互式电子书</h2>
+        <div class="subtitle">Kentucky Route Zero 式叙事体验</div>
+        <p>
+          预设内容，精心打磨。每个选择塑造角色性格，而非改变剧情走向。
+          强调经济性叙事和微反应性。
+        </p>
+        <ul class="features">
+          <li>分支对话，但核心故事不变</li>
+          <li>性格系统：诚意/决断/谦逊</li>
+          <li>微反应性：小选择在后续回响</li>
+          <li>个性化结局描写</li>
+        </ul>
+        <a href="experiment-a-interactive-book.html">体验实验 A →</a>
+      </div>
+
+      <div class="experiment-card">
+        <span class="badge badge-b">实验 B</span>
+        <h2>AI 对话游戏</h2>
+        <div class="subtitle">Character.AI 式自由对话</div>
+        <p>
+          与三国人物自由对话。AI 扮演诸葛亮、关羽、张飞，响应任意输入。
+          无限可能，但依赖 AI 能力。
+        </p>
+        <ul class="features">
+          <li>自由输入，无预设限制</li>
+          <li>切换对话角色</li>
+          <li>快捷回复 + 自定义对话</li>
+          <li>上下文记忆面板</li>
+        </ul>
+        <a href="experiment-b-ai-dialogue.html">体验实验 B →</a>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h3>📋 策略分析报告</h3>
+      <p>
+        完整的调研报告包含：交互式电子书案例分析（80 Days、Kentucky Route Zero、Disco Elysium）、
+        AI 对话游戏案例分析（AI Dungeon、Character.AI、Friends & Fables）、
+        以及针对三国志网站的战略建议。
+      </p>
+      <p>
+        <strong>核心结论：</strong>推荐以交互式电子书为主，AI 作为增强层。
+        三国故事本身极其丰富，人工打磨比 AI 生成更有价值。
+      </p>
+      <a href="STRATEGY-REPORT.md" class="report-link">阅读完整报告 (Markdown) →</a>
+    </div>
+
+    <div class="report-section">
+      <h3>📊 快速对比</h3>
+      <table class="comparison-table">
+        <tr>
+          <th>维度</th>
+          <th>交互式电子书</th>
+          <th>AI 对话游戏</th>
+        </tr>
+        <tr>
+          <td>内容生产</td>
+          <td>高前期成本，人工撰写</td>
+          <td>低边际成本，AI 生成</td>
+        </tr>
+        <tr>
+          <td>质量控制</td>
+          <td>完全可控</td>
+          <td>依赖 AI，有随机性</td>
+        </tr>
+        <tr>
+          <td>叙事深度</td>
+          <td>精心设计，层次丰富</td>
+          <td>宽度大，深度有限</td>
+        </tr>
+        <tr>
+          <td>复玩价值</td>
+          <td>来自分支变体</td>
+          <td>来自无限可能</td>
+        </tr>
+        <tr>
+          <td>用户体验</td>
+          <td>像读一本好书</td>
+          <td>像和朋友玩角色扮演</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

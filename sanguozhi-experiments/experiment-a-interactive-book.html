@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三顾茅庐 · 交互式叙事实验</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    /* 完全复用原版色彩系统 */
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --text-dim: #6a6055;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    /* 实验标签 */
+    .experiment-badge {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+      padding: 0.5rem 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      z-index: 1000;
+    }
+
+    /* 叙事容器 - Kentucky Route Zero 风格 */
+    .narrative-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* 场景标题 */
+    .scene-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .scene-location {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-time {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* 叙事文本 */
+    .narrative-text {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+
+    .narrative-text p {
+      margin-bottom: 1.5rem;
+      text-indent: 2em;
+    }
+
+    .narrative-text .no-indent {
+      text-indent: 0;
+    }
+
+    /* 人物标签 */
+    .speaker {
+      color: var(--accent-gold);
+      font-weight: 500;
+    }
+
+    .speaker-liu { color: #7cb87c; }
+    .speaker-guan { color: #c96666; }
+    .speaker-zhang { color: #6699cc; }
+    .speaker-zhuge { color: #c9a55c; }
+    .speaker-童子 { color: var(--text-secondary); }
+
+    /* 对话框 */
+    .dialogue {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--accent-gold);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+
+    .dialogue .speaker {
+      font-style: normal;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* 选项系统 - 核心交互 */
+    .choices {
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .choices-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .choice-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: var(--accent-gold);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.05);
+      padding-left: 2rem;
+    }
+
+    .choice-btn:hover::before {
+      transform: scaleY(1);
+    }
+
+    .choice-btn .choice-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* 选择后的反馈 */
+    .choice-btn.selected {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+
+    .choice-btn.faded {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* 过渡效果 */
+    .scene-transition {
+      text-align: center;
+      padding: 4rem 0;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+    }
+
+    .scene-transition .dots {
+      animation: pulse 2s infinite;
+    }
+
+    /* 微反应性标记 - 显示玩家选择的影响 */
+    .micro-reactive {
+      color: var(--accent-gold);
+      border-bottom: 1px dotted var(--accent-gold);
+      cursor: help;
+    }
+
+    /* 内心独白 - Disco Elysium 风格 */
+    .inner-voice {
+      background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 100%);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 2px solid var(--accent-blue);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .inner-voice .voice-name {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    /* 环境描写 */
+    .environment {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin: 2rem 0;
+      font-style: italic;
+    }
+
+    /* 进度指示 */
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent-gold);
+      transition: width 0.5s ease;
+    }
+
+    /* 动画 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* 隐藏的场景 */
+    .scene {
+      display: none;
+    }
+
+    .scene.active {
+      display: block;
+    }
+
+    /* 返回按钮 */
+    .back-link {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: var(--accent-gold);
+    }
+
+    /* 角色状态面板 */
+    .character-panel {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      font-size: 0.75rem;
+      max-width: 200px;
+    }
+
+    .character-panel h4 {
+      color: var(--accent-gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .character-stat {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    .character-stat .value {
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="experiment-badge">实验 A · 交互式电子书</div>
+  <a href="../sanguozhi/" class="back-link">← 返回三国志</a>
+  
+  <div class="progress-bar" id="progress" style="width: 0%"></div>
+
+  <!-- 场景 1：卧龙岗前 -->
+  <div class="narrative-container scene active" id="scene-1">
+    <div class="scene-header">
+      <div class="scene-location">襄阳 · 隆中</div>
+      <div class="scene-title">三顾茅庐</div>
+      <div class="scene-time">建安十二年 · 冬</div>
+    </div>
+
+    <div class="narrative-text">
+      <p class="no-indent environment">
+        山路蜿蜒，薄雪覆松。刘备第三次来到卧龙岗下。
+      </p>
+
+      <p>
+        关羽勒马，眉头紧锁。张飞在后面已经骂骂咧咧了半个时辰。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhang">张飞</span>
+        大哥！那诸葛村夫架子忒大，连见都不见我们。不如俺老张放一把火，烧了他那破草庐，看他出不出来！
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">审慎</div>
+        张飞的脾气你是知道的。但他说得也不是全无道理——两次吃闭门羹，传出去，刘皇叔的脸面往哪搁？
+      </div>
+
+      <p>
+        关羽没有说话，只是看着你。他在等你的决定。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何回应？</div>
+      <button class="choice-btn" onclick="makeChoice(1, 'patient')">
+        "三弟息怒。求贤若渴，岂可半途而废？"
+        <span class="choice-hint">→ 展现耐心与诚意</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(1, 'pragmatic')">
+        "若先生今日仍不在，我们便在此等候。"
+        <span class="choice-hint">→ 展现决心与毅力</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(1, 'humble')">
+        "是我刘备德薄，不配求见大贤。但为天下苍生，我愿再试一次。"
+        <span class="choice-hint">→ 展现谦逊与使命感</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 2A：耐心路线 -->
+  <div class="narrative-container scene" id="scene-2a">
+    <div class="scene-header">
+      <div class="scene-location">卧龙岗 · 草庐前</div>
+      <div class="scene-title">静候</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你示意二人下马。张飞虽然不情愿，但还是照做了。
+      </p>
+
+      <p>
+        一个童子从庐中走出，年约十三四岁，眉清目秀。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-童子">童子</span>
+        先生正在午睡。三位可在此稍候，待先生醒来，我再通禀。
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">洞察</div>
+        童子的眼神在你身上多停留了一瞬。他在打量你——不，他在<em>评估</em>你。这个童子，不简单。
+      </div>
+
+      <p>
+        草庐前有一方石凳，积雪未扫。关羽上前，用袖子拂去雪花，请你坐下。
+      </p>
+
+      <p>
+        张飞在一旁跺脚取暖，时不时朝草庐门口张望。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">等待时，你在想什么？</div>
+      <button class="choice-btn" onclick="makeChoice(2, 'reflect')">
+        望着远山，思索天下大势
+        <span class="choice-hint">→ 内心独白：你的抱负</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(2, 'observe')">
+        细细观察草庐周围的布置
+        <span class="choice-hint">→ 发现隐藏细节</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(2, 'converse')">
+        与童子闲聊，询问先生日常
+        <span class="choice-hint">→ 了解诸葛亮其人</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 2B：务实路线 -->
+  <div class="narrative-container scene" id="scene-2b">
+    <div class="scene-header">
+      <div class="scene-location">卧龙岗 · 草庐前</div>
+      <div class="scene-title">守候</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你翻身下马，将缰绳交给随从。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-liu">刘备</span>
+        云长、翼德，你们先回新野。我独自在此等候便是。
+      </div>
+
+      <p>
+        关羽和张飞对视一眼，都看到了对方眼中的惊讶。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-guan">关羽</span>
+        大哥，这如何使得？天寒地冻，万一……
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">决断</div>
+        你知道这样做的风险。但你也知道，有些事情，必须用行动来证明。言语是廉价的，而时间——时间是最昂贵的诚意。
+      </div>
+
+      <p>
+        张飞难得沉默了。片刻后，他也翻身下马。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhang">张飞</span>
+        大哥在哪，俺老张就在哪。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你会如何回应？</div>
+      <button class="choice-btn" onclick="makeChoice(2, 'accept')">
+        微微一笑，不再多言
+        <span class="choice-hint">→ 兄弟情深，尽在不言中</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(2, 'insist')">
+        "翼德，这是军令。回新野守好城池。"
+        <span class="choice-hint">→ 主公的威严与责任</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 2C：谦逊路线 -->
+  <div class="narrative-container scene" id="scene-2c">
+    <div class="scene-header">
+      <div class="scene-location">卧龙岗 · 山路</div>
+      <div class="scene-title">自省</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你的话让张飞愣住了。关羽轻轻叹了口气。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-guan">关羽</span>
+        大哥何必自谦至此。论德行，天下谁人能及？
+      </div>
+
+      <p>
+        你摇摇头。半生漂泊，你见过太多自诩明君的人，最后都成了乱世的尘土。你不想成为那样的人。
+      </p>
+
+      <div class="inner-voice">
+        <div class="voice-name">记忆</div>
+        涿郡的桃花，黄巾的烽烟，徐州的失落，许都的屈辱……这些年，你失去的比得到的多得多。但你还在这里，还在走向那间草庐。
+      </div>
+
+      <p>
+        山路尽头，一座茅庐静静矗立。炊烟袅袅，像是有人在等。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你整理衣冠，准备叩门</div>
+      <button class="choice-btn" onclick="makeChoice(2, 'formal')">
+        深吸一口气，恭敬地轻叩三下
+        <span class="choice-hint">→ 礼数周全</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(2, 'wait')">
+        在门外静立，等待主人开门
+        <span class="choice-hint">→ 不敢惊扰</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 3：草庐之中 -->
+  <div class="narrative-container scene" id="scene-3">
+    <div class="scene-header">
+      <div class="scene-location">草庐之内</div>
+      <div class="scene-title">隆中对</div>
+    </div>
+
+    <div class="narrative-text">
+      <p class="no-indent environment">
+        屋内陈设简朴，书卷堆积如山。一张矮几上，放着一幅未完成的《梁父吟》手稿。
+      </p>
+
+      <p>
+        诸葛亮坐在你对面。他比传闻中更年轻，羽扇轻摇，目光如星。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        将军三顾寒舍，亮不胜惶恐。敢问将军，所为何来？
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">洞察</div>
+        他在试探你。这个问题，你已经在心里回答过无数遍。但今天，你要说出口。
+      </div>
+
+      <p id="micro-text-1">
+        <!-- 这里会根据之前的选择显示不同文本 -->
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何回答？</div>
+      <button class="choice-btn" onclick="makeChoice(3, 'ambition')">
+        "汉室倾颓，奸臣窃命。备虽不才，愿续汉祚，还天下太平。"
+        <span class="choice-hint">→ 直陈大志</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(3, 'people')">
+        "备半生颠沛，见尽黎民之苦。今日求见先生，只为苍生谋一条出路。"
+        <span class="choice-hint">→ 以民为本</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(3, 'honest')">
+        "实不相瞒，备已年过四十，一事无成。若不得先生相助，此生恐难有所为。"
+        <span class="choice-hint">→ 坦诚相见</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 4：隆中对策 -->
+  <div class="narrative-container scene" id="scene-4">
+    <div class="scene-header">
+      <div class="scene-location">草庐之内</div>
+      <div class="scene-title">天下三分</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        诸葛亮站起身来，走到墙边，拉开一幅布帘。
+      </p>
+
+      <p class="no-indent environment">
+        帘后是一幅巨大的天下舆图，山川河流，城池关隘，标注得清清楚楚。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        自董卓以来，豪杰并起。曹操拥百万之众，挟天子以令诸侯，此诚不可与之争锋。孙权据有江东，已历三世，国险而民附，此可用为援，而不可图也。
+      </div>
+
+      <p>
+        他的手指在地图上移动，最后停在荆州、益州的位置。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        荆州北据汉、沔，利尽南海，东连吴会，西通巴蜀，此用武之国也。益州险塞，沃野千里，天府之土。将军若跨有荆、益，保其岩阻，西和诸戎，南抚夷越，外结好孙权，内修政理……
+      </div>
+
+      <p id="micro-text-2">
+        <!-- 根据之前选择显示不同的内心反应 -->
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        天下有变，则命一上将将荆州之军以向宛、洛，将军身率益州之众出于秦川。百姓孰敢不箪食壶浆以迎将军者乎？诚如是，则霸业可成，汉室可兴矣。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">听完这番话，你……</div>
+      <button class="choice-btn" onclick="makeChoice(4, 'moved')">
+        双膝跪地："先生之言，如醍醐灌顶！"
+        <span class="choice-hint">→ 感动至深</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(4, 'question')">
+        "先生高见。但曹操势大，孙权难测，此计可行否？"
+        <span class="choice-hint">→ 谨慎求证</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(4, 'silent')">
+        沉默良久，只是看着那幅地图
+        <span class="choice-hint">→ 深思熟虑</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 场景 5：结局 -->
+  <div class="narrative-container scene" id="scene-5">
+    <div class="scene-header">
+      <div class="scene-location">隆中 · 黄昏</div>
+      <div class="scene-title">出山</div>
+    </div>
+
+    <div class="narrative-text">
+      <p class="no-indent environment">
+        日暮西沉，草庐内点起了烛火。
+      </p>
+
+      <p id="ending-text">
+        <!-- 根据之前的选择生成个性化结局 -->
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        将军既不以亮卑鄙，猥自枉屈，三顾亮于草庐之中，咨亮以当世之事。亮敢不效犬马之劳？
+      </div>
+
+      <p>
+        你终于等到了这句话。
+      </p>
+
+      <p>
+        二十七岁的诸葛亮，从此追随四十七岁的刘备，开始了他波澜壮阔的一生。
+      </p>
+
+      <p class="no-indent environment" style="margin-top: 3rem; color: var(--accent-gold);">
+        鱼水之欢，自此始也。
+      </p>
+    </div>
+
+    <div class="choices" style="text-align: center; margin-top: 4rem;">
+      <a href="../sanguozhi/" style="color: var(--accent-gold); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.2em;">
+        ← 返回三国志
+      </a>
+      <span style="color: var(--text-dim); margin: 0 1rem;">|</span>
+      <button onclick="restart()" style="background: none; border: none; color: var(--accent-gold); font-family: inherit; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer;">
+        再历一次 →
+      </button>
+    </div>
+  </div>
+
+  <!-- 角色状态面板 -->
+  <div class="character-panel" id="character-panel" style="display: none;">
+    <h4>刘备 · 性格印象</h4>
+    <div class="character-stat">
+      <span>诚意</span>
+      <span class="value" id="stat-sincerity">●●●○○</span>
+    </div>
+    <div class="character-stat">
+      <span>决断</span>
+      <span class="value" id="stat-resolve">●●○○○</span>
+    </div>
+    <div class="character-stat">
+      <span>谦逊</span>
+      <span class="value" id="stat-humility">●●●○○</span>
+    </div>
+  </div>
+
+  <script>
+    // 游戏状态
+    const state = {
+      currentScene: 1,
+      choices: [],
+      traits: {
+        sincerity: 3,
+        resolve: 2,
+        humility: 3
+      }
+    };
+
+    // 场景转换映射
+    const sceneMap = {
+      '1-patient': '2a',
+      '1-pragmatic': '2b',
+      '1-humble': '2c',
+      '2-reflect': '3',
+      '2-observe': '3',
+      '2-converse': '3',
+      '2-accept': '3',
+      '2-insist': '3',
+      '2-formal': '3',
+      '2-wait': '3',
+      '3-ambition': '4',
+      '3-people': '4',
+      '3-honest': '4',
+      '4-moved': '5',
+      '4-question': '5',
+      '4-silent': '5'
+    };
+
+    // 性格影响
+    const traitEffects = {
+      'patient': { sincerity: 1 },
+      'pragmatic': { resolve: 1 },
+      'humble': { humility: 1 },
+      'reflect': { resolve: 1 },
+      'observe': { sincerity: 1 },
+      'converse': { humility: 1 },
+      'accept': { humility: 1 },
+      'insist': { resolve: 1 },
+      'formal': { sincerity: 1 },
+      'wait': { humility: 1 },
+      'ambition': { resolve: 1 },
+      'people': { humility: 1 },
+      'honest': { sincerity: 1 },
+      'moved': { sincerity: 1 },
+      'question': { resolve: 1 },
+      'silent': { humility: 1 }
+    };
+
+    function makeChoice(scene, choice) {
+      // 记录选择
+      state.choices.push({ scene, choice });
+      
+      // 更新性格
+      const effects = traitEffects[choice] || {};
+      for (const [trait, value] of Object.entries(effects)) {
+        state.traits[trait] = Math.min(5, state.traits[trait] + value);
+      }
+      updateTraitDisplay();
+
+      // 标记选中按钮
+      const buttons = document.querySelectorAll(`#scene-${scene === 1 ? '1' : (scene + ['a','b','c'][0])} .choice-btn, #scene-${scene} .choice-btn`);
+      buttons.forEach((btn, i) => {
+        if (btn.onclick.toString().includes(choice)) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.add('faded');
+        }
+      });
+
+      // 延迟后切换场景
+      setTimeout(() => {
+        const nextScene = sceneMap[`${scene}-${choice}`];
+        if (nextScene) {
+          goToScene(nextScene);
+        }
+      }, 800);
+    }
+
+    function goToScene(sceneId) {
+      // 隐藏所有场景
+      document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+      
+      // 显示目标场景
+      const target = document.getElementById(`scene-${sceneId}`);
+      if (target) {
+        target.classList.add('active');
+        state.currentScene = sceneId;
+        
+        // 更新进度条
+        const progress = { '1': 0, '2a': 20, '2b': 20, '2c': 20, '3': 50, '4': 75, '5': 100 };
+        document.getElementById('progress').style.width = (progress[sceneId] || 0) + '%';
+
+        // 应用微反应性文本
+        applyMicroReactivity(sceneId);
+        
+        // 滚动到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function applyMicroReactivity(sceneId) {
+      // 场景3的微反应性
+      if (sceneId === '3') {
+        const firstChoice = state.choices[0]?.choice;
+        const text1 = document.getElementById('micro-text-1');
+        if (text1) {
+          if (firstChoice === 'patient') {
+            text1.innerHTML = '你想起在门外等候的那段时光。正是那份耐心，让你此刻能坐在这里。';
+          } else if (firstChoice === 'pragmatic') {
+            text1.innerHTML = '你想起自己说过要在此等候的决心。诸葛亮一定看到了那份执着。';
+          } else if (firstChoice === 'humble') {
+            text1.innerHTML = '你想起自己在山路上的自省。也许正是那份谦逊，打动了眼前这位年轻人。';
+          }
+        }
+      }
+      
+      // 场景4的微反应性
+      if (sceneId === '4') {
+        const text2 = document.getElementById('micro-text-2');
+        if (text2) {
+          if (state.traits.humility >= 4) {
+            text2.innerHTML = '<div class="inner-voice"><div class="voice-name">敬畏</div>你从未想过，天下竟可如此规划。在这个二十七岁的年轻人面前，你感到自己的渺小。</div>';
+          } else if (state.traits.resolve >= 4) {
+            text2.innerHTML = '<div class="inner-voice"><div class="voice-name">决心</div>荆州、益州……这些名字在你心中燃起火焰。你终于看到了一条路。</div>';
+          } else {
+            text2.innerHTML = '<div class="inner-voice"><div class="voice-name">思索</div>这是一盘大棋。你细细品味每一个字，试图看穿更远的未来。</div>';
+          }
+        }
+      }
+
+      // 场景5的个性化结局
+      if (sceneId === '5') {
+        const endingText = document.getElementById('ending-text');
+        if (endingText) {
+          let ending = '';
+          
+          if (state.traits.sincerity >= 4) {
+            ending = '诸葛亮看着你的眼睛，那里面没有帝王的野心，只有一个中年人最后的希望。正是这份真诚，让他决定押上自己的一生。';
+          } else if (state.traits.resolve >= 4) {
+            ending = '诸葛亮看着你的眼睛，那里面有烈火一般的意志。这个人，不达目的绝不罢休。正是这份决心，让他相信大业可成。';
+          } else if (state.traits.humility >= 4) {
+            ending = '诸葛亮看着你的眼睛，那里面没有丝毫傲气，只有对天下苍生的悲悯。正是这份谦逊，让他愿意追随这位年长的君主。';
+          } else {
+            ending = '诸葛亮看着你的眼睛，似乎在那里看到了自己的倒影——一个同样在乱世中寻找意义的灵魂。';
+          }
+          
+          endingText.innerHTML = `<p>${ending}</p>`;
+        }
+      }
+    }
+
+    function updateTraitDisplay() {
+      const display = (value) => '●'.repeat(value) + '○'.repeat(5 - value);
+      document.getElementById('stat-sincerity').textContent = display(state.traits.sincerity);
+      document.getElementById('stat-resolve').textContent = display(state.traits.resolve);
+      document.getElementById('stat-humility').textContent = display(state.traits.humility);
+    }
+
+    function restart() {
+      state.currentScene = 1;
+      state.choices = [];
+      state.traits = { sincerity: 3, resolve: 2, humility: 3 };
+      updateTraitDisplay();
+      
+      // 重置所有按钮状态
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.classList.remove('selected', 'faded');
+      });
+      
+      goToScene('1');
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 显示角色面板（第一次选择后）
+      setTimeout(() => {
+        document.getElementById('character-panel').style.display = 'block';
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
