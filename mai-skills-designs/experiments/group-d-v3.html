@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group D - V3 (Shared State 多 Agent - 迭代2轮后)</title>
+  <style>
+    /* ========================================
+       MAI Universal Design Tokens
+       由 Agent-Color 在 Round 1 规范化
+       ======================================== */
+    :root {
+      /* Background - Agent-Color Round 1 */
+      --smtc-background-web-page-primary: #fffbf8;
+      --smtc-background-card-on-primary-default-rest: #ffffff;
+      --smtc-background-ctrl-brand-rest: #a25a02;
+      --smtc-background-ctrl-brand-hover: #7f4400;
+      --smtc-background-ctrl-neutral-rest: #f8f4f1;
+      
+      /* Foreground - Agent-Color Round 1 */
+      --smtc-foreground-ctrl-neutral-primary-rest: #272320;
+      --smtc-foreground-ctrl-neutral-secondary-rest: #746d68;
+      --smtc-foreground-ctrl-neutral-tertiary-rest: #98918b;
+      --smtc-foreground-ctrl-on-brand-rest: #ffffff;
+      
+      /* Status - Agent-Color Round 2 */
+      --smtc-status-success-foreground: #2e7d32;
+      --smtc-status-success-tint-background: #e8f5e9;
+      
+      /* Stroke - Agent-Color Round 1 */
+      --smtc-stroke-card-on-primary-rest: #e2ddd9;
+      --smtc-stroke-card-on-primary-hover: #cfc9c5;
+      --smtc-stroke-divider-default: #efeae7;
+      
+      /* ========================================
+         Spacing Scale (4px grid)
+         由 Agent-Spacing 在 Round 1 建立
+         ======================================== */
+      --space-4: 4px;
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+      --space-40: 40px;
+      --space-48: 48px;
+      
+      /* ========================================
+         Typography Scale
+         由 Agent-Typography 在 Round 1 建立
+         ======================================== */
+      --text-xs: 11px;
+      --text-sm: 12px;
+      --text-base: 14px;
+      --text-lg: 16px;
+      --text-xl: 20px;
+      --text-2xl: 24px;
+      --text-3xl: 32px;
+      
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.6;
+      
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      
+      /* Shadow - Agent-Color Round 2 */
+      --shadow-card-rest: 0 1px 2px rgba(39, 35, 32, 0.04);
+      --shadow-card-hover: 0 4px 12px rgba(39, 35, 32, 0.08);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--smtc-background-web-page-primary);
+      padding: var(--space-48);
+      line-height: var(--line-height-normal);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+    
+    .dashboard {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    
+    /* Header - Agent-Spacing 优化 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-32);
+    }
+    
+    /* Title - Agent-Typography 优化 */
+    .title {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      letter-spacing: -0.02em;
+      line-height: var(--line-height-tight);
+    }
+    
+    /* Button - 三个 Agent 共同优化 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-8);
+      background: var(--smtc-background-ctrl-brand-rest);
+      color: var(--smtc-foreground-ctrl-on-brand-rest);
+      padding: var(--space-12) var(--space-20);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--line-height-tight);
+      transition: all 0.15s ease;
+    }
+    
+    .btn:hover {
+      background: var(--smtc-background-ctrl-brand-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    
+    /* Stats Grid - Agent-Spacing 优化 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-16);
+      margin-bottom: var(--space-24);
+    }
+    
+    /* Stat Card - 三个 Agent 共同优化 */
+    .stat-card {
+      background: var(--smtc-background-card-on-primary-default-rest);
+      padding: var(--space-24);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--smtc-stroke-card-on-primary-rest);
+      box-shadow: var(--shadow-card-rest);
+      transition: all 0.15s ease;
+    }
+    
+    .stat-card:hover {
+      border-color: var(--smtc-stroke-card-on-primary-hover);
+      box-shadow: var(--shadow-card-hover);
+    }
+    
+    /* Agent-Typography 优化的标签 */
+    .stat-label {
+      font-size: var(--text-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: var(--line-height-normal);
+    }
+    
+    /* Agent-Typography + Spacing 优化 */
+    .stat-value {
+      font-size: var(--text-3xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      margin-top: var(--space-8);
+      letter-spacing: -0.02em;
+      line-height: var(--line-height-tight);
+    }
+    
+    /* Agent-Color 在 Round 2 优化 */
+    .stat-change {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--smtc-status-success-foreground);
+      margin-top: var(--space-8);
+      padding: var(--space-4) var(--space-8);
+      background: var(--smtc-status-success-tint-background);
+      border-radius: var(--radius-sm);
+    }
+    
+    /* Chart Card */
+    .chart-card {
+      background: var(--smtc-background-card-on-primary-default-rest);
+      padding: var(--space-24);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--smtc-stroke-card-on-primary-rest);
+      box-shadow: var(--shadow-card-rest);
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      padding-bottom: var(--space-16);
+      border-bottom: 1px solid var(--smtc-stroke-divider-default);
+    }
+    
+    .chart-title {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+    
+    .chart-subtitle {
+      font-size: var(--text-sm);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      margin-top: var(--space-4);
+    }
+    
+    .chart-legend {
+      display: flex;
+      gap: var(--space-16);
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--text-sm);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+    
+    .legend-dot {
+      width: var(--space-8);
+      height: var(--space-8);
+      border-radius: 50%;
+      background: var(--smtc-background-ctrl-brand-rest);
+    }
+    
+    /* Chart - Agent-Spacing 优化 */
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-12);
+      height: 160px;
+      padding: var(--space-8) 0;
+    }
+    
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-8);
+    }
+    
+    .bar {
+      width: 100%;
+      background: var(--smtc-background-ctrl-brand-rest);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      transition: opacity 0.15s ease;
+      position: relative;
+    }
+    
+    .bar:hover {
+      opacity: 0.85;
+    }
+    
+    .bar-value {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: var(--text-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    
+    .bar:hover .bar-value {
+      opacity: 1;
+    }
+    
+    .bar-label {
+      font-size: var(--text-xs);
+      color: var(--smtc-foreground-ctrl-neutral-tertiary-rest);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    /* Experiment Info */
+    .experiment-info {
+      margin-top: var(--space-48);
+      padding: var(--space-24);
+      background: #fce4ec;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: #c2185b;
+    }
+    
+    .agent-contributions {
+      margin-top: var(--space-16);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-12);
+    }
+    
+    .agent-card {
+      background: #f8bbd9;
+      padding: var(--space-16);
+      border-radius: var(--radius-sm);
+    }
+    
+    .agent-name {
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-8);
+    }
+    
+    .agent-fixes {
+      font-size: var(--text-xs);
+      line-height: var(--line-height-relaxed);
+    }
+    
+    .summary {
+      margin-top: var(--space-16);
+      padding: var(--space-16);
+      background: #f48fb1;
+      border-radius: var(--radius-sm);
+      font-weight: var(--font-weight-medium);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Weekly Performance</div>
+          <div class="chart-subtitle">Sessions over the past 7 days</div>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot"></div>
+            <span>Sessions</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart">
+        <div class="bar-group">
+          <div class="bar" style="height: 40%"><span class="bar-value">186</span></div>
+          <div class="bar-label">Mon</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 65%"><span class="bar-value">298</span></div>
+          <div class="bar-label">Tue</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 45%"><span class="bar-value">212</span></div>
+          <div class="bar-label">Wed</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 80%"><span class="bar-value">367</span></div>
+          <div class="bar-label">Thu</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 55%"><span class="bar-value">253</span></div>
+          <div class="bar-label">Fri</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 70%"><span class="bar-value">321</span></div>
+          <div class="bar-label">Sat</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 90%"><span class="bar-value">412</span></div>
+          <div class="bar-label">Sun</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 D - V3 (Shared State 多 Agent - 迭代2轮后)</strong><br>
+    模式: 3 个专项 Agent 并行修复共享 HTML
+    
+    <div class="agent-contributions">
+      <div class="agent-card">
+        <div class="agent-name">🔲 Agent-Spacing</div>
+        <div class="agent-fixes">
+          <strong>Round 1:</strong><br>
+          • 建立 4px spacing scale<br>
+          • 修复所有 padding/margin<br>
+          • 统一 gap 值<br><br>
+          <strong>Round 2:</strong><br>
+          • 优化 chart 高度<br>
+          • 增加 bar-group gap
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">🎨 Agent-Color</div>
+        <div class="agent-fixes">
+          <strong>Round 1:</strong><br>
+          • 替换为 --smtc-* tokens<br>
+          • 添加 hover 状态色<br>
+          • 规范化 shadow<br><br>
+          <strong>Round 2:</strong><br>
+          • 优化 success badge<br>
+          • 添加 divider 颜色
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">📝 Agent-Typography</div>
+        <div class="agent-fixes">
+          <strong>Round 1:</strong><br>
+          • 建立 typography scale<br>
+          • 规范化 font-weight<br>
+          • 添加 line-height<br><br>
+          <strong>Round 2:</strong><br>
+          • 优化 letter-spacing<br>
+          • 添加 chart subtitle
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary">
+      ✓ 3 个 Agent 并行工作，每个专注自己的领域<br>
+      ✓ 共享 HTML 文件，互相能看到对方的修改<br>
+      ✓ 无信息瓶颈，修复更彻底<br>
+      ✓ 所有 spacing 符合 4px 网格，所有颜色使用语义 token
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group D - V1 (Shared State 多 Agent)</title>
+  <style>
+    /* MAI Universal Tokens (subset) */
+    :root {
+      --bg-page: #fffbf8;
+      --bg-card: #ffffff;
+      --text-primary: #272320;
+      --text-secondary: #746d68;
+      --accent: #a25a02;
+      --border: #e2ddd9;
+      --success: #4caf50;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      padding: 40px;
+    }
+    
+    .dashboard {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .title {
+      font-size: 24px;
+      color: var(--text-primary);
+    }
+    
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 4px;
+    }
+    
+    .stat-change {
+      font-size: 12px;
+      color: var(--success);
+      margin-top: 4px;
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .chart-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+    }
+    
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .experiment-info {
+      margin-top: 40px;
+      padding: 16px;
+      background: #fce4ec;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #c2185b;
+    }
+    .agent-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .agent-item {
+      background: #f8bbd9;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">Weekly Performance</div>
+      <div class="chart">
+        <div class="bar" style="height: 40%"></div>
+        <div class="bar" style="height: 65%"></div>
+        <div class="bar" style="height: 45%"></div>
+        <div class="bar" style="height: 80%"></div>
+        <div class="bar" style="height: 55%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 90%"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 D - V1 (Shared State 多 Agent)</strong><br>
+    模式: 3 个专项 Agent 并行修复共享 HTML<br>
+    
+    <div class="agent-list">
+      <div class="agent-item">
+        <strong>🔲 Agent-Spacing</strong><br>
+        只关注: padding, margin, gap<br>
+        目标: 所有间距符合 4px 网格
+      </div>
+      <div class="agent-item">
+        <strong>🎨 Agent-Color</strong><br>
+        只关注: 颜色对比度、语义化 token<br>
+        目标: 所有颜色使用 MAI tokens
+      </div>
+      <div class="agent-item">
+        <strong>📝 Agent-Typography</strong><br>
+        只关注: 字体大小、行高、层级<br>
+        目标: 清晰的视觉层级
+      </div>
+    </div>
+  </div>
+</body>
+</html>

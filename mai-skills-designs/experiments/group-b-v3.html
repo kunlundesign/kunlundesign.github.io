@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group B - V3 (具体反馈 - 迭代2轮后)</title>
+  <style>
+    /* MAI Universal Tokens - 完整 4px 网格系统 */
+    :root {
+      --bg-page: #fffbf8;
+      --bg-card: #ffffff;
+      --text-primary: #272320;
+      --text-secondary: #746d68;
+      --accent: #a25a02;
+      --accent-hover: #7f4400;
+      --border: #e2ddd9;
+      --success: #4caf50;
+      
+      /* 4px spacing scale */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      padding: var(--space-2xl);
+    }
+    
+    .dashboard {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg); /* 24px - 符合 4px 网格 */
+    }
+    
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: var(--space-sm) var(--space-md); /* 8px 16px */
+      border: none;
+      border-radius: var(--space-xs); /* 4px */
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.15s ease;
+    }
+    
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md); /* 16px */
+      margin-bottom: var(--space-lg); /* 24px */
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      padding: var(--space-lg); /* 24px - 从 16px 改过来 */
+      border-radius: var(--space-sm); /* 8px */
+      border: 1px solid var(--border);
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: var(--space-sm); /* 8px - 符合 4px 网格 */
+      letter-spacing: -0.02em;
+    }
+    
+    .stat-change {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--success);
+      margin-top: var(--space-xs); /* 4px */
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      padding: var(--space-lg); /* 24px */
+      border-radius: var(--space-sm); /* 8px */
+      border: 1px solid var(--border);
+    }
+    
+    .chart-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md); /* 16px */
+    }
+    
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-sm); /* 8px */
+      height: 120px;
+    }
+    
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: var(--space-xs) var(--space-xs) 0 0; /* 4px */
+      transition: opacity 0.15s ease;
+    }
+    
+    .bar:hover {
+      opacity: 0.85;
+    }
+    
+    .experiment-info {
+      margin-top: var(--space-2xl);
+      padding: var(--space-md);
+      background: #e8f5e9;
+      border-radius: var(--space-sm);
+      font-size: 12px;
+      color: #2e7d32;
+    }
+    .changes {
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid #c8e6c9;
+    }
+    .fix-item {
+      margin-top: 4px;
+      font-family: monospace;
+      font-size: 11px;
+      background: #c8e6c9;
+      padding: 2px 6px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">Weekly Performance</div>
+      <div class="chart">
+        <div class="bar" style="height: 40%"></div>
+        <div class="bar" style="height: 65%"></div>
+        <div class="bar" style="height: 45%"></div>
+        <div class="bar" style="height: 80%"></div>
+        <div class="bar" style="height: 55%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 90%"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 B - V3 (具体反馈 - 迭代2轮后)</strong><br>
+    Generator: MAI Universal skill<br>
+    Verifier 反馈: 具体问题 + 修复代码<br>
+    <div class="changes">
+      <strong>2轮迭代的精确修复：</strong><br><br>
+      
+      Round 1 反馈执行：<br>
+      <span class="fix-item">.header margin-bottom: 20px → 24px</span>
+      <span class="fix-item">.stat-card padding: 16px → 24px</span>
+      <span class="fix-item">.chart-card padding: 16px → 24px</span><br><br>
+      
+      Round 2 反馈执行：<br>
+      <span class="fix-item">引入 CSS 变量 spacing scale</span>
+      <span class="fix-item">.stat-value margin-top: 4px → 8px</span>
+      <span class="fix-item">所有 px 值替换为 var(--space-*)</span><br><br>
+      
+      <strong>✓ 所有 spacing 现在符合 4px 网格</strong>
+    </div>
+  </div>
+</body>
+</html>

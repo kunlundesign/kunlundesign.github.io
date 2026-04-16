@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group B - V1 (具体反馈)</title>
+  <style>
+    /* MAI Universal Tokens (subset) */
+    :root {
+      --bg-page: #fffbf8;
+      --bg-card: #ffffff;
+      --text-primary: #272320;
+      --text-secondary: #746d68;
+      --accent: #a25a02;
+      --border: #e2ddd9;
+      --success: #4caf50;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      padding: 40px;
+    }
+    
+    .dashboard {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .title {
+      font-size: 24px;
+      color: var(--text-primary);
+    }
+    
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 4px;
+    }
+    
+    .stat-change {
+      font-size: 12px;
+      color: var(--success);
+      margin-top: 4px;
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .chart-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+    }
+    
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .experiment-info {
+      margin-top: 40px;
+      padding: 16px;
+      background: #e8f5e9;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">Weekly Performance</div>
+      <div class="chart">
+        <div class="bar" style="height: 40%"></div>
+        <div class="bar" style="height: 65%"></div>
+        <div class="bar" style="height: 45%"></div>
+        <div class="bar" style="height: 80%"></div>
+        <div class="bar" style="height: 55%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 90%"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 B - V1 (具体反馈)</strong><br>
+    Generator: MAI Universal skill<br>
+    Verifier 反馈格式: 具体问题 + 修复代码<br>
+    <br>
+    <strong>Verifier 将返回的反馈示例：</strong><br>
+    {<br>
+    &nbsp;&nbsp;"issues": [<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;{ "element": ".header", "problem": "margin-bottom 不符合 4px 网格", "current": "20px", "fix": "margin-bottom: 24px;" },<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;{ "element": ".stat-card", "problem": "padding 太小", "current": "16px", "fix": "padding: 24px;" }<br>
+    &nbsp;&nbsp;]<br>
+    }
+  </div>
+</body>
+</html>

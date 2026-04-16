@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group C - V3 (Generator 自检 - 迭代2轮后)</title>
+  <style>
+    /* MAI Universal Tokens - 完整系统 */
+    :root {
+      /* Background */
+      --bg-page: #fffbf8;
+      --bg-card: #ffffff;
+      --bg-hover: #f8f4f1;
+      
+      /* Text */
+      --text-primary: #272320;
+      --text-secondary: #746d68;
+      --text-tertiary: #98918b;
+      
+      /* Accent */
+      --accent: #a25a02;
+      --accent-hover: #7f4400;
+      --accent-light: #fee6d4;
+      
+      /* Status */
+      --success: #2e7d32;
+      --success-bg: #e8f5e9;
+      
+      /* Border */
+      --border: #e2ddd9;
+      --border-hover: #cfc9c5;
+      
+      /* 4px spacing scale */
+      --space-2: 2px;
+      --space-4: 4px;
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+      --space-48: 48px;
+      
+      /* Typography scale */
+      --text-xs: 11px;
+      --text-sm: 12px;
+      --text-base: 14px;
+      --text-lg: 16px;
+      --text-xl: 20px;
+      --text-2xl: 24px;
+      --text-3xl: 32px;
+      
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: var(--bg-page);
+      padding: var(--space-48);
+      line-height: 1.5;
+    }
+    
+    .dashboard {
+      max-width: 840px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-32);
+    }
+    
+    .title {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-8);
+      background: var(--accent);
+      color: white;
+      padding: var(--space-12) var(--space-20);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--text-base);
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    
+    .btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-16);
+      margin-bottom: var(--space-24);
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      padding: var(--space-24);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    
+    .stat-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 2px 8px rgba(39, 35, 32, 0.06);
+    }
+    
+    .stat-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .stat-value {
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: var(--space-8);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    
+    .stat-change {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--success);
+      margin-top: var(--space-8);
+      padding: var(--space-2) var(--space-8);
+      background: var(--success-bg);
+      border-radius: var(--radius-sm);
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      padding: var(--space-24);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+    }
+    
+    .chart-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .chart-legend {
+      display: flex;
+      gap: var(--space-16);
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-8);
+      height: 140px;
+      padding-top: var(--space-8);
+    }
+    
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-8);
+    }
+    
+    .bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      transition: opacity 0.15s ease;
+    }
+    
+    .bar:hover {
+      opacity: 0.85;
+    }
+    
+    .bar-label {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .experiment-info {
+      margin-top: var(--space-48);
+      padding: var(--space-24);
+      background: #e3f2fd;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: #1565c0;
+    }
+    .changes {
+      margin-top: var(--space-16);
+      padding-top: var(--space-16);
+      border-top: 1px solid #90caf9;
+    }
+    .self-check {
+      background: #bbdefb;
+      padding: var(--space-12);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-12);
+      font-family: monospace;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Weekly Performance</div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot"></div>
+            <span>Sessions</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart">
+        <div class="bar-group">
+          <div class="bar" style="height: 40%"></div>
+          <div class="bar-label">Mon</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 65%"></div>
+          <div class="bar-label">Tue</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 45%"></div>
+          <div class="bar-label">Wed</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 80%"></div>
+          <div class="bar-label">Thu</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 55%"></div>
+          <div class="bar-label">Fri</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 70%"></div>
+          <div class="bar-label">Sat</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar" style="height: 90%"></div>
+          <div class="bar-label">Sun</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 C - V3 (Generator 自检 - 迭代2轮后)</strong><br>
+    Generator: MAI Universal skill + 自检能力<br>
+    Verifier 反馈: 抽象评分 "Spacing 65→82"<br>
+    
+    <div class="changes">
+      <strong>Generator 自检流程：</strong><br><br>
+      
+      <div class="self-check">
+        Round 1 自检发现：<br>
+        → 截图分析：card padding 视觉上太挤<br>
+        → DevTools 测量：padding 16px，预期 24px<br>
+        → 自动修复：padding: var(--space-24)<br>
+        → 发现 margin-bottom 20px 不符合 4px 网格<br>
+        → 自动修复：margin-bottom: var(--space-32)
+      </div>
+      
+      <div class="self-check">
+        Round 2 自检发现：<br>
+        → 截图分析：change badge 需要更好的视觉分离<br>
+        → 自动添加：background + border-radius<br>
+        → 发现 chart 缺少 label，添加 bar-label<br>
+        → 添加 chart-header 结构，增加 legend
+      </div>
+      
+      <br>
+      <strong>✓ Generator 能"看到"问题并主动修复，不依赖 Verifier 具体指导</strong>
+    </div>
+  </div>
+</body>
+</html>

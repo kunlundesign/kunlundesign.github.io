@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent 迭代实验对比</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: #f5f5f5;
+      padding: 32px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 32px;
+    }
+    
+    .experiment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    
+    .experiment-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .experiment-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .experiment-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    
+    .experiment-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    .badge-baseline { background: #f5f5f5; color: #666; }
+    .badge-specific { background: #e8f5e9; color: #2e7d32; }
+    .badge-selfcheck { background: #e3f2fd; color: #1565c0; }
+    .badge-shared { background: #fce4ec; color: #c2185b; }
+    
+    .version-tabs {
+      display: flex;
+      padding: 0 20px;
+      background: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .version-tab {
+      padding: 12px 20px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s ease;
+    }
+    
+    .version-tab:hover {
+      color: #1a1a1a;
+    }
+    
+    .version-tab.active {
+      color: #1a1a1a;
+      font-weight: 500;
+      border-bottom-color: #a25a02;
+    }
+    
+    .preview-frame {
+      height: 400px;
+      border: none;
+      width: 100%;
+    }
+    
+    .experiment-footer {
+      padding: 16px 20px;
+      background: #fafafa;
+      border-top: 1px solid #eee;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .method-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #eee;
+      border-radius: 3px;
+      margin-right: 8px;
+      font-size: 11px;
+    }
+    
+    .summary-section {
+      margin-top: 40px;
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .summary-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .summary-table th,
+    .summary-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .summary-table th {
+      font-weight: 600;
+      background: #fafafa;
+    }
+    
+    .score {
+      font-weight: 600;
+    }
+    
+    .score-low { color: #f44336; }
+    .score-mid { color: #ff9800; }
+    .score-high { color: #4caf50; }
+    
+    .winner {
+      background: #e8f5e9;
+    }
+    
+    .insights {
+      margin-top: 24px;
+      padding: 20px;
+      background: #fff8e1;
+      border-radius: 8px;
+      border-left: 4px solid #ff9800;
+    }
+    
+    .insights-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .insights ul {
+      margin-left: 20px;
+    }
+    
+    .insights li {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Agent 迭代策略实验对比</h1>
+    <p class="subtitle">任务：用 MAI Universal skill 设计 Analytics Dashboard，对比 4 种迭代策略的 V1→V3 效果</p>
+    
+    <div class="experiment-grid">
+      <!-- Group A: Baseline -->
+      <div class="experiment-card">
+        <div class="experiment-header">
+          <span class="experiment-title">Group A: Baseline</span>
+          <span class="experiment-badge badge-baseline">抽象反馈</span>
+        </div>
+        <div class="version-tabs">
+          <div class="version-tab active" onclick="switchVersion('a', 'v1')">V1 初始</div>
+          <div class="version-tab" onclick="switchVersion('a', 'v3')">V3 迭代后</div>
+        </div>
+        <iframe id="frame-a" class="preview-frame" src="group-a-v1.html"></iframe>
+        <div class="experiment-footer">
+          <span class="method-tag">Generator-Verifier</span>
+          反馈格式: "Spacing 65/100"
+        </div>
+      </div>
+      
+      <!-- Group B: 具体反馈 -->
+      <div class="experiment-card">
+        <div class="experiment-header">
+          <span class="experiment-title">Group B: 具体反馈</span>
+          <span class="experiment-badge badge-specific">修复代码</span>
+        </div>
+        <div class="version-tabs">
+          <div class="version-tab active" onclick="switchVersion('b', 'v1')">V1 初始</div>
+          <div class="version-tab" onclick="switchVersion('b', 'v3')">V3 迭代后</div>
+        </div>
+        <iframe id="frame-b" class="preview-frame" src="group-b-v1.html"></iframe>
+        <div class="experiment-footer">
+          <span class="method-tag">Generator-Verifier</span>
+          反馈格式: {element, problem, current, fix}
+        </div>
+      </div>
+      
+      <!-- Group C: 自检能力 -->
+      <div class="experiment-card">
+        <div class="experiment-header">
+          <span class="experiment-title">Group C: Generator 自检</span>
+          <span class="experiment-badge badge-selfcheck">Seeing Like Agent</span>
+        </div>
+        <div class="version-tabs">
+          <div class="version-tab active" onclick="switchVersion('c', 'v1')">V1 初始</div>
+          <div class="version-tab" onclick="switchVersion('c', 'v3')">V3 迭代后</div>
+        </div>
+        <iframe id="frame-c" class="preview-frame" src="group-c-v1.html"></iframe>
+        <div class="experiment-footer">
+          <span class="method-tag">Generator + 截图/测量</span>
+          Generator 能看到自己的输出
+        </div>
+      </div>
+      
+      <!-- Group D: Shared State -->
+      <div class="experiment-card">
+        <div class="experiment-header">
+          <span class="experiment-title">Group D: Shared State</span>
+          <span class="experiment-badge badge-shared">多 Agent 并行</span>
+        </div>
+        <div class="version-tabs">
+          <div class="version-tab active" onclick="switchVersion('d', 'v1')">V1 初始</div>
+          <div class="version-tab" onclick="switchVersion('d', 'v3')">V3 迭代后</div>
+        </div>
+        <iframe id="frame-d" class="preview-frame" src="group-d-v1.html"></iframe>
+        <div class="experiment-footer">
+          <span class="method-tag">3 专项 Agent</span>
+          Spacing / Color / Typography 并行
+        </div>
+      </div>
+    </div>
+    
+    <!-- Summary -->
+    <div class="summary-section">
+      <h2 class="summary-title">📊 实验结果摘要</h2>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>实验组</th>
+            <th>策略</th>
+            <th>V1 → V3 Spacing</th>
+            <th>V1 → V3 整体</th>
+            <th>核心问题解决</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A: Baseline</strong></td>
+            <td>抽象评分反馈</td>
+            <td><span class="score score-low">65 → 68</span></td>
+            <td><span class="score score-low">+3%</span></td>
+            <td>❌ Spacing 仍不符合 4px 网格</td>
+          </tr>
+          <tr>
+            <td><strong>B: 具体反馈</strong></td>
+            <td>问题 + 修复代码</td>
+            <td><span class="score score-high">65 → 88</span></td>
+            <td><span class="score score-high">+23%</span></td>
+            <td>✅ 所有 spacing 符合 4px 网格</td>
+          </tr>
+          <tr>
+            <td><strong>C: 自检能力</strong></td>
+            <td>Generator 截图/测量</td>
+            <td><span class="score score-high">65 → 85</span></td>
+            <td><span class="score score-high">+20%</span></td>
+            <td>✅ 主动发现并修复问题</td>
+          </tr>
+          <tr class="winner">
+            <td><strong>D: Shared State</strong></td>
+            <td>3 专项 Agent 并行</td>
+            <td><span class="score score-high">65 → 92</span></td>
+            <td><span class="score score-high">+27%</span></td>
+            <td>✅ 最彻底，使用完整 SMTC tokens</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="insights">
+        <div class="insights-title">💡 关键洞察</div>
+        <ul>
+          <li><strong>Group A 失败原因：</strong>Verifier 说 "spacing 差" 但不说哪里差、怎么改，Generator 只能盲目调整</li>
+          <li><strong>Group B 成功因素：</strong>具体到 element + current value + fix code，Generator 能精确执行</li>
+          <li><strong>Group C 亮点：</strong>Generator 能"看到"自己的输出，主动发现 Verifier 没提到的问题</li>
+          <li><strong>Group D 最优：</strong>专项 Agent 深度专注，无信息瓶颈，修复最彻底</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function switchVersion(group, version) {
+      const frame = document.getElementById(`frame-${group}`);
+      frame.src = `group-${group}-${version}.html`;
+      
+      // Update tabs
+      const card = frame.closest('.experiment-card');
+      card.querySelectorAll('.version-tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

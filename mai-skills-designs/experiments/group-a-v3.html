@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group A - V3 (Baseline - After 2 iterations)</title>
+  <style>
+    /* MAI Universal Tokens (subset) */
+    :root {
+      --bg-page: #fffbf8;
+      --bg-card: #ffffff;
+      --text-primary: #272320;
+      --text-secondary: #746d68;
+      --accent: #a25a02;
+      --border: #e2ddd9;
+      --success: #4caf50;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      padding: 40px;
+    }
+    
+    .dashboard {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px; /* 改了一点 */
+    }
+    
+    .title {
+      font-size: 24px;
+      color: var(--text-primary);
+      font-weight: 600; /* 加了 weight */
+    }
+    
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px; /* 稍微调大 */
+      border: none;
+      border-radius: 6px; /* 改了圆角 */
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px; /* 改了一点 */
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      padding: 20px; /* V1 是 16px */
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .stat-label {
+      font-size: 11px; /* 改小了 */
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px; /* 加了 letter-spacing */
+    }
+    
+    .stat-value {
+      font-size: 32px; /* 改大了 */
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 8px; /* 改了 */
+    }
+    
+    .stat-change {
+      font-size: 12px;
+      color: var(--success);
+      margin-top: 4px;
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      padding: 20px; /* 改了 */
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .chart-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px; /* 改了 */
+    }
+    
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+    }
+    
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .experiment-info {
+      margin-top: 40px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+    .changes {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1 class="title">Analytics Dashboard</h1>
+      <button class="btn">+ New Report</button>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value">24.5K</div>
+        <div class="stat-change">↑ 12.5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">$84K</div>
+        <div class="stat-change">↑ 8.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-change">↑ 23%</div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">Weekly Performance</div>
+      <div class="chart">
+        <div class="bar" style="height: 40%"></div>
+        <div class="bar" style="height: 65%"></div>
+        <div class="bar" style="height: 45%"></div>
+        <div class="bar" style="height: 80%"></div>
+        <div class="bar" style="height: 55%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 90%"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="experiment-info">
+    <strong>实验组 A - V3 (Baseline - 迭代2轮后)</strong><br>
+    Generator: MAI Universal skill<br>
+    Verifier 反馈: 抽象评分 "Spacing 65→68, Typography 70→72"<br>
+    <div class="changes">
+      <strong>2轮迭代的改动：</strong><br>
+      • padding 16px → 20px (随机调整)<br>
+      • margin-bottom 20px → 24px (随机调整)<br>
+      • font-size 28px → 32px (盲目放大)<br>
+      • 加了 letter-spacing 0.5px<br>
+      <br>
+      <strong>问题：</strong>spacing 仍不符合 4px 网格，改动缺乏系统性
+    </div>
+  </div>
+</body>
+</html>
