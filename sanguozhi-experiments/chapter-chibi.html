@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>赤壁之战 · 交互叙事</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1612;
+      --bg-secondary: #241f1a;
+      --bg-card: #2a2420;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --text-dim: #6a6055;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --accent-orange: #d4854a;
+      --border: rgba(201, 165, 92, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.9;
+    }
+
+    /* 进度条 */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-red));
+      transition: width 0.5s ease;
+      z-index: 1000;
+    }
+
+    /* 返回按钮 */
+    .back-link {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.3s;
+      z-index: 100;
+    }
+
+    .back-link:hover {
+      color: var(--accent-gold);
+    }
+
+    /* 章节标签 */
+    .chapter-badge {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-red);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      z-index: 100;
+    }
+
+    /* 叙事容器 */
+    .narrative-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* 场景标题 */
+    .scene-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .scene-location {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .scene-time {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* 叙事文本 */
+    .narrative-text {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+
+    .narrative-text p {
+      margin-bottom: 1.5rem;
+      text-indent: 2em;
+    }
+
+    .narrative-text .no-indent {
+      text-indent: 0;
+    }
+
+    /* 人物标签 */
+    .speaker-cao { color: #7a9ec9; }
+    .speaker-zhou { color: #c96666; }
+    .speaker-zhuge { color: var(--accent-gold); }
+    .speaker-lu { color: #7cb87c; }
+    .speaker-huang { color: var(--accent-orange); }
+    .speaker-liu { color: #7cb87c; }
+    .speaker-sun { color: #c9a55c; }
+
+    /* 对话框 */
+    .dialogue {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--accent-gold);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+
+    .dialogue.cao { border-left-color: var(--accent-blue); }
+    .dialogue.zhou { border-left-color: var(--accent-red); }
+    .dialogue.zhuge { border-left-color: var(--accent-gold); }
+
+    .dialogue .speaker {
+      font-style: normal;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* 选项系统 */
+    .choices {
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .choices-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .choice-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: var(--accent-gold);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.05);
+      padding-left: 2rem;
+    }
+
+    .choice-btn:hover::before {
+      transform: scaleY(1);
+    }
+
+    .choice-btn .choice-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    .choice-btn.selected {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+
+    .choice-btn.faded {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* 内心独白 */
+    .inner-voice {
+      background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 100%);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 2px solid var(--accent-blue);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .inner-voice.fire {
+      border-left-color: var(--accent-red);
+      background: linear-gradient(90deg, rgba(179, 60, 60, 0.15) 0%, transparent 100%);
+    }
+
+    .inner-voice .voice-name {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .inner-voice.fire .voice-name {
+      color: var(--accent-red);
+    }
+
+    /* 环境描写 */
+    .environment {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin: 2rem 0;
+      font-style: italic;
+    }
+
+    /* 场景分隔 */
+    .scene-break {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-dim);
+      font-size: 1.5rem;
+      letter-spacing: 1em;
+    }
+
+    /* 战况面板 */
+    .battle-status {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      font-size: 0.75rem;
+      max-width: 220px;
+      z-index: 50;
+    }
+
+    .battle-status h4 {
+      color: var(--accent-gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .faction-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faction-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .faction-name {
+      color: var(--text-secondary);
+    }
+
+    .faction-name.cao { color: var(--accent-blue); }
+    .faction-name.sun-liu { color: var(--accent-red); }
+
+    .faction-strength {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* 角色印象面板 */
+    .character-panel {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      font-size: 0.75rem;
+      max-width: 200px;
+      z-index: 50;
+    }
+
+    .character-panel h4 {
+      color: var(--accent-gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .character-stat {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    .character-stat .value {
+      color: var(--text-primary);
+    }
+
+    /* 隐藏场景 */
+    .scene {
+      display: none;
+    }
+
+    .scene.active {
+      display: block;
+    }
+
+    /* 动画 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fireGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(179, 60, 60, 0.5); }
+      50% { text-shadow: 0 0 20px rgba(179, 60, 60, 0.8), 0 0 30px rgba(212, 133, 74, 0.5); }
+    }
+
+    .fire-text {
+      animation: fireGlow 2s ease-in-out infinite;
+      color: var(--accent-orange);
+    }
+
+    /* 结局样式 */
+    .ending-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-gold);
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .ending-card h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: var(--accent-gold);
+      margin-bottom: 1rem;
+    }
+
+    .ending-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .ending-stat {
+      text-align: center;
+    }
+
+    .ending-stat .label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+    }
+
+    .ending-stat .value {
+      font-size: 1.5rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .ending-actions {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .ending-btn {
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--accent-gold);
+      background: transparent;
+      color: var(--accent-gold);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .ending-btn:hover {
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+    }
+
+    .ending-btn.primary {
+      background: var(--accent-gold);
+      color: var(--bg-primary);
+    }
+
+    .ending-btn.primary:hover {
+      background: #d4b06a;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .battle-status,
+      .character-panel {
+        display: none;
+      }
+      
+      .narrative-container {
+        padding: 3rem 1.5rem;
+      }
+      
+      .scene-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progress" style="width: 0%"></div>
+  <a href="../sanguozhi/" class="back-link">← 返回三国志</a>
+  <div class="chapter-badge">第二章 · 赤壁</div>
+
+  <!-- ==================== 序章：曹操南下 ==================== -->
+  <div class="narrative-container scene active" id="scene-1">
+    <div class="scene-header">
+      <div class="scene-location">长江北岸 · 曹营</div>
+      <div class="scene-title">八十万大军</div>
+      <div class="scene-time">建安十三年 · 冬</div>
+    </div>
+
+    <div class="narrative-text">
+      <p class="no-indent environment">
+        江风凛冽，战船连绵数里。曹操立于旗舰船头，俯瞰着这支横扫北方的百战之师。
+      </p>
+
+      <p>
+        荆州刘琮不战而降，刘备仓皇南逃，如今只剩江东孙权，尚在负隅顽抗。
+      </p>
+
+      <p>
+        曹操展开手中檄文，上书「大军八十万」——这个数字，既是威慑，也是野心的宣言。
+      </p>
+
+      <div class="dialogue cao">
+        <span class="speaker speaker-cao">曹操</span>
+        吾今统雄兵百万，战将千员。欲与孙权会猎于江夏，共伐刘备。若识时务，当早来降；否则，玉石俱焚。
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">天下大势</div>
+        北方已定，南方将平。统一天下的梦想，从未如此接近。但曹操心里清楚，水战非其所长——这正是他急于速战的原因。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你将扮演谁的视角？</div>
+      <button class="choice-btn" onclick="makeChoice(1, 'zhou')">
+        周瑜 · 东吴大都督
+        <span class="choice-hint">→ 年少成名，运筹帷幄</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice(1, 'zhuge')">
+        诸葛亮 · 刘备军师
+        <span class="choice-hint">→ 初出茅庐，舌战群儒</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景2：柴桑议事 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-2">
+    <div class="scene-header">
+      <div class="scene-location">柴桑 · 吴侯府</div>
+      <div class="scene-title">主战与主和</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你快马回到柴桑时，议事厅内已吵成一团。
+      </p>
+
+      <p>
+        张昭为首的文臣主张投降，认为曹操势大不可敌；而黄盖、韩当等老将则怒发冲冠，誓死不降。
+      </p>
+
+      <p>
+        孙权坐在主位上，脸色阴沉，一言不发。他在等你。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-lu">鲁肃</span>
+        （低声）公瑾，主公心中已有决断，只是需要一个人说出来。
+      </div>
+
+      <p>
+        你看向孙权，四目相对。那是已故伯符的眼神——不甘、骄傲、还有深藏的不安。
+      </p>
+
+      <div class="inner-voice">
+        <div class="voice-name">审度</div>
+        张昭说得没错，曹操确有八十万大军。但他没说的是：北人不习水战，长江天险足以抵挡十万大军。真正的问题在于——孙权的决心够不够坚定。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何开口？</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-2', 'bold')">
+        "诸公皆言降，肃亦言降。独周瑜不可降！"
+        <span class="choice-hint">→ 直接表态，震慑群臣</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-2', 'analyze')">
+        "请容瑜为主公分析敌我形势。"
+        <span class="choice-hint">→ 以理服人，逐条反驳</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-2', 'provoke')">
+        "主公若降，周瑜无话可说。但请问诸公——降后如何自处？"
+        <span class="choice-hint">→ 刺痛自尊，激发血性</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景3：孙权决断 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-3">
+    <div class="scene-header">
+      <div class="scene-location">柴桑 · 议事厅</div>
+      <div class="scene-title">拔剑斫案</div>
+    </div>
+
+    <div class="narrative-text" id="zhou-3-text">
+      <!-- 根据上一个选择动态填充 -->
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">孙权问你</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-3', 'confident')">
+        "五万精兵足矣。瑜愿立军令状。"
+        <span class="choice-hint">→ 展现绝对自信</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-3', 'honest')">
+        "三万可战，五万必胜。但需主公全力支持，不受掣肘。"
+        <span class="choice-hint">→ 坦诚需求，争取授权</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景4：与诸葛亮相见 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-4">
+    <div class="scene-header">
+      <div class="scene-location">周瑜大营</div>
+      <div class="scene-title">卧龙凤雏</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        孙权拔剑斫案，声彻厅堂："自今日起，敢言降者，如此案！"
+      </p>
+
+      <p>
+        主战已定，接下来是真正的难题——如何打赢这场仗。
+      </p>
+
+      <p class="no-indent environment">
+        夜深，一人求见。来者羽扇纶巾，正是刘备派来的使者——诸葛亮。
+      </p>
+
+      <div class="dialogue zhuge">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        都督少年得志，名震江东。亮此来，是为孙刘联盟共抗曹贼。不知都督意下如何？
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">洞察</div>
+        此人目光清澈，却深不见底。传闻刘备三顾茅庐才请出山，如今初次见面，你便知传闻不虚。这是你的盟友，也是你的对手——一个值得尊敬的对手。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何应对这位"卧龙"？</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-4', 'test')">
+        "久闻孔明大才，不知有何破敌之策？"
+        <span class="choice-hint">→ 试探虚实</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-4', 'direct')">
+        "联盟之事，我已禀报主公。你我开门见山，谈谈分工。"
+        <span class="choice-hint">→ 务实合作</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-4', 'rival')">
+        "孔明既来，何不留在东吴？以先生之才，何必屈就刘备？"
+        <span class="choice-hint">→ 暗中拉拢/试探忠诚</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景5：苦肉计 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-5">
+    <div class="scene-header">
+      <div class="scene-location">周瑜大营 · 深夜</div>
+      <div class="scene-title">苦肉之计</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        与诸葛亮达成默契后，你独自回到营帐，点起烛火。
+      </p>
+
+      <p>
+        案上摊着一封信——来自曹营的蒋干，你的旧友，如今是曹操的说客。
+      </p>
+
+      <p>
+        曹操派他来劝降，正好可以利用。
+      </p>
+
+      <div class="inner-voice fire">
+        <div class="voice-name">计谋</div>
+        火攻是唯一的胜算，但需要有人深入曹营诈降。这个人要有足够的分量，足够的演技，还要有足够的决心——承受真正的皮肉之苦。
+      </div>
+
+      <p>
+        帐外传来脚步声。老将黄盖掀帘而入，单膝跪地：
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-huang">黄盖</span>
+        都督，老夫愿往！三世老臣的分量，够不够？
+      </div>
+
+      <p>
+        你看着这位追随孙家三代的老将，头发已经花白，眼中却燃着年轻时的火焰。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">这是真正的"苦肉计"——黄盖必须真的挨打</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-5', 'accept')">
+        "老将军高义。明日校场，瑜亲自动手。"
+        <span class="choice-hint">→ 接受牺牲，执行计划</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-5', 'hesitate')">
+        "此计太险，老将军年事已高……"
+        <span class="choice-hint">→ 犹豫是否值得</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景6：借东风 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-6">
+    <div class="scene-header">
+      <div class="scene-location">三江口 · 战前</div>
+      <div class="scene-title">万事俱备</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        黄盖挨了五十军棍，皮开肉绽，消息传到曹营。
+      </p>
+      
+      <p>
+        蔡中、蔡和回报曹操：黄盖与周瑜不和，愿率船队投降。
+      </p>
+      
+      <p>
+        曹操大喜，命人准备接应。
+      </p>
+
+      <p class="no-indent environment">
+        火船已备，诈降已成。唯独一事——隆冬时节，江上皆是西北风，火攻只会烧到自己。
+      </p>
+
+      <div class="dialogue zhuge">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        都督可知，亮能借三日东南风？
+      </div>
+
+      <p>
+        你看向诸葛亮，不知这是玩笑还是认真。
+      </p>
+
+      <div class="inner-voice">
+        <div class="voice-name">判断</div>
+        改变风向？这是天方夜谭。但此人既敢开口，必有所恃。你见过太多自作聪明之人，但诸葛亮不是——他从不说没把握的话。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你相信他吗？</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-6', 'trust')">
+        "好。三日后若有东风，我立刻发动总攻。"
+        <span class="choice-hint">→ 选择信任</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-6', 'doubt')">
+        "孔明莫要戏言。若无东风，如何收场？"
+        <span class="choice-hint">→ 保持怀疑</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 周瑜线 · 场景7：火烧赤壁 ==================== -->
+  <div class="narrative-container scene" id="scene-zhou-7">
+    <div class="scene-header">
+      <div class="scene-location">赤壁 · 长江</div>
+      <div class="scene-title fire-text">火烧连营</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        三日后，午夜。
+      </p>
+
+      <p class="no-indent environment">
+        东南风起。
+      </p>
+
+      <p>
+        你站在旗舰船头，看着黄盖的船队驶向曹营。二十艘快船，满载干草硫磺，船头裹着油布。
+      </p>
+
+      <p>
+        曹军以为是降兵，列队迎接。
+      </p>
+
+      <p>
+        直到火光冲天。
+      </p>
+
+      <div class="inner-voice fire">
+        <div class="voice-name">战场</div>
+        曹操的战船首尾相连，铁索锁江——这本是为了防止北方士兵晕船的妙计，此刻却成了致命的陷阱。火借风势，一船着火，百船皆燃。
+      </div>
+
+      <p>
+        天地之间，只剩下火。
+      </p>
+
+      <p>
+        数十里江面，化作人间炼狱。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">胜局已定，你下令——</div>
+      <button class="choice-btn" onclick="makeChoice('zhou-7', 'pursue')">
+        "全军出击！不留活口！"
+        <span class="choice-hint">→ 斩草除根</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-7', 'capture')">
+        "分兵包抄，活捉曹操！"
+        <span class="choice-hint">→ 擒贼擒王</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhou-7', 'hold')">
+        "守住阵线，不可追击太深。"
+        <span class="choice-hint">→ 稳扎稳打</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景2：舌战群儒 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-2">
+    <div class="scene-header">
+      <div class="scene-location">柴桑 · 吴侯府</div>
+      <div class="scene-title">舌战群儒</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你随鲁肃来到柴桑，尚未见到孙权，便先被请入议事厅——东吴的文臣们要"会一会"这位自称卧龙的年轻人。
+      </p>
+
+      <p>
+        张昭第一个发难：
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker">张昭</span>
+        先生自比管仲、乐毅，却让刘皇叔丢了新野、弃了樊城、败走当阳、奔逃夏口。不知管仲、乐毅，可曾如此狼狈？
+      </div>
+
+      <p>
+        满堂哄笑。
+      </p>
+
+      <div class="inner-voice">
+        <div class="voice-name">冷静</div>
+        这是下马威。东吴主和派想借此机会羞辱你，动摇孙权的抗曹决心。你若示弱，联盟便无从谈起。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何回应？</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-2', 'sharp')">
+        "鹏飞万里，岂与燕雀同栖？"
+        <span class="choice-hint">→ 反唇相讥，以攻代守</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-2', 'logic')">
+        "刘皇叔以仁义为本，不忍弃民而走。此乃仁者之败，非谋者之过。"
+        <span class="choice-hint">→ 以理服人，转移焦点</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-2', 'provoke')">
+        "若依张公之见，东吴是否也该早早投降，免得重蹈刘皇叔覆辙？"
+        <span class="choice-hint">→ 直击痛处，化被动为主动</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景3：说服孙权 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-3">
+    <div class="scene-header">
+      <div class="scene-location">柴桑 · 内堂</div>
+      <div class="scene-title">激将法</div>
+    </div>
+
+    <div class="narrative-text" id="zhuge-3-text">
+      <!-- 动态内容 -->
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">面对孙权的犹豫，你——</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-3', 'aggressive')">
+        "若将军决计降曹，何不早早送上乔国老的两位千金？"
+        <span class="choice-hint">→ 以大乔小乔激将</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-3', 'strategic')">
+        "曹操虽强，亦有五败；孙刘虽弱，却有五胜。"
+        <span class="choice-hint">→ 条分缕析，以理动人</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景4：与周瑜相见 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-4">
+    <div class="scene-header">
+      <div class="scene-location">周瑜大营</div>
+      <div class="scene-title">既生瑜</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        孙权终于下定决心抗曹，召回了领兵在外的周瑜。
+      </p>
+
+      <p>
+        你在军营中见到这位名震江东的少年都督——周瑜今年三十四岁，比你大七岁。
+      </p>
+
+      <p class="no-indent environment">
+        他容貌俊美，气度不凡，站在那里便如一柄出鞘的长剑。
+      </p>
+
+      <div class="dialogue zhou">
+        <span class="speaker speaker-zhou">周瑜</span>
+        久闻卧龙大名，今日一见，果然名不虚传。不知孔明有何破敌良策？
+      </div>
+
+      <div class="inner-voice">
+        <div class="voice-name">洞察</div>
+        他在试探你。这个人才华横溢，但心高气傲——你若表现得太强，会成为他的眼中钉；太弱，则不配与他并肩作战。
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你如何与这位"瑜亮"相处？</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-4', 'humble')">
+        "亮一介书生，行军打仗之事，全仗都督。"
+        <span class="choice-hint">→ 韬光养晦，以退为进</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-4', 'equal')">
+        "破敌之策，你我心中所想，恐怕是同一个字。"
+        <span class="choice-hint">→ 暗示火攻，展示默契</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-4', 'confident')">
+        "曹军虽众，亮有一计，可令其灰飞烟灭。"
+        <span class="choice-hint">→ 展露锋芒，争取主导</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景5：草船借箭 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-5">
+    <div class="scene-header">
+      <div class="scene-location">长江 · 浓雾中</div>
+      <div class="scene-title">草船借箭</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        周瑜设下陷阱：命你三日内造十万支箭，否则军法处置。
+      </p>
+
+      <p>
+        他以为这是不可能完成的任务。
+      </p>
+
+      <p>
+        而你，早已看穿了他的心思——也早已想好了应对之策。
+      </p>
+
+      <div class="inner-voice">
+        <div class="voice-name">天时</div>
+        三日后必有大雾。这是你观天象得出的结论。有了雾，便有了一切。
+      </div>
+
+      <p class="no-indent environment">
+        第三日，午夜。长江上浓雾弥漫，对面不见人影。
+      </p>
+
+      <p>
+        你命人准备了二十艘快船，船上扎满草人，驶向曹营。
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-lu">鲁肃</span>
+        （惊恐）孔明，你这是要送死吗？！
+      </div>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">船队逼近曹营，你——</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-5', 'calm')">
+        "子敬莫慌。且饮酒，静待天明。"
+        <span class="choice-hint">→ 从容不迫</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-5', 'explain')">
+        "曹操多疑，雾中必不敢出战，只会放箭。这十万支箭，正是借来的。"
+        <span class="choice-hint">→ 解释计谋</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景6：七星坛借风 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-6">
+    <div class="scene-header">
+      <div class="scene-location">南屏山 · 七星坛</div>
+      <div class="scene-title">借东风</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        草船借箭十万余，周瑜心中暗惊，却也不得不服。
+      </p>
+
+      <p>
+        万事俱备，只欠东风。
+      </p>
+
+      <p>
+        火攻之计已定，黄盖诈降已成，唯独隆冬时节皆是西北风，火攻只会烧到联军自己。
+      </p>
+
+      <p>
+        周瑜急得口吐鲜血，卧床不起。
+      </p>
+
+      <p>
+        你前去探望：
+      </p>
+
+      <div class="dialogue">
+        <span class="speaker speaker-zhuge">诸葛亮</span>
+        都督之病，亮有一方可医。
+      </div>
+
+      <p>
+        你在他掌心写下十六个字：「欲破曹公，宜用火攻。万事俱备，只欠东风。」
+      </p>
+
+      <p>
+        周瑜霍然而起："孔明有何妙计？"
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你会如何解释"借东风"？</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-6', 'mysterious')">
+        "亮曾遇异人，传授奇门遁甲之术，可呼风唤雨。"
+        <span class="choice-hint">→ 保持神秘</span>
+      </button>
+      <button class="choice-btn" onclick="makeChoice('zhuge-6', 'scientific')">
+        "亮久观天象，三日后必有东南风起。此乃天时，非人力所为。"
+        <span class="choice-hint">→ 坦诚相告</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 诸葛亮线 · 场景7：火烧赤壁 ==================== -->
+  <div class="narrative-container scene" id="scene-zhuge-7">
+    <div class="scene-header">
+      <div class="scene-location">南屏山 · 七星坛上</div>
+      <div class="scene-title fire-text">东风起</div>
+    </div>
+
+    <div class="narrative-text">
+      <p>
+        你独自登上七星坛，披发仗剑，焚香祝祷。
+      </p>
+
+      <p>
+        不为做法，只为等待。
+      </p>
+
+      <p>
+        三更时分，旗幡忽动。
+      </p>
+
+      <p class="no-indent environment" style="font-size: 1.2rem; color: var(--accent-orange);">
+        东南风起。
+      </p>
+
+      <p>
+        你遥望江面，只见黄盖的火船正驶向曹营。
+      </p>
+
+      <p>
+        片刻之后，天边一片火红。
+      </p>
+
+      <div class="inner-voice fire">
+        <div class="voice-name">历史</div>
+        这一把火，烧掉了曹操统一天下的梦想，烧出了三国鼎立的格局。从此，魏、蜀、吴三分天下，再无一统之日。而你，也从这一刻起，真正踏上了历史的舞台。
+      </div>
+
+      <p>
+        但你没有时间欣赏这胜利的火光。
+      </p>
+
+      <p>
+        因为周瑜派来的刺客，已经在山下等候了。
+      </p>
+    </div>
+
+    <div class="choices">
+      <div class="choices-label">你早有准备</div>
+      <button class="choice-btn" onclick="makeChoice('zhuge-7', 'escape')">
+        登上赵云的接应船，连夜返回刘备营中
+        <span class="choice-hint">→ 全身而退</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 共同结局 ==================== -->
+  <div class="narrative-container scene" id="scene-ending">
+    <div class="scene-header">
+      <div class="scene-location">赤壁 · 战后</div>
+      <div class="scene-title">三分天下</div>
+    </div>
+
+    <div class="narrative-text">
+      <p class="no-indent environment">
+        火光映红了整个长江，燃烧了整整一夜。
+      </p>
+
+      <p id="ending-narrative">
+        <!-- 根据选择动态生成 -->
+      </p>
+
+      <p>
+        曹操大军溃败，仓皇北逃。据说他在华容道上被关羽截住，险些丧命，最后念及旧情被放走。
+      </p>
+
+      <p>
+        从此，曹操再无力南顾。孙权巩固江东，刘备趁机取得荆州，三分天下的格局，自此而定。
+      </p>
+
+      <p class="no-indent environment" style="margin-top: 3rem;">
+        这一年，曹操五十四岁，孙权二十七岁，周瑜三十四岁，诸葛亮二十七岁。
+      </p>
+
+      <p class="no-indent environment">
+        赤壁一战，少年们击败了老将。历史的车轮，从此驶向另一个方向。
+      </p>
+    </div>
+
+    <div class="ending-card">
+      <h3>赤壁之战 · 完</h3>
+      <div class="ending-stats">
+        <div class="ending-stat">
+          <div class="label">视角</div>
+          <div class="value" id="stat-perspective">—</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">抉择</div>
+          <div class="value" id="stat-choices">—</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">性格倾向</div>
+          <div class="value" id="stat-trait">—</div>
+        </div>
+      </div>
+      <div class="ending-actions">
+        <a href="../sanguozhi/" class="ending-btn">返回三国志</a>
+        <button onclick="restart()" class="ending-btn">换个视角再来</button>
+        <button onclick="nextChapter()" class="ending-btn primary">下一章 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 战况面板 -->
+  <div class="battle-status" id="battleStatus">
+    <h4>⚔️ 赤壁战况</h4>
+    <div class="faction-row">
+      <span class="faction-name cao">曹军</span>
+      <span class="faction-strength" id="cao-strength">83 万</span>
+    </div>
+    <div class="faction-row">
+      <span class="faction-name sun-liu">孙刘联军</span>
+      <span class="faction-strength" id="sunliu-strength">5 万</span>
+    </div>
+  </div>
+
+  <!-- 角色面板 -->
+  <div class="character-panel" id="characterPanel" style="display: none;">
+    <h4 id="panel-character">周瑜</h4>
+    <div class="character-stat">
+      <span>果敢</span>
+      <span class="value" id="stat-bold">●●●○○</span>
+    </div>
+    <div class="character-stat">
+      <span>谋略</span>
+      <span class="value" id="stat-wisdom">●●●○○</span>
+    </div>
+    <div class="character-stat">
+      <span>气度</span>
+      <span class="value" id="stat-grace">●●●○○</span>
+    </div>
+  </div>
+
+  <script>
+    // 游戏状态
+    const state = {
+      perspective: null, // 'zhou' 或 'zhuge'
+      currentScene: '1',
+      choices: [],
+      traits: {
+        bold: 3,
+        wisdom: 3,
+        grace: 3
+      },
+      caoStrength: 83,
+      sunliuStrength: 5
+    };
+
+    // 场景流程
+    const sceneFlow = {
+      // 选择视角
+      '1-zhou': 'zhou-2',
+      '1-zhuge': 'zhuge-2',
+      
+      // 周瑜线
+      'zhou-2-bold': 'zhou-3',
+      'zhou-2-analyze': 'zhou-3',
+      'zhou-2-provoke': 'zhou-3',
+      'zhou-3-confident': 'zhou-4',
+      'zhou-3-honest': 'zhou-4',
+      'zhou-4-test': 'zhou-5',
+      'zhou-4-direct': 'zhou-5',
+      'zhou-4-rival': 'zhou-5',
+      'zhou-5-accept': 'zhou-6',
+      'zhou-5-hesitate': 'zhou-6',
+      'zhou-6-trust': 'zhou-7',
+      'zhou-6-doubt': 'zhou-7',
+      'zhou-7-pursue': 'ending',
+      'zhou-7-capture': 'ending',
+      'zhou-7-hold': 'ending',
+      
+      // 诸葛亮线
+      'zhuge-2-sharp': 'zhuge-3',
+      'zhuge-2-logic': 'zhuge-3',
+      'zhuge-2-provoke': 'zhuge-3',
+      'zhuge-3-aggressive': 'zhuge-4',
+      'zhuge-3-strategic': 'zhuge-4',
+      'zhuge-4-humble': 'zhuge-5',
+      'zhuge-4-equal': 'zhuge-5',
+      'zhuge-4-confident': 'zhuge-5',
+      'zhuge-5-calm': 'zhuge-6',
+      'zhuge-5-explain': 'zhuge-6',
+      'zhuge-6-mysterious': 'zhuge-7',
+      'zhuge-6-scientific': 'zhuge-7',
+      'zhuge-7-escape': 'ending'
+    };
+
+    // 性格影响
+    const traitEffects = {
+      'bold': { bold: 1 },
+      'analyze': { wisdom: 1 },
+      'provoke': { bold: 1, grace: -1 },
+      'confident': { bold: 1 },
+      'honest': { grace: 1 },
+      'test': { wisdom: 1 },
+      'direct': { grace: 1 },
+      'rival': { bold: 1 },
+      'accept': { bold: 1 },
+      'hesitate': { grace: 1 },
+      'trust': { grace: 1 },
+      'doubt': { wisdom: 1 },
+      'pursue': { bold: 1 },
+      'capture': { wisdom: 1 },
+      'hold': { grace: 1 },
+      'sharp': { bold: 1 },
+      'logic': { wisdom: 1 },
+      'aggressive': { bold: 1 },
+      'strategic': { wisdom: 1 },
+      'humble': { grace: 1 },
+      'equal': { wisdom: 1 },
+      'calm': { grace: 1 },
+      'explain': { wisdom: 1 },
+      'mysterious': { grace: 1 },
+      'scientific': { wisdom: 1 }
+    };
+
+    function makeChoice(scene, choice) {
+      state.choices.push({ scene, choice });
+      
+      // 设置视角
+      if (scene === 1) {
+        state.perspective = choice;
+        document.getElementById('panel-character').textContent = choice === 'zhou' ? '周瑜' : '诸葛亮';
+        document.getElementById('characterPanel').style.display = 'block';
+      }
+      
+      // 更新性格
+      const effects = traitEffects[choice] || {};
+      for (const [trait, value] of Object.entries(effects)) {
+        state.traits[trait] = Math.max(1, Math.min(5, state.traits[trait] + value));
+      }
+      updateTraitDisplay();
+      
+      // 标记按钮
+      const container = document.querySelector('.scene.active');
+      container.querySelectorAll('.choice-btn').forEach(btn => {
+        if (btn.onclick.toString().includes(`'${choice}'`)) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.add('faded');
+        }
+      });
+      
+      // 切换场景
+      setTimeout(() => {
+        const key = `${scene}-${choice}`;
+        const nextScene = sceneFlow[key];
+        if (nextScene) {
+          goToScene(nextScene);
+        }
+      }, 800);
+    }
+
+    function goToScene(sceneId) {
+      document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+      
+      const target = document.getElementById(`scene-${sceneId}`);
+      if (target) {
+        target.classList.add('active');
+        state.currentScene = sceneId;
+        
+        // 更新进度条
+        const progress = calculateProgress(sceneId);
+        document.getElementById('progress').style.width = progress + '%';
+        
+        // 应用动态内容
+        applyDynamicContent(sceneId);
+        
+        // 更新战况（模拟）
+        updateBattleStatus(sceneId);
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function calculateProgress(sceneId) {
+      const progressMap = {
+        '1': 0,
+        'zhou-2': 15, 'zhuge-2': 15,
+        'zhou-3': 30, 'zhuge-3': 30,
+        'zhou-4': 45, 'zhuge-4': 45,
+        'zhou-5': 60, 'zhuge-5': 60,
+        'zhou-6': 75, 'zhuge-6': 75,
+        'zhou-7': 90, 'zhuge-7': 90,
+        'ending': 100
+      };
+      return progressMap[sceneId] || 0;
+    }
+
+    function applyDynamicContent(sceneId) {
+      // 周瑜线场景3的动态内容
+      if (sceneId === 'zhou-3') {
+        const text = document.getElementById('zhou-3-text');
+        const lastChoice = state.choices[state.choices.length - 1]?.choice;
+        
+        let content = '';
+        if (lastChoice === 'bold') {
+          content = `
+            <p>你的声音在大厅回荡，所有人都愣住了。</p>
+            <div class="dialogue">
+              <span class="speaker speaker-zhou">周瑜</span>
+              曹操名为汉相，实为汉贼。瑜若降曹，有何面目见江东父老？诸公愿降，自去便是。瑜宁死不降！
+            </div>
+            <p>张昭脸色铁青，却说不出话来。孙权的眼中，终于有了光。</p>
+          `;
+        } else if (lastChoice === 'analyze') {
+          content = `
+            <p>你走到舆图前，开始逐条分析：</p>
+            <div class="dialogue">
+              <span class="speaker speaker-zhou">周瑜</span>
+              其一，曹军号称八十万，实则不过二十万，荆州降兵居半，人心未附。其二，北人不习水战，长江天险足以抵挡。其三，曹军远来疲惫，我军以逸待劳……
+            </div>
+            <p>你一口气列举了六条理由。张昭试图反驳，却被你一一驳回。最后，他沉默了。</p>
+          `;
+        } else {
+          content = `
+            <p>你的问题让所有人都沉默了。</p>
+            <p>投降之后，他们这些人会如何？曹操能容得下江东士族吗？张昭为首的文臣们，第一次认真思考这个问题。</p>
+            <p>孙权缓缓站起身，走到你身边：</p>
+            <div class="dialogue">
+              <span class="speaker speaker-sun">孙权</span>
+              公瑾说得对。父兄基业，岂能拱手让人？
+            </div>
+          `;
+        }
+        content += `
+          <div class="dialogue">
+            <span class="speaker speaker-sun">孙权</span>
+            公瑾，你需要多少兵马？
+          </div>
+        `;
+        text.innerHTML = content;
+      }
+      
+      // 诸葛亮线场景3的动态内容
+      if (sceneId === 'zhuge-3') {
+        const text = document.getElementById('zhuge-3-text');
+        const lastChoice = state.choices[state.choices.length - 1]?.choice;
+        
+        let content = `<p>你在议事厅舌战群儒，驳得众人哑口无言。消息传到内堂，孙权终于召见了你。</p>`;
+        
+        if (lastChoice === 'sharp') {
+          content += `<p>你的才辩已经让孙权刮目相看，但他仍有顾虑：</p>`;
+        } else if (lastChoice === 'logic') {
+          content += `<p>你以理服人的风格让孙权颇为欣赏，但他仍在犹豫：</p>`;
+        } else {
+          content += `<p>你的反击让主和派颜面尽失，孙权对你的胆识印象深刻，但仍有疑虑：</p>`;
+        }
+        
+        content += `
+          <div class="dialogue">
+            <span class="speaker speaker-sun">孙权</span>
+            曹操势大，先生有何良策教我？
+          </div>
+          <div class="inner-voice">
+            <div class="voice-name">洞察</div>
+            孙权是一个年轻的主君，父兄的荣光是他的骄傲，也是他的压力。他需要的不是一个谋士的建议，而是一个理由——一个让他有勇气抗争的理由。
+          </div>
+        `;
+        text.innerHTML = content;
+      }
+      
+      // 结局的动态内容
+      if (sceneId === 'ending') {
+        const narrative = document.getElementById('ending-narrative');
+        let content = '';
+        
+        if (state.perspective === 'zhou') {
+          content = `<p>周瑜站在旗舰上，看着对岸的冲天火光。这一战，他用三万精兵击败了号称八十万的曹军，创造了以少胜多的奇迹。</p><p>但他心中没有太多喜悦——因为他知道，那个羽扇纶巾的年轻人，终将成为东吴最大的隐患。</p>`;
+        } else {
+          content = `<p>诸葛亮站在南屏山上，看着江面的火光渐渐熄灭。这一战，他证明了自己的价值，也为刘备争取到了荆州这块立足之地。</p><p>但他心中没有太多喜悦——因为他知道，真正的考验才刚刚开始。</p>`;
+        }
+        
+        narrative.innerHTML = content;
+        
+        // 更新统计
+        document.getElementById('stat-perspective').textContent = state.perspective === 'zhou' ? '周瑜' : '诸葛亮';
+        document.getElementById('stat-choices').textContent = state.choices.length;
+        
+        // 计算主要性格
+        const maxTrait = Object.entries(state.traits).sort((a, b) => b[1] - a[1])[0][0];
+        const traitNames = { bold: '果敢', wisdom: '智谋', grace: '气度' };
+        document.getElementById('stat-trait').textContent = traitNames[maxTrait];
+      }
+    }
+
+    function updateBattleStatus(sceneId) {
+      // 随着剧情推进更新战况显示
+      const stageStrength = {
+        'zhou-5': { cao: 83, sunliu: 5 },
+        'zhou-6': { cao: 80, sunliu: 5 },
+        'zhou-7': { cao: 20, sunliu: 4 },
+        'zhuge-5': { cao: 83, sunliu: 5 },
+        'zhuge-6': { cao: 80, sunliu: 5 },
+        'zhuge-7': { cao: 20, sunliu: 4 },
+        'ending': { cao: 3, sunliu: 3 }
+      };
+      
+      if (stageStrength[sceneId]) {
+        document.getElementById('cao-strength').textContent = stageStrength[sceneId].cao + ' 万';
+        document.getElementById('sunliu-strength').textContent = stageStrength[sceneId].sunliu + ' 万';
+      }
+    }
+
+    function updateTraitDisplay() {
+      const display = (value) => '●'.repeat(value) + '○'.repeat(5 - value);
+      document.getElementById('stat-bold').textContent = display(state.traits.bold);
+      document.getElementById('stat-wisdom').textContent = display(state.traits.wisdom);
+      document.getElementById('stat-grace').textContent = display(state.traits.grace);
+    }
+
+    function restart() {
+      state.perspective = null;
+      state.currentScene = '1';
+      state.choices = [];
+      state.traits = { bold: 3, wisdom: 3, grace: 3 };
+      
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.classList.remove('selected', 'faded');
+      });
+      
+      document.getElementById('characterPanel').style.display = 'none';
+      document.getElementById('cao-strength').textContent = '83 万';
+      document.getElementById('sunliu-strength').textContent = '5 万';
+      
+      goToScene('1');
+    }
+
+    function nextChapter() {
+      alert('下一章「荆州风云」正在制作中，敬请期待！');
+    }
+
+    // 初始化
+    updateTraitDisplay();
+  </script>
+</body>
+</html>
