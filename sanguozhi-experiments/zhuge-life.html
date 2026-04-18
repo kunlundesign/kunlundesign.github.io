@@ -113,72 +113,154 @@
     .chapter-num { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--text-dim); }
     .chapter-title { font-family: 'Ma Shan Zheng', cursive; font-size: 1.4rem; color: var(--accent-gold); }
     
-    /* 状态面板 */
+    /* 状态面板 - 古风水墨风格 */
     .stats-panel {
       position: absolute;
       top: 50%;
       left: 1.5rem;
       transform: translateY(-50%);
-      width: 130px;
-      background: rgba(13,11,9,0.9);
-      border: 1px solid var(--border);
-      padding: 1rem;
-      backdrop-filter: blur(10px);
+      width: 140px;
+      background: linear-gradient(180deg, rgba(20,18,15,0.95) 0%, rgba(13,11,9,0.9) 100%);
+      border: none;
+      padding: 1.2rem 1rem;
+      backdrop-filter: blur(12px);
+      /* 古风边框效果 */
+      box-shadow: 
+        inset 0 0 0 1px rgba(201,165,92,0.2),
+        inset 2px 2px 0 rgba(201,165,92,0.05),
+        inset -2px -2px 0 rgba(0,0,0,0.3);
+    }
+    .stats-panel::before {
+      content: '';
+      position: absolute;
+      top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border: 1px solid rgba(201,165,92,0.1);
+      pointer-events: none;
     }
     .stats-panel h4 {
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
       color: var(--accent-gold);
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,165,92,0.15);
+      padding-bottom: 0.6rem;
     }
     .stat-item {
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.9rem;
+      position: relative;
     }
     .stat-label {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.2rem;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.05em;
+    }
+    .stat-icon {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-right: 0.3rem;
+    }
+    .stat-value {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.9rem;
+      color: var(--accent-gold);
     }
     .stat-bar {
-      height: 5px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 3px;
-      overflow: hidden;
+      height: 3px;
+      background: rgba(201,165,92,0.1);
+      position: relative;
+      overflow: visible;
     }
+    .stat-bar::before,
+    .stat-bar::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 7px;
+      background: rgba(201,165,92,0.3);
+    }
+    .stat-bar::before { left: 0; }
+    .stat-bar::after { right: 0; }
     .stat-fill {
       height: 100%;
-      border-radius: 3px;
-      transition: width 0.5s;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
     }
-    .stat-fill.health { background: linear-gradient(90deg, #e74c3c, #27ae60); }
-    .stat-fill.destiny { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); }
-    .stat-fill.military { background: linear-gradient(90deg, var(--accent-red), var(--accent-orange)); }
-    .stat-fill.wisdom { background: linear-gradient(90deg, var(--accent-green), var(--accent-gold)); }
+    /* 统一使用金色系，通过透明度区分 */
+    .stat-fill.health { 
+      background: linear-gradient(90deg, rgba(201,165,92,0.4) 0%, rgba(201,165,92,0.9) 100%);
+    }
+    .stat-fill.destiny { 
+      background: linear-gradient(90deg, rgba(138,107,158,0.4) 0%, rgba(138,107,158,0.9) 100%);
+    }
+    .stat-fill.military { 
+      background: linear-gradient(90deg, rgba(179,60,60,0.4) 0%, rgba(179,60,60,0.8) 100%);
+    }
+    .stat-fill.wisdom { 
+      background: linear-gradient(90deg, rgba(74,107,138,0.4) 0%, rgba(74,107,138,0.9) 100%);
+    }
+    /* 进度条末端光点 */
+    .stat-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 5px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(201,165,92,0.6);
+      opacity: 0.8;
+    }
     
     .divergence-section {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(201,165,92,0.1);
     }
     .divergence-label {
-      font-size: 0.6rem;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.8rem;
       color: var(--text-dim);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
     }
     .divergence-dots {
       display: flex;
-      gap: 3px;
+      gap: 6px;
+      justify-content: center;
     }
     .divergence-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--border);
+      width: 10px; 
+      height: 10px;
+      background: transparent;
+      border: 1px solid rgba(201,165,92,0.3);
+      position: relative;
+    }
+    .divergence-dot::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: transparent;
+      transition: all 0.5s;
     }
     .divergence-dot.active {
+      border-color: var(--accent-purple);
+      background: transparent;
+      box-shadow: none;
+    }
+    .divergence-dot.active::before {
       background: var(--accent-purple);
-      box-shadow: 0 0 6px var(--accent-purple);
+      box-shadow: 0 0 8px rgba(138,107,158,0.6);
     }
     
     /* 时间线 */
@@ -464,7 +546,7 @@
       .timeline { position: static; transform: none; text-align: center; margin-bottom: 1rem; }
     }
     
-    /* 音乐控制 */
+    /* 音乐控制 - 古风风格 */
     .audio-control {
       position: fixed;
       bottom: 1.5rem;
@@ -472,10 +554,9 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.6rem 1rem;
+      padding: 0.5rem 0.9rem;
       background: rgba(13, 11, 9, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      border: 1px solid rgba(201,165,92,0.2);
       cursor: pointer;
       z-index: 100;
       transition: all 0.3s;
@@ -483,24 +564,32 @@
     }
     .audio-control:hover {
       border-color: var(--accent-gold);
-      background: rgba(201, 165, 92, 0.1);
+      background: rgba(201, 165, 92, 0.05);
     }
     .audio-icon {
-      font-size: 1.2rem;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1rem;
+      color: var(--text-dim);
+    }
+    .audio-control.playing .audio-icon {
+      color: var(--accent-gold);
     }
     .audio-text {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .audio-control.playing .audio-text {
       color: var(--text-secondary);
     }
-    .audio-control.playing .audio-icon::after {
+    .audio-control.playing::after {
       content: '';
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-left: 4px;
+      width: 6px;
+      height: 6px;
       background: var(--accent-gold);
       border-radius: 50%;
-      animation: pulse 1s ease-in-out infinite;
+      animation: pulse 1.5s ease-in-out infinite;
+      margin-left: 0.3rem;
     }
     @keyframes pulse {
       0%, 100% { opacity: 0.3; transform: scale(0.8); }
@@ -511,8 +600,8 @@
 <body>
   <!-- 音乐控制 -->
   <div class="audio-control" id="audioControl" onclick="toggleMusic()">
-    <span class="audio-icon" id="audioIcon">🔇</span>
-    <span class="audio-text" id="audioText">点击播放音乐</span>
+    <span class="audio-icon" id="audioIcon">琴</span>
+    <span class="audio-text" id="audioText">奏乐</span>
   </div>
   <audio id="bgMusic" loop preload="auto"></audio>
 
@@ -536,25 +625,25 @@
       </div>
       
       <div class="stats-panel">
-        <h4>📊 人物状态</h4>
+        <h4>人物状态</h4>
         <div class="stat-item">
-          <div class="stat-label"><span>❤️ 健康</span><span id="healthValue">80</span></div>
+          <div class="stat-label"><span><span class="stat-icon">壽</span>健康</span><span class="stat-value" id="healthValue">80</span></div>
           <div class="stat-bar"><div class="stat-fill health" id="healthBar" style="width:80%"></div></div>
         </div>
         <div class="stat-item">
-          <div class="stat-label"><span>⭐ 天命</span><span id="destinyValue">30</span></div>
+          <div class="stat-label"><span><span class="stat-icon">命</span>天命</span><span class="stat-value" id="destinyValue">30</span></div>
           <div class="stat-bar"><div class="stat-fill destiny" id="destinyBar" style="width:30%"></div></div>
         </div>
         <div class="stat-item">
-          <div class="stat-label"><span>⚔️ 军略</span><span id="militaryValue">25</span></div>
+          <div class="stat-label"><span><span class="stat-icon">武</span>军略</span><span class="stat-value" id="militaryValue">25</span></div>
           <div class="stat-bar"><div class="stat-fill military" id="militaryBar" style="width:25%"></div></div>
         </div>
         <div class="stat-item">
-          <div class="stat-label"><span>🧠 智谋</span><span id="wisdomValue">50</span></div>
+          <div class="stat-label"><span><span class="stat-icon">智</span>智谋</span><span class="stat-value" id="wisdomValue">50</span></div>
           <div class="stat-bar"><div class="stat-fill wisdom" id="wisdomBar" style="width:50%"></div></div>
         </div>
         <div class="divergence-section">
-          <div class="divergence-label">历史偏离度</div>
+          <div class="divergence-label">历史偏离</div>
           <div class="divergence-dots" id="divergenceDots">
             <div class="divergence-dot"></div>
             <div class="divergence-dot"></div>
@@ -1370,14 +1459,14 @@ function toggleMusic() {
     audio.pause();
     musicPlaying = false;
     control.classList.remove('playing');
-    icon.textContent = '🔇';
-    text.textContent = '点击播放音乐';
+    icon.textContent = '琴';
+    text.textContent = '奏乐';
   } else {
     playChapterMusic(state.chapter);
     musicPlaying = true;
     control.classList.add('playing');
-    icon.textContent = '🎵';
-    text.textContent = '正在播放';
+    icon.textContent = '樂';
+    text.textContent = '止';
   }
 }
 
