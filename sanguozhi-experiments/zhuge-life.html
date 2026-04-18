@@ -316,6 +316,24 @@
       border-left: 3px solid var(--accent-gold);
       padding: 1rem 1.5rem;
       margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .dialogue-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-gold);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .dialogue-avatar.liu { border-color: var(--accent-green); }
+    .dialogue-avatar.cao { border-color: var(--accent-red); }
+    .dialogue-avatar.wu { border-color: var(--accent-purple); }
+    .dialogue-avatar.self { border-color: var(--accent-gold); }
+    .dialogue-content {
+      flex: 1;
     }
     .dialogue-speaker {
       font-size: 0.8rem;
@@ -324,6 +342,8 @@
       letter-spacing: 0.1em;
     }
     .dialogue-speaker.liu { color: var(--accent-green); }
+    .dialogue-speaker.cao { color: var(--accent-red); }
+    .dialogue-speaker.wu { color: var(--accent-purple); }
     .dialogue-speaker.self { color: var(--accent-gold); }
     .dialogue-text {
       font-size: 1rem;
@@ -721,6 +741,24 @@
   </div>
 
 <script>
+// ==================== 人物头像映射 ====================
+const avatars = {
+  '刘备': { img: '../sanguozhi/images/liubei.jpg', faction: 'liu' },
+  '诸葛亮': { img: '../sanguozhi/images/zhugeliang.jpg', faction: 'self' },
+  '张昭': { img: '../sanguozhi/images/default-hero.jpg', faction: 'wu' },
+  '周瑜': { img: '../sanguozhi/images/zhouyu.jpg', faction: 'wu' },
+  '曹操': { img: '../sanguozhi/images/caocao.jpg', faction: 'cao' },
+  '司马懿': { img: '../sanguozhi/images/simayi.jpg', faction: 'cao' },
+  '刘禅': { img: '../sanguozhi/images/default-hero.jpg', faction: 'liu' },
+  '姜维': { img: '../sanguozhi/images/default-hero.jpg', faction: 'liu' },
+  '关羽': { img: '../sanguozhi/images/guanyu.jpg', faction: 'liu' },
+  '张飞': { img: '../sanguozhi/images/zhangfei.jpg', faction: 'liu' },
+  '赵云': { img: '../sanguozhi/images/zhaoyun.jpg', faction: 'liu' },
+  '孙权': { img: '../sanguozhi/images/sunquan.jpg', faction: 'wu' },
+  '陆逊': { img: '../sanguozhi/images/luxun.jpg', faction: 'wu' },
+  '黄忠': { img: '../sanguozhi/images/huangzhong.jpg', faction: 'liu' }
+};
+
 // ==================== 游戏状态 ====================
 const state = {
   chapter: 0,
@@ -755,8 +793,11 @@ const chapters = [
         content: `<p class="fade-in">刘备坐在你对面，衣衫上还带着雪水的湿意。</p>
 <p class="fade-in delay-1">他今年四十七岁，半生颠沛，却依然目光灼灼。</p>
 <div class="dialogue-bubble fade-in delay-2">
-  <div class="dialogue-speaker liu">刘备</div>
-  <div class="dialogue-text">汉室倾颓，奸臣窃命。备虽不才，愿伸大义于天下。先生有何以教我？</div>
+  <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker liu">刘备</div>
+    <div class="dialogue-text">汉室倾颓，奸臣窃命。备虽不才，愿伸大义于天下。先生有何以教我？</div>
+  </div>
 </div>`,
         choices: [
           { text: '将"隆中对"和盘托出', subtext: '天下三分，联吴抗曹', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'full_plan' } },
@@ -769,8 +810,11 @@ const chapters = [
         location: '隆中 · 草庐外',
         content: `<p class="fade-in">你送刘备走出草庐。雪停了，阳光穿透云层。</p>
 <div class="dialogue-bubble fade-in delay-1">
-  <div class="dialogue-speaker liu">刘备</div>
-  <div class="dialogue-text">孤之有孔明，犹鱼之有水也。</div>
+  <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker liu">刘备</div>
+    <div class="dialogue-text">孤之有孔明，犹鱼之有水也。</div>
+  </div>
 </div>
 <p class="fade-in delay-2 dim">从这一刻起，你的命运与他绑定在一起。</p>`,
         nextChapter: true
@@ -792,8 +836,11 @@ const chapters = [
         location: '柴桑 · 议事厅',
         content: `<p class="fade-in">张昭第一个发难：</p>
 <div class="dialogue-bubble fade-in delay-1">
-  <div class="dialogue-speaker">张昭</div>
-  <div class="dialogue-text">先生自比管仲乐毅，却使刘皇叔败走当阳。不知管仲乐毅，可曾如此狼狈？</div>
+  <img class="dialogue-avatar wu" src="../sanguozhi/images/default-hero.jpg" alt="张昭">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker wu">张昭</div>
+    <div class="dialogue-text">先生自比管仲乐毅，却使刘皇叔败走当阳。不知管仲乐毅，可曾如此狼狈？</div>
+  </div>
 </div>
 <p class="fade-in delay-2">满堂哄笑。</p>`,
         choices: [
@@ -854,8 +901,11 @@ const chapters = [
         location: '白帝城 · 病榻前',
         content: `<p class="fade-in">刘备躺在病榻上，已是弥留之际。</p>
 <div class="dialogue-bubble fade-in delay-1">
-  <div class="dialogue-speaker liu">刘备</div>
-  <div class="dialogue-text">君才十倍曹丕，必能安国，终定大事。若嗣子可辅，辅之；如其不才，<span class="highlight">君可自取</span>。</div>
+  <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker liu">刘备</div>
+    <div class="dialogue-text">君才十倍曹丕，必能安国，终定大事。若嗣子可辅，辅之；如其不才，<span class="highlight">君可自取</span>。</div>
+  </div>
 </div>`,
         choices: [
           { text: '"臣敢竭股肱之力，效忠贞之节，继之以死！"', subtext: '誓死效忠，绝不二心', effectType: 'normal', result: { destiny: 15, flag: 'loyal_oath' } },
@@ -889,8 +939,11 @@ const chapters = [
         content: `<p class="fade-in">五年了。你平定南蛮，稳固后方；整顿内政，恢复国力。</p>
 <p class="fade-in delay-1">现在，是时候兑现对先帝的承诺——<span class="highlight">北伐中原，兴复汉室</span>。</p>
 <div class="dialogue-bubble fade-in delay-2">
-  <div class="dialogue-speaker self">《出师表》</div>
-  <div class="dialogue-text">先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也……</div>
+  <img class="dialogue-avatar self" src="../sanguozhi/images/zhugeliang.jpg" alt="诸葛亮">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker self">《出师表》</div>
+    <div class="dialogue-text">先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也……</div>
+  </div>
 </div>`
       },
       {
@@ -1063,21 +1116,30 @@ function getDynamicContent(key) {
       if (state.flags.full_plan) {
         t = `<p class="fade-in">你起身，拉开帘布，露出一幅天下舆图。</p>
 <div class="dialogue-bubble fade-in delay-1">
-  <div class="dialogue-speaker self">诸葛亮</div>
-  <div class="dialogue-text">将军若跨有荆、益，外结好孙权，内修政理……待天下有变，两路出兵——霸业可成，汉室可兴矣。</div>
+  <img class="dialogue-avatar self" src="../sanguozhi/images/zhugeliang.jpg" alt="诸葛亮">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker self">诸葛亮</div>
+    <div class="dialogue-text">将军若跨有荆、益，外结好孙权，内修政理……待天下有变，两路出兵——霸业可成，汉室可兴矣。</div>
+  </div>
 </div>
 <p class="fade-in delay-2">刘备<span class="highlight">霍然起身</span>，深深一揖。</p>`;
       } else if (state.flags.test_liu) {
         t = `<div class="dialogue-bubble fade-in">
-  <div class="dialogue-speaker self">诸葛亮</div>
-  <div class="dialogue-text">将军以为，当今天下，何人可与曹操争锋？</div>
+  <img class="dialogue-avatar self" src="../sanguozhi/images/zhugeliang.jpg" alt="诸葛亮">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker self">诸葛亮</div>
+    <div class="dialogue-text">将军以为，当今天下，何人可与曹操争锋？</div>
+  </div>
 </div>
 <p class="fade-in delay-1">刘备沉吟："唯有江东孙权。"</p>
 <p class="fade-in delay-2">你微微点头——这人有自知之明。</p>`;
       } else if (state.flags.aggressive_plan) {
         t = `<div class="dialogue-bubble fade-in">
-  <div class="dialogue-speaker self">诸葛亮</div>
-  <div class="dialogue-text">曹操新平河北，立足未稳。若能联合江东，<span class="changed">直取许都，擒天子以令诸侯</span>——未必不能毕其功于一役！</div>
+  <img class="dialogue-avatar self" src="../sanguozhi/images/zhugeliang.jpg" alt="诸葛亮">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker self">诸葛亮</div>
+    <div class="dialogue-text">曹操新平河北，立足未稳。若能联合江东，<span class="changed">直取许都，擒天子以令诸侯</span>——未必不能毕其功于一役！</div>
+  </div>
 </div>
 <p class="fade-in delay-1">刘备眼中闪过惊讶，随即变成<span class="changed">炽热的光芒</span>。</p>
 <div class="inner-thought destiny fade-in delay-2">
@@ -1186,8 +1248,11 @@ function getDynamicContent(key) {
         t = `<p class="fade-in" style="color:var(--accent-green);">你的身体状况良好，精力充沛。</p>
 <p class="fade-in delay-1">司马懿使者来探，见你从容自若，回报说：</p>
 <div class="dialogue-bubble fade-in delay-2">
-  <div class="dialogue-speaker sima">使者</div>
-  <div class="dialogue-text">诸葛亮神采奕奕，谈笑自若。恐非短期可胜。</div>
+  <img class="dialogue-avatar cao" src="../sanguozhi/images/simayi.jpg" alt="使者">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker cao">使者</div>
+    <div class="dialogue-text">诸葛亮神采奕奕，谈笑自若。恐非短期可胜。</div>
+  </div>
 </div>
 <p class="fade-in delay-3">司马懿闻言，决定撤军。</p>
 <div class="fade-in delay-4"><button class="continue-btn" onclick="proceedToChapter6()">乘胜追击 →</button></div>`;
