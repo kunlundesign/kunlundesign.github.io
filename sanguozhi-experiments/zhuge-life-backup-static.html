@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诸葛亮传 · 如果历史可以改写</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0d0b09;
+      --bg-secondary: #1a1612;
+      --text-primary: #e8e4df;
+      --text-secondary: #a09080;
+      --text-dim: #5a5045;
+      --accent-gold: #c9a55c;
+      --accent-red: #b33c3c;
+      --accent-blue: #4a6b8a;
+      --accent-green: #5a8a5a;
+      --accent-orange: #d4854a;
+      --accent-purple: #8a6b9e;
+      --border: rgba(201, 165, 92, 0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .scene-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(13,11,9,0.4) 0%, rgba(13,11,9,0.6) 50%, rgba(13,11,9,0.95) 100%);
+    }
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .snow .particle {
+      background: rgba(255,255,255,0.8);
+      width: 4px; height: 4px;
+      filter: blur(1px);
+      animation: snowFall linear infinite;
+    }
+    @keyframes snowFall {
+      0% { transform: translateY(-10vh); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    .fire .particle {
+      background: var(--accent-orange);
+      width: 3px; height: 3px;
+      filter: blur(1px);
+      animation: fireFly linear infinite;
+    }
+    @keyframes fireFly {
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+    .firefly .particle {
+      background: #ffd700;
+      width: 4px; height: 4px;
+      filter: blur(2px);
+      animation: fireflyGlow 6s ease-in-out infinite;
+    }
+    @keyframes fireflyGlow {
+      0%, 100% { opacity: 0.2; transform: translate(0, 0); }
+      50% { opacity: 1; transform: translate(20px, -30px); }
+    }
+    .content-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+      z-index: 10;
+    }
+    .top-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(to bottom, rgba(13,11,9,0.9) 0%, transparent 100%);
+    }
+    .back-btn {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .chapter-info { text-align: right; }
+    .chapter-num { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--text-dim); }
+    .chapter-title { font-family: 'Ma Shan Zheng', cursive; font-size: 1.4rem; color: var(--accent-gold); }
+    
+    /* 状态面板 - 古风水墨风格 */
+    .stats-panel {
+      position: absolute;
+      top: 50%;
+      left: 1.5rem;
+      transform: translateY(-50%);
+      width: 140px;
+      background: linear-gradient(180deg, rgba(20,18,15,0.95) 0%, rgba(13,11,9,0.9) 100%);
+      border: none;
+      padding: 1.2rem 1rem;
+      backdrop-filter: blur(12px);
+      /* 古风边框效果 */
+      box-shadow: 
+        inset 0 0 0 1px rgba(201,165,92,0.2),
+        inset 2px 2px 0 rgba(201,165,92,0.05),
+        inset -2px -2px 0 rgba(0,0,0,0.3);
+    }
+    .stats-panel::before {
+      content: '';
+      position: absolute;
+      top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border: 1px solid rgba(201,165,92,0.1);
+      pointer-events: none;
+    }
+    .stats-panel h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-gold);
+      margin-bottom: 1rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,165,92,0.15);
+      padding-bottom: 0.6rem;
+    }
+    .stat-item {
+      margin-bottom: 0.9rem;
+      position: relative;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.05em;
+    }
+    .stat-icon {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-right: 0.3rem;
+    }
+    .stat-value {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.9rem;
+      color: var(--accent-gold);
+    }
+    .stat-bar {
+      height: 3px;
+      background: rgba(201,165,92,0.1);
+      position: relative;
+      overflow: visible;
+    }
+    .stat-bar::before,
+    .stat-bar::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 7px;
+      background: rgba(201,165,92,0.3);
+    }
+    .stat-bar::before { left: 0; }
+    .stat-bar::after { right: 0; }
+    .stat-fill {
+      height: 100%;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    /* 统一使用金色系，通过透明度区分 */
+    .stat-fill.health { 
+      background: linear-gradient(90deg, rgba(201,165,92,0.4) 0%, rgba(201,165,92,0.9) 100%);
+    }
+    .stat-fill.destiny { 
+      background: linear-gradient(90deg, rgba(138,107,158,0.4) 0%, rgba(138,107,158,0.9) 100%);
+    }
+    .stat-fill.military { 
+      background: linear-gradient(90deg, rgba(179,60,60,0.4) 0%, rgba(179,60,60,0.8) 100%);
+    }
+    .stat-fill.wisdom { 
+      background: linear-gradient(90deg, rgba(74,107,138,0.4) 0%, rgba(74,107,138,0.9) 100%);
+    }
+    /* 进度条末端光点 */
+    .stat-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 5px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(201,165,92,0.6);
+      opacity: 0.8;
+    }
+    
+    .divergence-section {
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(201,165,92,0.1);
+    }
+    .divergence-label {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+    .divergence-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .divergence-dot {
+      width: 10px; 
+      height: 10px;
+      background: transparent;
+      border: 1px solid rgba(201,165,92,0.3);
+      position: relative;
+    }
+    .divergence-dot::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: transparent;
+      transition: all 0.5s;
+    }
+    .divergence-dot.active {
+      border-color: var(--accent-purple);
+      background: transparent;
+      box-shadow: none;
+    }
+    .divergence-dot.active::before {
+      background: var(--accent-purple);
+      box-shadow: 0 0 8px rgba(138,107,158,0.6);
+    }
+    
+    /* 时间线 */
+    .timeline {
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+    }
+    .timeline-year {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 3rem;
+      color: var(--accent-gold);
+      line-height: 1;
+    }
+    .timeline-age {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .timeline-era {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+    }
+    
+    /* 叙事面板 */
+    .narrative-panel {
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .scene-location {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+    }
+    .narrative-text {
+      font-size: 1.1rem;
+      line-height: 2;
+      margin-bottom: 1.5rem;
+    }
+    .narrative-text .highlight { color: var(--accent-gold); }
+    .narrative-text .changed { color: var(--accent-purple); border-bottom: 1px dotted var(--accent-purple); }
+    .narrative-text .dim { color: var(--text-secondary); }
+    .narrative-text .danger { color: var(--accent-red); }
+    .narrative-text .health-warn { color: #e74c3c; }
+    
+    .dialogue-bubble {
+      background: rgba(26,22,18,0.9);
+      border-left: 3px solid var(--accent-gold);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .dialogue-speaker {
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+    .dialogue-speaker.liu { color: var(--accent-green); }
+    .dialogue-speaker.self { color: var(--accent-gold); }
+    .dialogue-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      font-style: italic;
+    }
+    
+    .inner-thought {
+      background: linear-gradient(90deg, rgba(74,107,138,0.2) 0%, transparent 100%);
+      border-left: 2px solid var(--accent-blue);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .inner-thought.fire { background: linear-gradient(90deg, rgba(179,60,60,0.2) 0%, transparent 100%); border-left-color: var(--accent-red); }
+    .inner-thought.destiny { background: linear-gradient(90deg, rgba(138,107,158,0.2) 0%, transparent 100%); border-left-color: var(--accent-purple); }
+    .inner-thought.health { background: linear-gradient(90deg, rgba(231,76,60,0.2) 0%, transparent 100%); border-left-color: #e74c3c; }
+    .thought-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-blue);
+      margin-bottom: 0.5rem;
+    }
+    .inner-thought.fire .thought-label { color: var(--accent-red); }
+    .inner-thought.destiny .thought-label { color: var(--accent-purple); }
+    .inner-thought.health .thought-label { color: #e74c3c; }
+    
+    /* 选项 */
+    .choices-container { margin-top: 1.5rem; }
+    .choices-prompt {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    .choice-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.6rem;
+      background: rgba(26,22,18,0.85);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .choice-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201,165,92,0.1);
+      transform: translateX(6px);
+    }
+    .choice-btn.divergent { border-color: rgba(138,107,158,0.5); }
+    .choice-btn.divergent:hover { border-color: var(--accent-purple); background: rgba(138,107,158,0.1); }
+    .choice-btn.health-choice { border-color: rgba(39,174,96,0.5); }
+    .choice-btn.health-choice:hover { border-color: #27ae60; background: rgba(39,174,96,0.1); }
+    .choice-text { display: block; margin-bottom: 0.2rem; }
+    .choice-subtext { font-size: 0.75rem; color: var(--text-dim); }
+    .choice-effect {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .choice-btn:hover .choice-effect { opacity: 1; }
+    .choice-effect.health-up { color: #27ae60; background: rgba(39,174,96,0.2); }
+    .choice-effect.health-down { color: #e74c3c; background: rgba(231,76,60,0.2); }
+    .choice-effect.divergent { color: var(--accent-purple); background: rgba(138,107,158,0.2); }
+    .choice-btn.selected { border-color: var(--accent-gold); background: rgba(201,165,92,0.15); }
+    .choice-btn.faded { opacity: 0.3; transform: translateX(0); pointer-events: none; }
+    
+    .continue-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+    .continue-btn:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+    
+    /* 过渡 */
+    .scene-transition {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s;
+    }
+    .scene-transition.active { opacity: 1; pointer-events: all; }
+    .transition-year { font-family: 'Ma Shan Zheng', cursive; font-size: 4rem; color: var(--accent-gold); }
+    .transition-text { font-size: 1.2rem; color: var(--text-primary); margin-top: 0.5rem; }
+    .transition-subtext { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem; }
+    .transition-health {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      border: 1px solid;
+    }
+    .transition-health.good { border-color: #27ae60; color: #27ae60; }
+    .transition-health.warn { border-color: #f39c12; color: #f39c12; }
+    .transition-health.danger { border-color: #e74c3c; color: #e74c3c; }
+    
+    /* 结局 */
+    .ending-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      overflow-y: auto;
+    }
+    .ending-screen.active { display: flex; }
+    .ending-badge {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+    }
+    .ending-badge.alternate { border-color: var(--accent-purple); color: var(--accent-purple); }
+    .ending-badge.golden { border-color: #f1c40f; color: #f1c40f; background: rgba(241,196,15,0.1); }
+    .ending-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+    }
+    .ending-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+    .ending-epitaph {
+      max-width: 600px;
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      background: rgba(26,22,18,0.5);
+      text-align: left;
+      white-space: pre-line;
+    }
+    .ending-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .ending-stat { text-align: center; }
+    .ending-stat-value { font-size: 1.8rem; color: var(--accent-gold); }
+    .ending-stat-label { font-size: 0.7rem; color: var(--text-secondary); }
+    .ending-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .ending-btn {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .ending-btn:hover { background: var(--accent-gold); color: var(--bg-primary); }
+    .ending-btn.primary { background: var(--accent-gold); color: var(--bg-primary); }
+    
+    /* 动画 */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeInUp 0.8s ease forwards; }
+    .delay-1 { animation-delay: 0.2s; opacity: 0; }
+    .delay-2 { animation-delay: 0.4s; opacity: 0; }
+    .delay-3 { animation-delay: 0.6s; opacity: 0; }
+    .delay-4 { animation-delay: 0.8s; opacity: 0; }
+    
+    /* 响应式 */
+    @media (max-width: 900px) {
+      .stats-panel { display: none; }
+      .timeline { right: 1rem; }
+      .timeline-year { font-size: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .content-layer { padding: 1rem; }
+      .narrative-text { font-size: 1rem; }
+      .timeline { position: static; transform: none; text-align: center; margin-bottom: 1rem; }
+    }
+    
+    /* 音乐控制 - 古风风格 */
+    .audio-control {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      background: rgba(13, 11, 9, 0.9);
+      border: 1px solid rgba(201,165,92,0.2);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .audio-control:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.05);
+    }
+    .audio-icon {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1rem;
+      color: var(--text-dim);
+    }
+    .audio-control.playing .audio-icon {
+      color: var(--accent-gold);
+    }
+    .audio-text {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .audio-control.playing .audio-text {
+      color: var(--text-secondary);
+    }
+    .audio-control.playing::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+      margin-left: 0.3rem;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 音乐控制 -->
+  <div class="audio-control" id="audioControl" onclick="toggleMusic()">
+    <span class="audio-icon" id="audioIcon">琴</span>
+    <span class="audio-text" id="audioText">奏乐</span>
+  </div>
+  <audio id="bgMusic" loop preload="auto"></audio>
+
+  <div class="scene-transition" id="sceneTransition">
+    <div class="transition-year" id="transitionYear">207</div>
+    <div class="transition-text" id="transitionText">建安十二年</div>
+    <div class="transition-subtext" id="transitionSubtext">卧龙出山</div>
+    <div class="transition-health" id="transitionHealth"></div>
+  </div>
+
+  <div class="game-container">
+    <div class="scene-bg" id="sceneBg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="content-layer">
+      <div class="top-bar">
+        <a href="../sanguozhi/" class="back-btn">← 返回三国志</a>
+        <div class="chapter-info">
+          <div class="chapter-num" id="chapterNum">第一章</div>
+          <div class="chapter-title" id="chapterTitle">卧龙出山</div>
+        </div>
+      </div>
+      
+      <div class="stats-panel">
+        <h4>人物状态</h4>
+        <div class="stat-item">
+          <div class="stat-label"><span><span class="stat-icon">壽</span>健康</span><span class="stat-value" id="healthValue">80</span></div>
+          <div class="stat-bar"><div class="stat-fill health" id="healthBar" style="width:80%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><span><span class="stat-icon">命</span>天命</span><span class="stat-value" id="destinyValue">30</span></div>
+          <div class="stat-bar"><div class="stat-fill destiny" id="destinyBar" style="width:30%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><span><span class="stat-icon">武</span>军略</span><span class="stat-value" id="militaryValue">25</span></div>
+          <div class="stat-bar"><div class="stat-fill military" id="militaryBar" style="width:25%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><span><span class="stat-icon">智</span>智谋</span><span class="stat-value" id="wisdomValue">50</span></div>
+          <div class="stat-bar"><div class="stat-fill wisdom" id="wisdomBar" style="width:50%"></div></div>
+        </div>
+        <div class="divergence-section">
+          <div class="divergence-label">历史偏离</div>
+          <div class="divergence-dots" id="divergenceDots">
+            <div class="divergence-dot"></div>
+            <div class="divergence-dot"></div>
+            <div class="divergence-dot"></div>
+            <div class="divergence-dot"></div>
+            <div class="divergence-dot"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="timeline">
+        <div class="timeline-year" id="timelineYear">207</div>
+        <div class="timeline-age" id="timelineAge">二十七岁</div>
+        <div class="timeline-era" id="timelineEra">建安十二年</div>
+      </div>
+      
+      <div class="narrative-panel" id="narrativePanel"></div>
+    </div>
+  </div>
+
+  <div class="ending-screen" id="endingScreen">
+    <div class="ending-badge" id="endingBadge">史实结局</div>
+    <div class="ending-title" id="endingTitle">星落秋风五丈原</div>
+    <div class="ending-subtitle" id="endingSubtitle">诸葛亮 · 181-234</div>
+    <div class="ending-epitaph" id="endingEpitaph"></div>
+    <div class="ending-stats">
+      <div class="ending-stat">
+        <div class="ending-stat-value" id="statYears">27</div>
+        <div class="ending-stat-label">辅佐年数</div>
+      </div>
+      <div class="ending-stat">
+        <div class="ending-stat-value" id="statHealth">--</div>
+        <div class="ending-stat-label">最终健康</div>
+      </div>
+      <div class="ending-stat">
+        <div class="ending-stat-value" id="statDivergence">0%</div>
+        <div class="ending-stat-label">历史偏离</div>
+      </div>
+    </div>
+    <div class="ending-actions">
+      <a href="../sanguozhi/" class="ending-btn">返回三国志</a>
+      <button onclick="restart()" class="ending-btn primary">重历一生</button>
+    </div>
+  </div>
+
+<script>
+// ==================== 游戏状态 ====================
+const state = {
+  chapter: 0,
+  scene: 0,
+  stats: {
+    health: 80,
+    destiny: 30,
+    military: 25,
+    wisdom: 50
+  },
+  divergence: 0,
+  choices: [],
+  flags: {}
+};
+
+// ==================== 章节数据 ====================
+const chapters = [
+  // ===== 第一章：卧龙出山 =====
+  {
+    title: '卧龙出山', num: '第一章', year: 207, age: 27, era: '建安十二年',
+    bg: 'images/scene-longzhong.png', particles: 'snow',
+    scenes: [
+      {
+        location: '隆中 · 卧龙岗',
+        content: `<p class="fade-in">雪落无声。</p>
+<p class="fade-in delay-1">你站在草庐门前，看着院中的积雪。二十七年了，你在这片山野间读书、耕田、等待。</p>
+<p class="fade-in delay-2">等待一个<span class="highlight">值得追随的人</span>。</p>
+<p class="fade-in delay-3 dim">今天，他第三次来了。</p>`
+      },
+      {
+        location: '隆中 · 草庐之内',
+        content: `<p class="fade-in">刘备坐在你对面，衣衫上还带着雪水的湿意。</p>
+<p class="fade-in delay-1">他今年四十七岁，半生颠沛，却依然目光灼灼。</p>
+<div class="dialogue-bubble fade-in delay-2">
+  <div class="dialogue-speaker liu">刘备</div>
+  <div class="dialogue-text">汉室倾颓，奸臣窃命。备虽不才，愿伸大义于天下。先生有何以教我？</div>
+</div>`,
+        choices: [
+          { text: '将"隆中对"和盘托出', subtext: '天下三分，联吴抗曹', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'full_plan' } },
+          { text: '先试探他的心志', subtext: '问他几个关键问题', effectType: 'normal', result: { wisdom: 15, flag: 'test_liu' } },
+          { text: '提出更激进的方案：直取许都', subtext: '趁曹操立足未稳，奇袭中原', effectType: 'divergent', divergent: true, result: { destiny: 5, military: 15, divergence: 1, flag: 'aggressive_plan' } }
+        ]
+      },
+      { location: '隆中 · 草庐之内', dynamicContent: 'ch1_response' },
+      {
+        location: '隆中 · 草庐外',
+        content: `<p class="fade-in">你送刘备走出草庐。雪停了，阳光穿透云层。</p>
+<div class="dialogue-bubble fade-in delay-1">
+  <div class="dialogue-speaker liu">刘备</div>
+  <div class="dialogue-text">孤之有孔明，犹鱼之有水也。</div>
+</div>
+<p class="fade-in delay-2 dim">从这一刻起，你的命运与他绑定在一起。</p>`,
+        nextChapter: true
+      }
+    ]
+  },
+  // ===== 第二章：赤壁 =====
+  {
+    title: '火烧赤壁', num: '第二章', year: 208, age: 28, era: '建安十三年',
+    bg: 'images/scene-chaisang.png', particles: 'none',
+    scenes: [
+      {
+        location: '柴桑 · 吴侯府',
+        content: `<p class="fade-in">曹操挟百万大军南下，荆州不战而降。</p>
+<p class="fade-in delay-1">刘备败走当阳，几乎全军覆没。</p>
+<p class="fade-in delay-2">你孤身入吴，肩负说服孙权的使命。</p>`
+      },
+      {
+        location: '柴桑 · 议事厅',
+        content: `<p class="fade-in">张昭第一个发难：</p>
+<div class="dialogue-bubble fade-in delay-1">
+  <div class="dialogue-speaker">张昭</div>
+  <div class="dialogue-text">先生自比管仲乐毅，却使刘皇叔败走当阳。不知管仲乐毅，可曾如此狼狈？</div>
+</div>
+<p class="fade-in delay-2">满堂哄笑。</p>`,
+        choices: [
+          { text: '"鹏飞万里，岂与燕雀争栖？"', subtext: '以攻代守，震慑全场', effectType: 'normal', result: { wisdom: 10, flag: 'sharp_tongue' } },
+          { text: '"刘皇叔以仁义为本，不忍弃民"', subtext: '以理服人，保持风度', effectType: 'normal', result: { destiny: 10, flag: 'gentle_tongue' } }
+        ]
+      },
+      {
+        location: '赤壁 · 战前',
+        bg: 'images/scene-chibi.png', particles: 'fire',
+        content: `<p class="fade-in">孙刘联盟成立。五万联军，对阵曹操八十万大军。</p>
+<p class="fade-in delay-1">周瑜问你破敌之策。</p>`,
+        choices: [
+          { text: '"破敌之策，你我所想，恐怕是同一个字"', subtext: '暗示火攻，展示默契', effectType: 'normal', result: { wisdom: 10, flag: 'hint_fire' } },
+          { text: '提出详细火攻方案，争取主导权', subtext: '展露锋芒，与周瑜争功', effectType: 'divergent', divergent: true, result: { military: 15, divergence: 1, flag: 'compete_zhou' } }
+        ]
+      },
+      {
+        location: '南屏山 · 七星坛',
+        content: `<p class="fade-in">万事俱备，只欠东风。</p>
+<p class="fade-in delay-1">你登上七星坛，披发仗剑，做出"借东风"的姿态。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">真相</div>
+  你早已夜观天象，算准东南风将起。这是气象学，不是法术。但有时候，人们需要相信神迹。
+</div>`,
+        choices: [
+          { text: '连续三夜观星，确保万无一失', subtext: '日夜操劳，不敢懈怠', effectType: 'health-down', result: { health: -10, wisdom: 10, flag: 'overwork_chibi' } },
+          { text: '交代要点后早些休息', subtext: '保存精力，留待后用', effectType: 'health-up', healthChoice: true, result: { health: 5, flag: 'rest_chibi' } }
+        ]
+      },
+      {
+        location: '赤壁 · 决战',
+        bg: 'images/scene-chibi.png', particles: 'fire',
+        content: `<p class="fade-in" style="font-size:1.3rem;color:var(--accent-orange);">火烧赤壁。</p>
+<p class="fade-in delay-1">东南风起，黄盖诈降的火船冲入曹营。</p>
+<p class="fade-in delay-2">连环战船化作火海，曹军大溃。</p>
+<div class="inner-thought fire fade-in delay-3">
+  <div class="thought-label">历史</div>
+  这一把火，烧掉了曹操统一天下的梦想，烧出了三国鼎立的格局。
+</div>`,
+        nextChapter: true
+      }
+    ]
+  },
+  // ===== 第三章：白帝托孤 =====
+  {
+    title: '白帝托孤', num: '第三章', year: 223, age: 43, era: '章武三年',
+    bg: 'images/scene-baidi.png', particles: 'firefly',
+    scenes: [
+      {
+        location: '白帝城 · 永安宫',
+        content: `<p class="fade-in dim">十五年后。</p>
+<p class="fade-in delay-1">赤壁之后，你助刘备取荆州、得西川，建立蜀汉。</p>
+<p class="fade-in delay-2">然而——关羽败走麦城，张飞被刺军中。刘备倾国伐吴，在夷陵被陆逊火烧连营。</p>
+<p class="fade-in delay-3 danger">蜀汉元气大伤，刘备一病不起。</p>`
+      },
+      {
+        location: '白帝城 · 病榻前',
+        content: `<p class="fade-in">刘备躺在病榻上，已是弥留之际。</p>
+<div class="dialogue-bubble fade-in delay-1">
+  <div class="dialogue-speaker liu">刘备</div>
+  <div class="dialogue-text">君才十倍曹丕，必能安国，终定大事。若嗣子可辅，辅之；如其不才，<span class="highlight">君可自取</span>。</div>
+</div>`,
+        choices: [
+          { text: '"臣敢竭股肱之力，效忠贞之节，继之以死！"', subtext: '誓死效忠，绝不二心', effectType: 'normal', result: { destiny: 15, flag: 'loyal_oath' } },
+          { text: '沉默片刻，郑重点头', subtext: '接受重托，不明确表态', effectType: 'normal', result: { wisdom: 10, military: 10, flag: 'silent_accept' } },
+          { text: '"先帝放心，臣定当……相机行事"', subtext: '留有余地', effectType: 'divergent', divergent: true, result: { destiny: -10, military: 20, divergence: 1, flag: 'ambiguous_answer' } }
+        ]
+      },
+      {
+        location: '白帝城 · 夜',
+        content: `<p class="fade-in">刘备走了。</p>
+<p class="fade-in delay-1">从今往后，蜀汉的命运，压在你一个人肩上。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">抉择</div>
+  刘禅年幼，朝政纷繁。你是亲力亲为，还是培养人才分担？
+</div>`,
+        choices: [
+          { text: '事必躬亲，日夜操劳', subtext: '罚二十以上皆亲览', effectType: 'health-down', result: { health: -15, military: 10, wisdom: 5, flag: 'overwork_baidi' } },
+          { text: '提拔蒋琬费祎，分担政务', subtext: '培养接班人', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 5, flag: 'delegate_baidi' } }
+        ]
+      },
+      { location: '成都 · 五年后', dynamicContent: 'ch3_aftermath', nextChapter: true }
+    ]
+  },
+  // ===== 第四章：北伐 =====
+  {
+    title: '出师北伐', num: '第四章', year: 228, age: 48, era: '建兴六年',
+    bg: 'images/scene-beifa.png', particles: 'none',
+    scenes: [
+      {
+        location: '成都 · 丞相府',
+        content: `<p class="fade-in">五年了。你平定南蛮，稳固后方；整顿内政，恢复国力。</p>
+<p class="fade-in delay-1">现在，是时候兑现对先帝的承诺——<span class="highlight">北伐中原，兴复汉室</span>。</p>
+<div class="dialogue-bubble fade-in delay-2">
+  <div class="dialogue-speaker self">《出师表》</div>
+  <div class="dialogue-text">先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也……</div>
+</div>`
+      },
+      {
+        location: '祁山 · 第一次北伐',
+        content: `<p class="fade-in">大军出祁山，天水、南安、安定三郡响应！</p>
+<p class="fade-in delay-1">然而，街亭告急——马谡舍水上山，被张郃围困。</p>`,
+        choices: [
+          { text: '急令魏延救援', subtext: '分兵救援，尝试挽回', effectType: 'normal', result: { military: 10, flag: 'rescue_jieting' } },
+          { text: '当机立断，全军撤退', subtext: '保存实力', effectType: 'normal', result: { wisdom: 15, flag: 'retreat_jieting' } },
+          { text: '亲率精锐，突袭张郃后方', subtext: '围魏救赵，险中求胜', effectType: 'divergent', divergent: true, result: { military: 20, health: -10, divergence: 1, flag: 'counter_attack' } }
+        ]
+      },
+      {
+        location: '汉中 · 中军帐',
+        dynamicContent: 'ch4_jieting'
+      },
+      {
+        location: '北伐途中',
+        content: `<p class="fade-in">第二次、第三次、第四次、第五次……你一次又一次出师北伐。</p>
+<p class="fade-in delay-1">每一次都功败垂成，每一次都更加疲惫。</p>`,
+        choices: [
+          { text: '事必躬亲，食少事繁', subtext: '不敢懈怠，亲力亲为', effectType: 'health-down', result: { health: -20, military: 10, flag: 'overwork_beifa' } },
+          { text: '培养姜维，逐步交权', subtext: '身体是革命的本钱', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 10, flag: 'train_jiang' } }
+        ]
+      },
+      { location: '建兴十二年', dynamicContent: 'ch4_final', nextChapter: true }
+    ]
+  },
+  // ===== 第五章：五丈原 =====
+  {
+    title: '五丈原', num: '第五章', year: 234, age: 54, era: '建兴十二年',
+    bg: 'images/scene-wuzhangyuan.png', particles: 'firefly',
+    scenes: [
+      {
+        location: '五丈原 · 蜀军大营',
+        content: `<p class="fade-in">第六次北伐。</p>
+<p class="fade-in delay-1">你亲率十万大军出斜谷，与司马懿对峙于五丈原。</p>
+<p class="fade-in delay-2">司马懿深沟高垒，坚守不出。他在等——<span class="danger">等你的身体熬不住</span>。</p>`
+      },
+      {
+        location: '五丈原 · 中军帐',
+        dynamicContent: 'ch5_health_check'
+      }
+    ]
+  },
+  // ===== 第六章：克复长安（如果活着）=====
+  {
+    title: '克复长安', num: '第六章', year: 235, age: 55, era: '建兴十三年',
+    bg: 'images/scene-victory.png', particles: 'fire',
+    scenes: [
+      {
+        location: '长安城下',
+        content: `<p class="fade-in" style="color:var(--accent-gold);font-size:1.3rem;">你活了下来。</p>
+<p class="fade-in delay-1">养精蓄锐，调整战术，你终于等到了机会。</p>
+<p class="fade-in delay-2">司马懿被调回洛阳平叛，关中防线空虚。</p>
+<p class="fade-in delay-3 highlight">蜀军直扑长安！</p>`
+      },
+      {
+        location: '长安 · 城破',
+        content: `<p class="fade-in">建兴十三年秋，长安城破。</p>
+<p class="fade-in delay-1">你站在未央宫的废墟前，四百年前，高祖刘邦就是从这里开创了大汉基业。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">感慨</div>
+  先帝……臣终于做到了第一步。
+</div>`,
+        choices: [
+          { text: '安抚百姓，严禁烧杀', subtext: '王道治军，收拢人心', effectType: 'normal', result: { destiny: 15, flag: 'merciful_changan' } },
+          { text: '彻底清洗曹魏势力', subtext: '斩草除根，以绝后患', effectType: 'divergent', divergent: true, result: { military: 15, destiny: -10, divergence: 1, flag: 'purge_changan' } }
+        ]
+      },
+      { location: '长安 · 丞相府', dynamicContent: 'ch6_aftermath', nextChapter: true }
+    ]
+  },
+  // ===== 第七章：东进洛阳 =====
+  {
+    title: '东进洛阳', num: '第七章', year: 237, age: 57, era: '建兴十五年',
+    bg: 'images/scene-victory.png', particles: 'none',
+    scenes: [
+      {
+        location: '长安 · 战略会议',
+        content: `<p class="fade-in">占据关中两年，蜀汉实力大增。</p>
+<p class="fade-in delay-1">曹魏内乱不断，司马懿虎视眈眈。东吴孙权蠢蠢欲动。</p>
+<p class="fade-in delay-2">是时候做出决断了。</p>`,
+        choices: [
+          { text: '挥师东进，直取洛阳', subtext: '一鼓作气，毕其功于一役', effectType: 'normal', result: { military: 15, health: -10, flag: 'march_luoyang' } },
+          { text: '联合东吴，两路夹击', subtext: '稳扎稳打，分化曹魏', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'ally_wu' } },
+          { text: '休养生息，巩固关中', subtext: '徐图后计', effectType: 'health-up', healthChoice: true, result: { health: 10, flag: 'consolidate' } }
+        ]
+      },
+      { location: '洛阳 · 城下', dynamicContent: 'ch7_luoyang' }
+    ]
+  },
+  // ===== 第八章：天下归一 =====
+  {
+    title: '天下归一', num: '第八章', year: 240, age: 60, era: '建兴十八年',
+    bg: 'images/scene-victory.png', particles: 'firefly',
+    scenes: [
+      {
+        location: '洛阳 · 皇宫',
+        content: `<p class="fade-in" style="color:var(--accent-gold);font-size:1.3rem;">曹魏覆灭。</p>
+<p class="fade-in delay-1">曹芳递上降书，魏国百官俯首。</p>
+<p class="fade-in delay-2">天下三分，如今只余蜀、吴。</p>
+<p class="fade-in delay-3 dim">你站在洛阳皇宫的大殿上，六十年的人生，走到了这一刻。</p>`
+      },
+      {
+        location: '洛阳 · 夜',
+        content: `<p class="fade-in">刘禅从成都赶来，接受曹魏的投降。</p>
+<p class="fade-in delay-1">他看着你，眼神复杂——有敬畏，有感激，也有一丝……忌惮？</p>
+<div class="inner-thought destiny fade-in delay-2">
+  <div class="thought-label">最终抉择</div>
+  天下将定。接下来，你要走哪条路？
+</div>`,
+        choices: [
+          { text: '还政刘禅，功成身退', subtext: '臣本布衣，躬耕于南阳', effectType: 'normal', result: { destiny: 20, flag: 'retire' } },
+          { text: '继续辅政，统一天下', subtext: '先灭东吴，再言其他', effectType: 'normal', result: { military: 10, flag: 'continue_war' } },
+          { text: '"君可自取"——先帝说过的', subtext: '刘禅不堪大任……', effectType: 'divergent', divergent: true, result: { divergence: 1, flag: 'take_throne' } }
+        ]
+      },
+      { location: '终章', dynamicContent: 'final_ending' }
+    ]
+  }
+];
+
+// ==================== 工具函数 ====================
+function createParticles(type) {
+  const c = document.getElementById('particles');
+  c.innerHTML = '';
+  c.className = 'particles ' + type;
+  if (type === 'none') return;
+  const count = type === 'snow' ? 40 : type === 'fire' ? 25 : 15;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (4 + Math.random() * 8) + 's';
+    p.style.animationDelay = Math.random() * 5 + 's';
+    if (type === 'firefly') {
+      p.style.top = (20 + Math.random() * 60) + '%';
+      p.style.left = (10 + Math.random() * 80) + '%';
+    }
+    c.appendChild(p);
+  }
+}
+
+function updateStats() {
+  ['health','destiny','military','wisdom'].forEach(s => {
+    document.getElementById(s+'Value').textContent = state.stats[s];
+    document.getElementById(s+'Bar').style.width = state.stats[s] + '%';
+  });
+  document.querySelectorAll('.divergence-dot').forEach((d,i) => {
+    d.classList.toggle('active', i < state.divergence);
+  });
+}
+
+function applyResult(result) {
+  if (!result) return;
+  ['health','destiny','military','wisdom'].forEach(s => {
+    if (result[s]) state.stats[s] = Math.max(0, Math.min(100, state.stats[s] + result[s]));
+  });
+  if (result.divergence) state.divergence = Math.min(5, state.divergence + result.divergence);
+  if (result.flag) state.flags[result.flag] = true;
+  updateStats();
+}
+
+// ==================== 动态内容 ====================
+function getDynamicContent(key) {
+  const c = {
+    'ch1_response': () => {
+      let t = '';
+      if (state.flags.full_plan) {
+        t = `<p class="fade-in">你起身，拉开帘布，露出一幅天下舆图。</p>
+<div class="dialogue-bubble fade-in delay-1">
+  <div class="dialogue-speaker self">诸葛亮</div>
+  <div class="dialogue-text">将军若跨有荆、益，外结好孙权，内修政理……待天下有变，两路出兵——霸业可成，汉室可兴矣。</div>
+</div>
+<p class="fade-in delay-2">刘备<span class="highlight">霍然起身</span>，深深一揖。</p>`;
+      } else if (state.flags.test_liu) {
+        t = `<div class="dialogue-bubble fade-in">
+  <div class="dialogue-speaker self">诸葛亮</div>
+  <div class="dialogue-text">将军以为，当今天下，何人可与曹操争锋？</div>
+</div>
+<p class="fade-in delay-1">刘备沉吟："唯有江东孙权。"</p>
+<p class="fade-in delay-2">你微微点头——这人有自知之明。</p>`;
+      } else if (state.flags.aggressive_plan) {
+        t = `<div class="dialogue-bubble fade-in">
+  <div class="dialogue-speaker self">诸葛亮</div>
+  <div class="dialogue-text">曹操新平河北，立足未稳。若能联合江东，<span class="changed">直取许都，擒天子以令诸侯</span>——未必不能毕其功于一役！</div>
+</div>
+<p class="fade-in delay-1">刘备眼中闪过惊讶，随即变成<span class="changed">炽热的光芒</span>。</p>
+<div class="inner-thought destiny fade-in delay-2">
+  <div class="thought-label">偏离</div>
+  你提出了一个比"隆中对"更激进的方案。历史的轨迹，从这一刻开始改变……
+</div>`;
+      }
+      return t + `<div class="fade-in delay-3"><button class="continue-btn" onclick="nextScene()">继续 →</button></div>`;
+    },
+    'ch3_aftermath': () => {
+      let t = '<p class="fade-in">五年间，你平定南蛮，稳定朝局。</p>';
+      if (state.flags.overwork_baidi) {
+        t += `<div class="inner-thought health fade-in delay-1">
+  <div class="thought-label">健康警告</div>
+  日夜操劳让你的身体逐渐透支。你时常感到疲惫，但不敢停下。
+</div>`;
+      } else if (state.flags.delegate_baidi) {
+        t += `<p class="fade-in delay-1">蒋琬费祎逐渐成长，分担了你的压力。<span class="highlight">你的身体状况保持良好。</span></p>`;
+      }
+      t += `<p class="fade-in delay-2">现在，是时候北伐了。</p>`;
+      return t + `<div class="fade-in delay-3"><button class="continue-btn" onclick="nextChapter()">继续 →</button></div>`;
+    },
+    'ch4_jieting': () => {
+      let t = '';
+      if (state.flags.counter_attack) {
+        t = `<p class="fade-in" style="color:var(--accent-purple);">你的反击奏效！</p>
+<p class="fade-in delay-1">张郃后军大乱，被迫撤退。<span class="changed">街亭保住了</span>——这是历史上从未发生过的事。</p>
+<p class="fade-in delay-2">三郡彻底归附，北伐首战告捷！</p>`;
+      } else {
+        t = `<p class="fade-in">街亭失守，第一次北伐功败垂成。</p>
+<p class="fade-in delay-1">马谡被押回。</p>`;
+        t += `<div class="choices-container fade-in delay-2">
+  <div class="choices-prompt">如何处置马谡？</div>
+  <button class="choice-btn" onclick="makeChoice({military:10,destiny:5,flag:'kill_masu'})">
+    <span class="choice-text">挥泪斩马谡</span>
+    <span class="choice-subtext">军法无情</span>
+  </button>
+  <button class="choice-btn divergent" onclick="makeChoice({divergence:1,flag:'spare_masu'})">
+    <span class="choice-text">贬为庶民，留其性命</span>
+    <span class="choice-subtext">网开一面</span>
+  </button>
+</div>`;
+        return t;
+      }
+      return t + `<div class="fade-in delay-3"><button class="continue-btn" onclick="nextScene()">继续 →</button></div>`;
+    },
+    'ch4_final': () => {
+      let t = '<p class="fade-in">六次北伐，二十七年光阴。</p>';
+      const h = state.stats.health;
+      if (h < 30) {
+        t += `<p class="fade-in delay-1 health-warn">长年累月的操劳，终于拖垮了你的身体。</p>
+<p class="fade-in delay-2 dim">建兴十二年，你带着疲惫的身躯，踏上了最后一次北伐。</p>`;
+      } else if (h < 50) {
+        t += `<p class="fade-in delay-1">身体虽有些透支，但你依然坚持。</p>
+<p class="fade-in delay-2">这一次，你决定改变战术——<span class="highlight">不求速胜，但求持久</span>。</p>`;
+      } else {
+        t += `<p class="fade-in delay-1" style="color:var(--accent-green);">多年的养生和委任，让你保持了充沛的精力。</p>
+<p class="fade-in delay-2">这一次，你信心满满。</p>`;
+      }
+      return t + `<div class="fade-in delay-3"><button class="continue-btn" onclick="nextChapter()">继续 →</button></div>`;
+    },
+    'ch5_health_check': () => {
+      const h = state.stats.health;
+      const div = state.divergence;
+      let t = '';
+      
+      if (h < 30) {
+        // 史实：病逝五丈原
+        t = `<p class="fade-in">连日操劳，你终于病倒。</p>
+<p class="fade-in delay-1 health-warn">军医诊断：心力交瘁，油尽灯枯。</p>
+<div class="inner-thought health fade-in delay-2">
+  <div class="thought-label">回望</div>
+  隆中的雪，赤壁的火，白帝城的托孤……五十四年，到底是为了什么？
+</div>
+<div class="choices-container fade-in delay-3">
+  <div class="choices-prompt">最后的选择</div>
+  <button class="choice-btn" onclick="showEnding('historical')">
+    <span class="choice-text">安排撤军，从容赴死</span>
+    <span class="choice-subtext">鞠躬尽瘁，死而后已</span>
+  </button>
+  <button class="choice-btn" onclick="showEnding('heroic')">
+    <span class="choice-text">设下最后一计：木像退敌</span>
+    <span class="choice-subtext">死诸葛吓走活仲达</span>
+  </button>
+</div>`;
+      } else if (h >= 30 && h < 50) {
+        // 惨胜：击败司马懿但重伤
+        t = `<p class="fade-in">身体虽然疲惫，但你依然在坚持。</p>
+<p class="fade-in delay-1">司马懿见你屡出奇计，不敢轻敌。对峙百日，魏军粮草告急。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">机会</div>
+  司马懿撤军在即。是追击，还是保守？
+</div>
+<div class="choices-container fade-in delay-3">
+  <button class="choice-btn" onclick="showEnding('pyrrhic')">
+    <span class="choice-text">全力追击，不计代价</span>
+    <span class="choice-subtext">拼尽最后一口气</span>
+  </button>
+  <button class="choice-btn" onclick="proceedToChapter6()">
+    <span class="choice-text">稳扎稳打，徐图后计</span>
+    <span class="choice-subtext">留得青山在</span>
+  </button>
+</div>`;
+      } else {
+        // 活着继续
+        t = `<p class="fade-in" style="color:var(--accent-green);">你的身体状况良好，精力充沛。</p>
+<p class="fade-in delay-1">司马懿使者来探，见你从容自若，回报说：</p>
+<div class="dialogue-bubble fade-in delay-2">
+  <div class="dialogue-speaker sima">使者</div>
+  <div class="dialogue-text">诸葛亮神采奕奕，谈笑自若。恐非短期可胜。</div>
+</div>
+<p class="fade-in delay-3">司马懿闻言，决定撤军。</p>
+<div class="fade-in delay-4"><button class="continue-btn" onclick="proceedToChapter6()">乘胜追击 →</button></div>`;
+      }
+      return t;
+    },
+    'ch6_aftermath': () => {
+      let t = '<p class="fade-in">长安既定，关中归蜀。</p>';
+      if (state.flags.merciful_changan) {
+        t += '<p class="fade-in delay-1">你的仁政赢得了百姓的拥戴，降将纷纷归附。</p>';
+      } else if (state.flags.purge_changan) {
+        t += '<p class="fade-in delay-1 dim">清洗虽然彻底，但也埋下了隐患……</p>';
+      }
+      t += '<p class="fade-in delay-2">两年后，时机成熟。下一步：<span class="highlight">东进洛阳</span>。</p>';
+      return t + '<div class="fade-in delay-3"><button class="continue-btn" onclick="nextChapter()">继续 →</button></div>';
+    },
+    'ch7_luoyang': () => {
+      let t = '';
+      if (state.flags.march_luoyang || state.flags.ally_wu) {
+        t = `<p class="fade-in">建兴十七年，蜀军兵临洛阳城下。</p>
+<p class="fade-in delay-1">曹芳年幼，司马懿被困。魏国人心惶惶。</p>
+<p class="fade-in delay-2 highlight">三个月后，洛阳城破。</p>`;
+      } else if (state.flags.consolidate) {
+        t = `<p class="fade-in">你选择休养生息。三年后，曹魏内乱，你坐收渔利。</p>
+<p class="fade-in delay-1">洛阳不战而降。</p>`;
+      }
+      return t + '<div class="fade-in delay-3"><button class="continue-btn" onclick="nextChapter()">继续 →</button></div>';
+    },
+    'final_ending': () => {
+      if (state.flags.retire) {
+        showEnding('retire_peace');
+      } else if (state.flags.continue_war) {
+        showEnding('unify_han');
+      } else if (state.flags.take_throne) {
+        showEnding('emperor');
+      }
+      return '';
+    }
+  };
+  return c[key] ? c[key]() : '';
+}
+
+// ==================== 结局 ====================
+function showEnding(type) {
+  const endings = {
+    'historical': {
+      badge: '史实结局', badgeClass: '',
+      title: '星落秋风五丈原',
+      subtitle: '诸葛亮 · 181-234',
+      epitaph: `建兴十二年秋，诸葛亮病逝于五丈原军中，享年五十四岁。
+
+他用二十七年的时光，追随一个注定艰难的梦想。六出祁山，鞠躬尽瘁，死而后已。
+
+后人评价："三顾频烦天下计，两朝开济老臣心。出师未捷身先死，长使英雄泪满襟。"
+
+蜀汉又延续了二十九年，最终在公元263年灭亡。但诸葛亮的名字，永远铭刻在历史之中。`
+    },
+    'heroic': {
+      badge: '壮烈结局', badgeClass: '',
+      title: '死诸葛吓走活仲达',
+      subtitle: '诸葛亮 · 181-234',
+      epitaph: `诸葛亮设下最后一计：以木像退司马懿。
+
+他死后，蜀军依计撤退。司马懿追击时，见车上"诸葛亮"端坐不动——吓得仲达掉头就跑。
+
+"死诸葛吓走活仲达"，成为千古笑谈，也是诸葛亮最后的胜利。
+
+他用一生诠释了什么是忠诚——明知不可为而为之。`
+    },
+    'pyrrhic': {
+      badge: '惨胜结局', badgeClass: 'alternate',
+      title: '长安城头草萋萋',
+      subtitle: '诸葛亮 · 181-235',
+      epitaph: `你拼尽全力追击，终于击溃司马懿主力。
+
+但你的身体也在这一战中彻底透支。
+
+建兴十三年春，你在长安城中病逝。临终前，你看着城头的汉旗，终于露出了笑容。
+
+"先帝……臣终究迈出了这一步。"
+
+姜维继承你的遗志，继续北伐，最终在公元248年攻入洛阳。`
+    },
+    'retire_peace': {
+      badge: '圆满结局', badgeClass: 'golden',
+      title: '功成身退',
+      subtitle: '诸葛亮 · 181-251',
+      epitaph: `曹魏灭亡，孙吴归降。天下一统。
+
+你上表请辞，还政刘禅，归隐南阳。
+
+"臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。"
+
+你回到了最初的草庐，在那里度过了最后的十年。
+
+公元251年，你在睡梦中安然离世，享年七十一岁。
+
+史书记载：诸葛亮，字孔明，蜀汉丞相，兴复汉室，功盖寰宇。`
+    },
+    'unify_han': {
+      badge: '辉煌结局', badgeClass: 'golden',
+      title: '季汉中兴',
+      subtitle: '诸葛亮 · 181-249',
+      epitaph: `公元243年，蜀军灭吴，天下归一。
+
+你完成了先帝的遗愿——兴复汉室，还于旧都。
+
+刘禅在洛阳登基，改元"兴汉"。你被封为武乡侯，位极人臣。
+
+但你依然保持着当年在隆中的作息：卯时而起，亥时而眠，日理万机却从不懈怠。
+
+公元249年，你在丞相府中病逝，享年六十九岁。
+
+天下缟素，万民痛哭。谥号"忠武"，配享太庙。`
+    },
+    'emperor': {
+      badge: '禁忌结局', badgeClass: 'alternate',
+      title: '诸葛王朝',
+      subtitle: '诸葛亮 · 181-???',
+      epitaph: `"君可自取。"
+
+这是先帝临终前说的话。
+
+公元240年，你在洛阳接受刘禅的"禅让"，登基称帝，国号"汉"，年号"兴平"。
+
+史书上，有人称你为篡臣，有人说你是迫不得已。
+
+但你心里清楚：刘禅不堪大任，蜀汉需要一个能延续的君主。
+
+是愧疚？是解脱？还是野心？
+
+没有人知道。但新朝在你的治理下，的确走向了太平盛世。
+
+这是一个与历史完全不同的三国——由你亲手改写。`
+    }
+  };
+  
+  const e = endings[type];
+  document.getElementById('endingBadge').textContent = e.badge;
+  document.getElementById('endingBadge').className = 'ending-badge ' + e.badgeClass;
+  document.getElementById('endingTitle').textContent = e.title;
+  document.getElementById('endingSubtitle').textContent = e.subtitle;
+  document.getElementById('endingEpitaph').textContent = e.epitaph;
+  document.getElementById('statYears').textContent = type === 'historical' || type === 'heroic' ? 27 : type === 'pyrrhic' ? 28 : type.includes('retire') ? 34 : 33;
+  document.getElementById('statHealth').textContent = state.stats.health;
+  document.getElementById('statDivergence').textContent = (state.divergence * 20) + '%';
+  document.getElementById('endingScreen').classList.add('active');
+}
+
+function proceedToChapter6() {
+  state.chapter = 5; // 第六章
+  state.scene = 0;
+  showTransition();
+}
+
+// ==================== 场景渲染 ====================
+function renderScene() {
+  const ch = chapters[state.chapter];
+  if (!ch) return;
+  const sc = ch.scenes[state.scene];
+  if (!sc) return;
+  
+  document.getElementById('sceneBg').style.backgroundImage = `url('${sc.bg || ch.bg}')`;
+  createParticles(sc.particles || ch.particles);
+  
+  document.getElementById('chapterNum').textContent = ch.num;
+  document.getElementById('chapterTitle').textContent = ch.title;
+  document.getElementById('timelineYear').textContent = ch.year;
+  document.getElementById('timelineAge').textContent = ch.age + '岁';
+  document.getElementById('timelineEra').textContent = ch.era;
+  
+  updateStats();
+  
+  const panel = document.getElementById('narrativePanel');
+  let html = '';
+  if (sc.location) html += `<div class="scene-location fade-in">${sc.location}</div>`;
+  
+  if (sc.dynamicContent) {
+    html += `<div class="narrative-text">${getDynamicContent(sc.dynamicContent)}</div>`;
+  } else if (sc.content) {
+    html += `<div class="narrative-text">${sc.content}</div>`;
+    if (sc.choices) {
+      html += '<div class="choices-container fade-in delay-4"><div class="choices-prompt">你的选择</div>';
+      sc.choices.forEach((c,i) => {
+        const cls = c.divergent ? 'divergent' : c.healthChoice ? 'health-choice' : '';
+        const eff = c.effectType === 'health-up' ? 'health-up' : c.effectType === 'health-down' ? 'health-down' : c.effectType === 'divergent' ? 'divergent' : '';
+        const effText = c.effectType === 'health-up' ? '+健康' : c.effectType === 'health-down' ? '-健康' : c.divergent ? '⚡改变历史' : '';
+        html += `<button class="choice-btn ${cls}" onclick="makeChoiceIdx(${i})">
+          <span class="choice-text">${c.text}</span>
+          <span class="choice-subtext">${c.subtext}</span>
+          ${effText ? `<span class="choice-effect ${eff}">${effText}</span>` : ''}
+        </button>`;
+      });
+      html += '</div>';
+    } else if (!sc.nextChapter) {
+      html += '<button class="continue-btn fade-in delay-4" onclick="nextScene()">继续 →</button>';
+    } else {
+      html += '<button class="continue-btn fade-in delay-4" onclick="nextChapter()">继续 →</button>';
+    }
+  }
+  panel.innerHTML = html;
+}
+
+function makeChoiceIdx(idx) {
+  const sc = chapters[state.chapter].scenes[state.scene];
+  const c = sc.choices[idx];
+  state.choices.push({chapter:state.chapter,scene:state.scene,choice:idx});
+  applyResult(c.result);
+  document.querySelectorAll('.choice-btn').forEach((b,i) => b.classList.add(i===idx?'selected':'faded'));
+  setTimeout(nextScene, 600);
+}
+
+function makeChoice(result) {
+  applyResult(result);
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.add('faded'));
+  setTimeout(nextScene, 600);
+}
+
+function nextScene() {
+  const ch = chapters[state.chapter];
+  if (state.scene < ch.scenes.length - 1) {
+    state.scene++;
+    renderScene();
+  } else {
+    nextChapter();
+  }
+}
+
+function nextChapter() {
+  if (state.chapter < chapters.length - 1) {
+    state.chapter++;
+    state.scene = 0;
+    showTransition();
+  }
+}
+
+function showTransition() {
+  const ch = chapters[state.chapter];
+  document.getElementById('transitionYear').textContent = ch.year;
+  document.getElementById('transitionText').textContent = ch.era;
+  document.getElementById('transitionSubtext').textContent = ch.title;
+  
+  const h = state.stats.health;
+  const hEl = document.getElementById('transitionHealth');
+  if (h >= 60) {
+    hEl.textContent = '身体状况：良好';
+    hEl.className = 'transition-health good';
+  } else if (h >= 30) {
+    hEl.textContent = '身体状况：疲惫';
+    hEl.className = 'transition-health warn';
+  } else {
+    hEl.textContent = '身体状况：危险';
+    hEl.className = 'transition-health danger';
+  }
+  hEl.style.display = 'block';
+  
+  document.getElementById('sceneTransition').classList.add('active');
+  setTimeout(() => {
+    document.getElementById('sceneTransition').classList.remove('active');
+    renderScene();
+  }, 2500);
+}
+
+function restart() {
+  state.chapter = 0;
+  state.scene = 0;
+  state.stats = {health:80,destiny:30,military:25,wisdom:50};
+  state.divergence = 0;
+  state.choices = [];
+  state.flags = {};
+  document.getElementById('endingScreen').classList.remove('active');
+  renderScene();
+}
+
+document.addEventListener('DOMContentLoaded', renderScene);
+
+// ==================== 音乐系统 ====================
+// 使用 Internet Archive 免版权中国古典音乐
+const musicTracks = {
+  // Exotic Music of Ancient China - Lui Tsun Yuen (古琴演奏)
+  0: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 隆中 - 宁静
+  1: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 赤壁 - 十面埋伏
+  2: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.06.%20Side%20B%20-%20Yearning%20On%20River%20Shiang.mp3', // 白帝城 - 悲凉
+  3: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 北伐 - 悲壮
+  4: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.08.%20Side%20B%20-%20In%20Remembrance%20Of%20An%20Old%20Friend.mp3', // 五丈原 - 怀旧
+  5: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 长安 - 胜利
+  6: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.07.%20Side%20B%20-%20The%20Flowing%20Streams.mp3', // 洛阳 - 流水
+  7: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.09.%20Side%20B%20-%20The%20Elegant%20Orchid.mp3'  // 归一 - 平和
+};
+
+let musicPlaying = false;
+let currentTrack = -1;
+
+function toggleMusic() {
+  const audio = document.getElementById('bgMusic');
+  const control = document.getElementById('audioControl');
+  const icon = document.getElementById('audioIcon');
+  const text = document.getElementById('audioText');
+  
+  if (musicPlaying) {
+    audio.pause();
+    musicPlaying = false;
+    control.classList.remove('playing');
+    icon.textContent = '琴';
+    text.textContent = '奏乐';
+  } else {
+    playChapterMusic(state.chapter);
+    musicPlaying = true;
+    control.classList.add('playing');
+    icon.textContent = '樂';
+    text.textContent = '止';
+  }
+}
+
+function playChapterMusic(chapter) {
+  if (!musicPlaying) return;
+  
+  const audio = document.getElementById('bgMusic');
+  const track = musicTracks[chapter] || musicTracks[0];
+  
+  if (currentTrack !== chapter) {
+    currentTrack = chapter;
+    audio.src = track;
+    audio.volume = 0.3;
+    audio.play().catch(e => {
+      console.log('Autoplay blocked, user interaction required');
+    });
+  }
+}
+
+// 修改 showTransition 以切换音乐
+const originalShowTransition = showTransition;
+showTransition = function() {
+  originalShowTransition();
+  setTimeout(() => playChapterMusic(state.chapter), 500);
+};
+</script>
+</body>
+</html>

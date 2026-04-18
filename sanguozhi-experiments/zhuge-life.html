@@ -43,7 +43,19 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(13,11,9,0.4) 0%, rgba(13,11,9,0.6) 50%, rgba(13,11,9,0.95) 100%);
+      background: linear-gradient(to bottom, rgba(13,11,9,0.3) 0%, rgba(13,11,9,0.5) 50%, rgba(13,11,9,0.92) 100%);
+      z-index: 1;
+    }
+    /* 视频背景 */
+    .video-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .particles {
       position: absolute;
@@ -613,6 +625,9 @@
   </div>
 
   <div class="game-container">
+    <div class="video-bg" id="videoBg">
+      <video id="bgVideo" autoplay muted loop playsinline></video>
+    </div>
     <div class="scene-bg" id="sceneBg"></div>
     <div class="particles" id="particles"></div>
     <div class="content-layer">
@@ -704,6 +719,32 @@ const state = {
   choices: [],
   flags: {}
 };
+
+// ==================== 视频背景映射 ====================
+const chapterVideos = {
+  0: 'video/longzhong.mp4',   // 隆中
+  1: 'video/chibi.mp4',       // 赤壁
+  2: 'video/baidi.mp4',       // 白帝城
+  3: 'video/beifa.mp4',       // 北伐
+  4: 'video/wuzhangyuan.mp4', // 五丈原
+  5: 'video/beifa.mp4',       // 克复长安（复用北伐）
+  6: 'video/beifa.mp4',       // 洛阳（复用北伐）
+  7: 'video/longzhong.mp4'    // 归一（复用隆中，平和）
+};
+
+let currentVideo = null;
+
+function switchVideo(chapter) {
+  const videoEl = document.getElementById('bgVideo');
+  const videoSrc = chapterVideos[chapter];
+  
+  if (videoSrc && currentVideo !== videoSrc) {
+    currentVideo = videoSrc;
+    videoEl.src = videoSrc;
+    videoEl.load();
+    videoEl.play().catch(e => console.log('Video autoplay blocked'));
+  }
+}
 
 // ==================== 章节数据 ====================
 const chapters = [
@@ -1318,6 +1359,9 @@ function renderScene() {
   if (!ch) return;
   const sc = ch.scenes[state.scene];
   if (!sc) return;
+  
+  // 切换视频背景
+  switchVideo(state.chapter);
   
   document.getElementById('sceneBg').style.backgroundImage = `url('${sc.bg || ch.bg}')`;
   createParticles(sc.particles || ch.particles);
