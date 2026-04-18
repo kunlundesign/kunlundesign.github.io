@@ -463,9 +463,59 @@
       .narrative-text { font-size: 1rem; }
       .timeline { position: static; transform: none; text-align: center; margin-bottom: 1rem; }
     }
+    
+    /* 音乐控制 */
+    .audio-control {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: rgba(13, 11, 9, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .audio-control:hover {
+      border-color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.1);
+    }
+    .audio-icon {
+      font-size: 1.2rem;
+    }
+    .audio-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .audio-control.playing .audio-icon::after {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: 4px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
+  <!-- 音乐控制 -->
+  <div class="audio-control" id="audioControl" onclick="toggleMusic()">
+    <span class="audio-icon" id="audioIcon">🔇</span>
+    <span class="audio-text" id="audioText">点击播放音乐</span>
+  </div>
+  <audio id="bgMusic" loop preload="auto"></audio>
+
   <div class="scene-transition" id="sceneTransition">
     <div class="transition-year" id="transitionYear">207</div>
     <div class="transition-text" id="transitionText">建安十二年</div>
@@ -1293,6 +1343,66 @@ function restart() {
 }
 
 document.addEventListener('DOMContentLoaded', renderScene);
+
+// ==================== 音乐系统 ====================
+const musicTracks = {
+  // 使用免版权音乐 CDN
+  0: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946e1c6d1c.mp3', // 隆中 - 宁静古琴
+  1: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 赤壁 - 紧张战争
+  2: 'https://cdn.pixabay.com/download/audio/2022/05/16/audio_1333bbc093.mp3', // 白帝城 - 悲凉
+  3: 'https://cdn.pixabay.com/download/audio/2023/04/10/audio_f4bd820e84.mp3', // 北伐 - 悲壮
+  4: 'https://cdn.pixabay.com/download/audio/2022/05/16/audio_1333bbc093.mp3', // 五丈原 - 苍凉
+  5: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 长安 - 胜利
+  6: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 洛阳
+  7: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946e1c6d1c.mp3'  // 归一 - 平和
+};
+
+let musicPlaying = false;
+let currentTrack = -1;
+
+function toggleMusic() {
+  const audio = document.getElementById('bgMusic');
+  const control = document.getElementById('audioControl');
+  const icon = document.getElementById('audioIcon');
+  const text = document.getElementById('audioText');
+  
+  if (musicPlaying) {
+    audio.pause();
+    musicPlaying = false;
+    control.classList.remove('playing');
+    icon.textContent = '🔇';
+    text.textContent = '点击播放音乐';
+  } else {
+    playChapterMusic(state.chapter);
+    musicPlaying = true;
+    control.classList.add('playing');
+    icon.textContent = '🎵';
+    text.textContent = '正在播放';
+  }
+}
+
+function playChapterMusic(chapter) {
+  if (!musicPlaying) return;
+  
+  const audio = document.getElementById('bgMusic');
+  const track = musicTracks[chapter] || musicTracks[0];
+  
+  if (currentTrack !== chapter) {
+    currentTrack = chapter;
+    audio.src = track;
+    audio.volume = 0.3;
+    audio.play().catch(e => {
+      console.log('Autoplay blocked, user interaction required');
+    });
+  }
+}
+
+// 修改 showTransition 以切换音乐
+const originalShowTransition = showTransition;
+showTransition = function() {
+  originalShowTransition();
+  setTimeout(() => playChapterMusic(state.chapter), 500);
+};
 </script>
 </body>
 </html>
