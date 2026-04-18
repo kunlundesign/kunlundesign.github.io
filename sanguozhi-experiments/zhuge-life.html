@@ -1492,6 +1492,21 @@ function showEnding(type) {
   document.getElementById('statHealth').textContent = state.stats.health;
   document.getElementById('statDivergence').textContent = (state.divergence * 20) + '%';
   
+  // 保存通关进度到 localStorage
+  try {
+    const progress = JSON.parse(localStorage.getItem('sanguozhi_progress') || '{}');
+    if (!progress.zhugeliang) progress.zhugeliang = {};
+    progress.zhugeliang.story = true;
+    if (!progress.zhugeliang.endings) progress.zhugeliang.endings = [];
+    if (!progress.zhugeliang.endings.includes(type)) {
+      progress.zhugeliang.endings.push(type);
+    }
+    localStorage.setItem('sanguozhi_progress', JSON.stringify(progress));
+    console.log('进度已保存:', progress);
+  } catch (err) {
+    console.error('保存进度失败:', err);
+  }
+  
   // 创建星光效果
   createEndingStars();
   
