@@ -1434,16 +1434,17 @@ function restart() {
 document.addEventListener('DOMContentLoaded', renderScene);
 
 // ==================== 音乐系统 ====================
+// 使用 Internet Archive 免版权中国古典音乐
 const musicTracks = {
-  // 使用免版权音乐 CDN
-  0: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946e1c6d1c.mp3', // 隆中 - 宁静古琴
-  1: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 赤壁 - 紧张战争
-  2: 'https://cdn.pixabay.com/download/audio/2022/05/16/audio_1333bbc093.mp3', // 白帝城 - 悲凉
-  3: 'https://cdn.pixabay.com/download/audio/2023/04/10/audio_f4bd820e84.mp3', // 北伐 - 悲壮
-  4: 'https://cdn.pixabay.com/download/audio/2022/05/16/audio_1333bbc093.mp3', // 五丈原 - 苍凉
-  5: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 长安 - 胜利
-  6: 'https://cdn.pixabay.com/download/audio/2023/09/05/audio_168a3e0caa.mp3', // 洛阳
-  7: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946e1c6d1c.mp3'  // 归一 - 平和
+  // Exotic Music of Ancient China - Lui Tsun Yuen (古琴演奏)
+  0: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 隆中 - 宁静
+  1: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 赤壁 - 十面埋伏
+  2: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.06.%20Side%20B%20-%20Yearning%20On%20River%20Shiang.mp3', // 白帝城 - 悲凉
+  3: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 北伐 - 悲壮
+  4: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.08.%20Side%20B%20-%20In%20Remembrance%20Of%20An%20Old%20Friend.mp3', // 五丈原 - 怀旧
+  5: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 长安 - 胜利
+  6: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.07.%20Side%20B%20-%20The%20Flowing%20Streams.mp3', // 洛阳 - 流水
+  7: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.09.%20Side%20B%20-%20The%20Elegant%20Orchid.mp3'  // 归一 - 平和
 };
 
 let musicPlaying = false;
