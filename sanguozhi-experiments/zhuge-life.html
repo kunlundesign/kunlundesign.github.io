@@ -789,9 +789,24 @@ const chapters = [
 <p class="fade-in delay-3 dim">今天，他第三次来了。</p>`
       },
       {
+        location: '隆中 · 草庐门前',
+        content: `<p class="fade-in">门外传来脚步声。</p>
+<p class="fade-in delay-1">你从窗缝望去——三个人，风雪中站得笔直。为首者四十余岁，双耳垂肩，面容刚毅中透着疲惫。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">观察</div>
+  关羽按剑立于左，张飞持矛立于右。这两位万人敌，却甘愿在雪中等候一个草野村夫。
+</div>
+<p class="fade-in delay-3">你可以选择如何出迎。</p>`,
+        choices: [
+          { text: '亲自开门迎接', subtext: '"将军冒雪至此，亮不胜惶恐"', effectType: 'normal', result: { destiny: 5, flag: 'humble_greeting' } },
+          { text: '命童子开门，自己在内堂等候', subtext: '保持几分矜持', effectType: 'normal', result: { wisdom: 5, flag: 'reserved_greeting' } },
+          { text: '继续假寐片刻', subtext: '再试探一下他的耐心', effectType: 'normal', result: { wisdom: 10, destiny: -5, flag: 'test_patience' } }
+        ]
+      },
+      {
         location: '隆中 · 草庐之内',
         content: `<p class="fade-in">刘备坐在你对面，衣衫上还带着雪水的湿意。</p>
-<p class="fade-in delay-1">他今年四十七岁，半生颠沛，却依然目光灼灼。</p>
+<p class="fade-in delay-1">他今年四十七岁，半生颠沛，却依然目光灼灼。你读过他的履历——从涿郡起兵至今，他投过公孙瓒、吕布、曹操、袁绍、刘表，却始终未能立足。</p>
 <div class="dialogue-bubble fade-in delay-2">
   <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
   <div class="dialogue-content">
@@ -800,15 +815,15 @@ const chapters = [
   </div>
 </div>`,
         choices: [
-          { text: '将"隆中对"和盘托出', subtext: '天下三分，联吴抗曹', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'full_plan' } },
-          { text: '先试探他的心志', subtext: '问他几个关键问题', effectType: 'normal', result: { wisdom: 15, flag: 'test_liu' } },
-          { text: '提出更激进的方案：直取许都', subtext: '趁曹操立足未稳，奇袭中原', effectType: 'divergent', divergent: true, result: { destiny: 5, military: 15, divergence: 1, flag: 'aggressive_plan' } }
+          { text: '将"隆中对"和盘托出', subtext: '天下三分，联吴抗曹——你深思熟虑多年的方案', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'full_plan' } },
+          { text: '先试探他的心志', subtext: '问他几个关键问题，看他如何作答', effectType: 'normal', result: { wisdom: 15, flag: 'test_liu' } },
+          { text: '提出更激进的方案：直取许都', subtext: '趁曹操立足未稳，奇袭中原，擒天子以令诸侯', effectType: 'divergent', divergent: true, result: { destiny: 5, military: 15, divergence: 1, flag: 'aggressive_plan' } }
         ]
       },
       { location: '隆中 · 草庐之内', dynamicContent: 'ch1_response' },
       {
         location: '隆中 · 草庐外',
-        content: `<p class="fade-in">你送刘备走出草庐。雪停了，阳光穿透云层。</p>
+        content: `<p class="fade-in">你送刘备走出草庐。雪停了，阳光穿透云层，在雪地上投下一片金色。</p>
 <div class="dialogue-bubble fade-in delay-1">
   <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
   <div class="dialogue-content">
@@ -816,7 +831,8 @@ const chapters = [
     <div class="dialogue-text">孤之有孔明，犹鱼之有水也。</div>
   </div>
 </div>
-<p class="fade-in delay-2 dim">从这一刻起，你的命运与他绑定在一起。</p>`,
+<p class="fade-in delay-2">关羽和张飞对视一眼，神色复杂。这个年轻人，凭什么让大哥如此推崇？</p>
+<p class="fade-in delay-3 dim">从这一刻起，你的命运与他绑定在一起。</p>`,
         nextChapter: true
       }
     ]
@@ -827,10 +843,30 @@ const chapters = [
     bg: 'images/scene-chaisang.png', particles: 'none',
     scenes: [
       {
+        location: '新野 · 转折',
+        content: `<p class="fade-in dim">半年后。</p>
+<p class="fade-in delay-1">你的计策助刘备火烧博望、火烧新野，小胜曹军两阵。然而——</p>
+<p class="fade-in delay-2 danger">曹操亲率八十万大军南下。荆州刘琮不战而降。</p>
+<p class="fade-in delay-3">刘备携民渡江，在当阳长坂被曹军追上。赵云七进七出救出阿斗，张飞喝断当阳桥——但这只是暂时的喘息。</p>`
+      },
+      {
+        location: '江陵 · 战前会议',
+        content: `<p class="fade-in">刘备部众只剩一万余人，人心惶惶。</p>
+<p class="fade-in delay-1">有人建议投降，有人建议南逃苍梧。</p>
+<div class="inner-thought fade-in delay-2">
+  <div class="thought-label">关键时刻</div>
+  只有联合江东孙权，才有一线生机。但孙权为什么要帮一个丧家之犬？
+</div>`,
+        choices: [
+          { text: '主动请缨出使东吴', subtext: '由我去说服孙权', effectType: 'normal', result: { wisdom: 10, flag: 'volunteer_wu' } },
+          { text: '建议鲁肃先行探路', subtext: '让东吴主动来谈', effectType: 'normal', result: { destiny: 5, flag: 'wait_lusu' } }
+        ]
+      },
+      {
         location: '柴桑 · 吴侯府',
-        content: `<p class="fade-in">曹操挟百万大军南下，荆州不战而降。</p>
-<p class="fade-in delay-1">刘备败走当阳，几乎全军覆没。</p>
-<p class="fade-in delay-2">你孤身入吴，肩负说服孙权的使命。</p>`
+        content: `<p class="fade-in">你孤身入吴，肩负说服孙权的使命。</p>
+<p class="fade-in delay-1">东吴朝堂上，主战派与主降派争论不休。张昭代表的文官系统，多数主张投降。</p>
+<p class="fade-in delay-2">他们看着你——这个来自败军之将身边的谋士——眼神中满是轻蔑。</p>`
       },
       {
         location: '柴桑 · 议事厅',
@@ -839,47 +875,74 @@ const chapters = [
   <img class="dialogue-avatar wu" src="../sanguozhi/images/default-hero.jpg" alt="张昭">
   <div class="dialogue-content">
     <div class="dialogue-speaker wu">张昭</div>
-    <div class="dialogue-text">先生自比管仲乐毅，却使刘皇叔败走当阳。不知管仲乐毅，可曾如此狼狈？</div>
+    <div class="dialogue-text">先生自比管仲乐毅，却使刘皇叔败走当阳，十万之众，一朝尽丧。不知管仲乐毅，可曾如此狼狈？</div>
   </div>
 </div>
 <p class="fade-in delay-2">满堂哄笑。</p>`,
         choices: [
-          { text: '"鹏飞万里，岂与燕雀争栖？"', subtext: '以攻代守，震慑全场', effectType: 'normal', result: { wisdom: 10, flag: 'sharp_tongue' } },
-          { text: '"刘皇叔以仁义为本，不忍弃民"', subtext: '以理服人，保持风度', effectType: 'normal', result: { destiny: 10, flag: 'gentle_tongue' } }
+          { text: '"鹏飞万里，岂与燕雀争栖？"', subtext: '以攻代守，反讥张昭等人是目光短浅之辈', effectType: 'normal', result: { wisdom: 10, flag: 'sharp_tongue' } },
+          { text: '"刘皇叔以仁义为本，不忍弃民而走"', subtext: '以理服人，强调刘备的仁德', effectType: 'normal', result: { destiny: 10, flag: 'gentle_tongue' } },
+          { text: '"张公可知，曹操给江东的信中写了什么？"', subtext: '转移话题，威胁孙权', effectType: 'normal', result: { military: 10, flag: 'threat_wu' } }
+        ]
+      },
+      {
+        location: '柴桑 · 私室',
+        content: `<p class="fade-in">舌战群儒后，你单独面见孙权。</p>
+<p class="fade-in delay-1">孙权二十六岁，比你还年轻一岁。他继承父兄基业，守土六年，却从未独自面对过如此大战。</p>
+<div class="dialogue-bubble fade-in delay-2">
+  <img class="dialogue-avatar wu" src="../sanguozhi/images/sunquan.jpg" alt="孙权">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker wu">孙权</div>
+    <div class="dialogue-text">先生以为，孤当战还是当降？</div>
+  </div>
+</div>`,
+        choices: [
+          { text: '"将军若能以吴越之众与曹操抗衡，不如早与之绝"', subtext: '激将法——要战就战，不战就降', effectType: 'normal', result: { wisdom: 10, flag: 'provoke_sun' } },
+          { text: '展示曹军弱点：远来疲敝、水土不服、荆州人心未附', subtext: '条分缕析，以理服之', effectType: 'normal', result: { wisdom: 15, flag: 'analyze_sun' } }
         ]
       },
       {
         location: '赤壁 · 战前',
         bg: 'images/scene-chibi.png', particles: 'fire',
-        content: `<p class="fade-in">孙刘联盟成立。五万联军，对阵曹操八十万大军。</p>
-<p class="fade-in delay-1">周瑜问你破敌之策。</p>`,
+        content: `<p class="fade-in" style="color:var(--accent-gold);">孙刘联盟成立。</p>
+<p class="fade-in delay-1">周瑜率三万精兵，刘备出一万余众，五万联军逆流而上，在赤壁与曹操对峙。</p>
+<p class="fade-in delay-2">周瑜召你议事。他年长你六岁，是江东第一名将，此战主帅。</p>
+<div class="dialogue-bubble fade-in delay-3">
+  <img class="dialogue-avatar wu" src="../sanguozhi/images/zhouyu.jpg" alt="周瑜">
+  <div class="dialogue-content">
+    <div class="dialogue-speaker wu">周瑜</div>
+    <div class="dialogue-text">孔明先生，破曹之策，你可有想法？</div>
+  </div>
+</div>`,
         choices: [
-          { text: '"破敌之策，你我所想，恐怕是同一个字"', subtext: '暗示火攻，展示默契', effectType: 'normal', result: { wisdom: 10, flag: 'hint_fire' } },
+          { text: '"破敌之策，你我所想，恐怕是同一个字"', subtext: '各写一字于掌中——果然都是"火"', effectType: 'normal', result: { wisdom: 10, flag: 'hint_fire' } },
           { text: '提出详细火攻方案，争取主导权', subtext: '展露锋芒，与周瑜争功', effectType: 'divergent', divergent: true, result: { military: 15, divergence: 1, flag: 'compete_zhou' } }
         ]
       },
       {
         location: '南屏山 · 七星坛',
         content: `<p class="fade-in">万事俱备，只欠东风。</p>
-<p class="fade-in delay-1">你登上七星坛，披发仗剑，做出"借东风"的姿态。</p>
-<div class="inner-thought fade-in delay-2">
+<p class="fade-in delay-1">隆冬时节，江面盛行西北风。火攻曹营，需要东南风。</p>
+<p class="fade-in delay-2">你登上七星坛，披发仗剑，做出"借东风"的姿态。</p>
+<div class="inner-thought fade-in delay-3">
   <div class="thought-label">真相</div>
-  你早已夜观天象，算准东南风将起。这是气象学，不是法术。但有时候，人们需要相信神迹。
+  你早已夜观天象，算准冬至前后必有东南风。这是气象学，不是法术。但有时候，人们需要相信神迹。
 </div>`,
         choices: [
-          { text: '连续三夜观星，确保万无一失', subtext: '日夜操劳，不敢懈怠', effectType: 'health-down', result: { health: -10, wisdom: 10, flag: 'overwork_chibi' } },
-          { text: '交代要点后早些休息', subtext: '保存精力，留待后用', effectType: 'health-up', healthChoice: true, result: { health: 5, flag: 'rest_chibi' } }
+          { text: '连续三夜观星，确保万无一失', subtext: '日夜操劳，不敢有丝毫懈怠', effectType: 'health-down', result: { health: -10, wisdom: 10, flag: 'overwork_chibi' } },
+          { text: '交代要点后早些休息', subtext: '保存精力，你还年轻，后面的路还很长', effectType: 'health-up', healthChoice: true, result: { health: 5, flag: 'rest_chibi' } }
         ]
       },
       {
         location: '赤壁 · 决战',
         bg: 'images/scene-chibi.png', particles: 'fire',
         content: `<p class="fade-in" style="font-size:1.3rem;color:var(--accent-orange);">火烧赤壁。</p>
-<p class="fade-in delay-1">东南风起，黄盖诈降的火船冲入曹营。</p>
-<p class="fade-in delay-2">连环战船化作火海，曹军大溃。</p>
-<div class="inner-thought fire fade-in delay-3">
+<p class="fade-in delay-1">建安十三年十一月，东南风起。黄盖诈降的火船冲入曹营。</p>
+<p class="fade-in delay-2">曹操的连环战船——那是庞统"献"的计策——化作一片火海。</p>
+<p class="fade-in delay-3">曹军大溃，死者过半。曹操狼狈逃回北方，再也无力南下。</p>
+<div class="inner-thought fire fade-in delay-4">
   <div class="thought-label">历史</div>
-  这一把火，烧掉了曹操统一天下的梦想，烧出了三国鼎立的格局。
+  这一把火，烧掉了曹操统一天下的梦想，烧出了三国鼎立的格局。而你，诸葛孔明，从这一刻起名震天下。
 </div>`,
         nextChapter: true
       }
@@ -891,39 +954,49 @@ const chapters = [
     bg: 'images/scene-baidi.png', particles: 'firefly',
     scenes: [
       {
+        location: '白帝城 · 十五年后',
+        content: `<p class="fade-in dim">十五年过去了。</p>
+<p class="fade-in delay-1">赤壁之后，你助刘备取荆州、入西川、收汉中。建安二十四年，刘备称汉中王；章武元年，刘备在成都称帝，国号汉，史称蜀汉。</p>
+<p class="fade-in delay-2">这十五年，你从一个二十七岁的年轻谋士，成长为蜀汉丞相，位极人臣。</p>`
+      },
+      {
         location: '白帝城 · 永安宫',
-        content: `<p class="fade-in dim">十五年后。</p>
-<p class="fade-in delay-1">赤壁之后，你助刘备取荆州、得西川，建立蜀汉。</p>
-<p class="fade-in delay-2">然而——关羽败走麦城，张飞被刺军中。刘备倾国伐吴，在夷陵被陆逊火烧连营。</p>
-<p class="fade-in delay-3 danger">蜀汉元气大伤，刘备一病不起。</p>`
+        content: `<p class="fade-in danger">然而，三年之内，一切崩塌。</p>
+<p class="fade-in delay-1">建安二十四年，关羽败走麦城，被东吴擒杀。</p>
+<p class="fade-in delay-2">章武元年，张飞被部下所刺。</p>
+<p class="fade-in delay-3">章武二年，刘备倾国伐吴，在夷陵被陆逊火烧连营，七十万大军灰飞烟灭。</p>
+<p class="fade-in delay-4 dim">刘备退守白帝城，一病不起。</p>`
       },
       {
         location: '白帝城 · 病榻前',
-        content: `<p class="fade-in">刘备躺在病榻上，已是弥留之际。</p>
-<div class="dialogue-bubble fade-in delay-1">
+        content: `<p class="fade-in">你日夜兼程赶到永安。</p>
+<p class="fade-in delay-1">病榻上的刘备，已不是当年雪中顾庐的那个目光灼灼的中年人了。六十三岁的他，须发皆白，瘦骨嶙峋。</p>
+<div class="dialogue-bubble fade-in delay-2">
   <img class="dialogue-avatar liu" src="../sanguozhi/images/liubei.jpg" alt="刘备">
   <div class="dialogue-content">
     <div class="dialogue-speaker liu">刘备</div>
     <div class="dialogue-text">君才十倍曹丕，必能安国，终定大事。若嗣子可辅，辅之；如其不才，<span class="highlight">君可自取</span>。</div>
   </div>
-</div>`,
+</div>
+<p class="fade-in delay-3 dim">这是什么意思？是信任，还是试探？</p>`,
         choices: [
-          { text: '"臣敢竭股肱之力，效忠贞之节，继之以死！"', subtext: '誓死效忠，绝不二心', effectType: 'normal', result: { destiny: 15, flag: 'loyal_oath' } },
-          { text: '沉默片刻，郑重点头', subtext: '接受重托，不明确表态', effectType: 'normal', result: { wisdom: 10, military: 10, flag: 'silent_accept' } },
-          { text: '"先帝放心，臣定当……相机行事"', subtext: '留有余地', effectType: 'divergent', divergent: true, result: { destiny: -10, military: 20, divergence: 1, flag: 'ambiguous_answer' } }
+          { text: '"臣敢竭股肱之力，效忠贞之节，继之以死！"', subtext: '伏地痛哭，誓死效忠', effectType: 'normal', result: { destiny: 15, flag: 'loyal_oath' } },
+          { text: '沉默片刻，郑重点头', subtext: '不说满话，以行动证明', effectType: 'normal', result: { wisdom: 10, military: 10, flag: 'silent_accept' } },
+          { text: '"先帝放心，臣定当……相机行事"', subtext: '不明确表态，留有余地', effectType: 'divergent', divergent: true, result: { destiny: -10, military: 20, divergence: 1, flag: 'ambiguous_answer' } }
         ]
       },
       {
         location: '白帝城 · 夜',
-        content: `<p class="fade-in">刘备走了。</p>
-<p class="fade-in delay-1">从今往后，蜀汉的命运，压在你一个人肩上。</p>
-<div class="inner-thought fade-in delay-2">
-  <div class="thought-label">抉择</div>
-  刘禅年幼，朝政纷繁。你是亲力亲为，还是培养人才分担？
+        content: `<p class="fade-in">章武三年四月，刘备驾崩。</p>
+<p class="fade-in delay-1">他临终前，握着你的手说："朕与卿共平天下，未竟大业，深以为憾。卿可辅禅，如其不才，卿可自取。"</p>
+<p class="fade-in delay-2">从今往后，蜀汉的命运，压在你一个人肩上。</p>
+<div class="inner-thought fade-in delay-3">
+  <div class="thought-label">重担</div>
+  刘禅十七岁，性格软弱。朝中派系林立。魏吴虎视眈眈。你是亲力亲为，还是培养人才分担？
 </div>`,
         choices: [
-          { text: '事必躬亲，日夜操劳', subtext: '罚二十以上皆亲览', effectType: 'health-down', result: { health: -15, military: 10, wisdom: 5, flag: 'overwork_baidi' } },
-          { text: '提拔蒋琬费祎，分担政务', subtext: '培养接班人', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 5, flag: 'delegate_baidi' } }
+          { text: '事必躬亲，日夜操劳', subtext: '"罚二十以上皆亲览"——凡事亲自过问', effectType: 'health-down', result: { health: -15, military: 10, wisdom: 5, flag: 'overwork_baidi' } },
+          { text: '提拔蒋琬费祎，分担政务', subtext: '培养接班人，为将来计', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 5, flag: 'delegate_baidi' } }
         ]
       },
       { location: '成都 · 五年后', dynamicContent: 'ch3_aftermath', nextChapter: true }
@@ -936,23 +1009,33 @@ const chapters = [
     scenes: [
       {
         location: '成都 · 丞相府',
-        content: `<p class="fade-in">五年了。你平定南蛮，稳固后方；整顿内政，恢复国力。</p>
-<p class="fade-in delay-1">现在，是时候兑现对先帝的承诺——<span class="highlight">北伐中原，兴复汉室</span>。</p>
-<div class="dialogue-bubble fade-in delay-2">
+        content: `<p class="fade-in">五年了。</p>
+<p class="fade-in delay-1">五年间，你平定南蛮孟获——七擒七纵，攻心为上。稳固后方，整顿内政，恢复国力。</p>
+<p class="fade-in delay-2">现在，是时候兑现对先帝的承诺——<span class="highlight">北伐中原，兴复汉室</span>。</p>
+<div class="dialogue-bubble fade-in delay-3">
   <img class="dialogue-avatar self" src="../sanguozhi/images/zhugeliang.jpg" alt="诸葛亮">
   <div class="dialogue-content">
     <div class="dialogue-speaker self">《出师表》</div>
-    <div class="dialogue-text">先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也……</div>
+    <div class="dialogue-text">先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也……臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯……</div>
   </div>
 </div>`
       },
       {
         location: '祁山 · 第一次北伐',
-        content: `<p class="fade-in">大军出祁山，天水、南安、安定三郡响应！</p>
-<p class="fade-in delay-1">然而，街亭告急——马谡舍水上山，被张郃围困。</p>`,
+        content: `<p class="fade-in" style="color:var(--accent-gold);">建兴六年春，大军出祁山！</p>
+<p class="fade-in delay-1">你声东击西，佯攻斜谷，实出祁山。曹魏措手不及，天水、南安、安定三郡望风而降！</p>
+<p class="fade-in delay-2">曹叡大惊，急派张郃率五万大军驰援。</p>
+<p class="fade-in delay-3 danger">而此时，街亭告急——马谡舍水上山，被张郃围困！</p>`
+      },
+      {
+        location: '中军帐 · 紧急军议',
+        content: `<p class="fade-in">你用马谡，是个险棋。</p>
+<p class="fade-in delay-1">马谡才气过人，你曾与他彻夜长谈，视为接班人。但他从未独自领兵。刘备临终前说过："马谡言过其实，不可大用。"</p>
+<p class="fade-in delay-2">现在，马谡违背你的部署，在山上扎营，被张郃断了水源。</p>
+<p class="fade-in delay-3 danger">街亭若失，全军危矣！</p>`,
         choices: [
           { text: '急令魏延救援', subtext: '分兵救援，尝试挽回', effectType: 'normal', result: { military: 10, flag: 'rescue_jieting' } },
-          { text: '当机立断，全军撤退', subtext: '保存实力', effectType: 'normal', result: { wisdom: 15, flag: 'retreat_jieting' } },
+          { text: '当机立断，全军撤退', subtext: '弃车保帅，保存实力', effectType: 'normal', result: { wisdom: 15, flag: 'retreat_jieting' } },
           { text: '亲率精锐，突袭张郃后方', subtext: '围魏救赵，险中求胜', effectType: 'divergent', divergent: true, result: { military: 20, health: -10, divergence: 1, flag: 'counter_attack' } }
         ]
       },
@@ -961,12 +1044,17 @@ const chapters = [
         dynamicContent: 'ch4_jieting'
       },
       {
-        location: '北伐途中',
-        content: `<p class="fade-in">第二次、第三次、第四次、第五次……你一次又一次出师北伐。</p>
-<p class="fade-in delay-1">每一次都功败垂成，每一次都更加疲惫。</p>`,
+        location: '建兴七年至十一年',
+        content: `<p class="fade-in dim">第二次北伐。第三次。第四次。第五次。</p>
+<p class="fade-in delay-1">你一次又一次出师，一次又一次功败垂成。</p>
+<p class="fade-in delay-2">粮草不济，道路艰险，司马懿坚守不出。每一次，你都差一点……</p>
+<div class="inner-thought fade-in delay-3">
+  <div class="thought-label">现实</div>
+  蜀汉国小民寡，以一州之力对抗九州。这本就是逆天之战。
+</div>`,
         choices: [
-          { text: '事必躬亲，食少事繁', subtext: '不敢懈怠，亲力亲为', effectType: 'health-down', result: { health: -20, military: 10, flag: 'overwork_beifa' } },
-          { text: '培养姜维，逐步交权', subtext: '身体是革命的本钱', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 10, flag: 'train_jiang' } }
+          { text: '事必躬亲，食少事繁', subtext: '每天只睡两三个时辰，凡事亲自过问', effectType: 'health-down', result: { health: -20, military: 10, flag: 'overwork_beifa' } },
+          { text: '培养姜维，逐步交权', subtext: '这个年轻人，有几分你当年的影子', effectType: 'health-up', healthChoice: true, result: { health: 10, destiny: 10, flag: 'train_jiang' } }
         ]
       },
       { location: '建兴十二年', dynamicContent: 'ch4_final', nextChapter: true }
@@ -979,9 +1067,10 @@ const chapters = [
     scenes: [
       {
         location: '五丈原 · 蜀军大营',
-        content: `<p class="fade-in">第六次北伐。</p>
+        content: `<p class="fade-in">建兴十二年春，第六次北伐。</p>
 <p class="fade-in delay-1">你亲率十万大军出斜谷，与司马懿对峙于五丈原。</p>
-<p class="fade-in delay-2">司马懿深沟高垒，坚守不出。他在等——<span class="danger">等你的身体熬不住</span>。</p>`
+<p class="fade-in delay-2">司马懿深沟高垒，坚守不出。他见过你的厉害——上次交手，他在卤城被你射死了张郃，损兵数万。</p>
+<p class="fade-in delay-3">这一次，他学乖了。<span class="danger">他在等——等你的身体熬不住</span>。</p>`
       },
       {
         location: '五丈原 · 中军帐',
@@ -998,19 +1087,20 @@ const chapters = [
         location: '长安城下',
         content: `<p class="fade-in" style="color:var(--accent-gold);font-size:1.3rem;">你活了下来。</p>
 <p class="fade-in delay-1">养精蓄锐，调整战术，你终于等到了机会。</p>
-<p class="fade-in delay-2">司马懿被调回洛阳平叛，关中防线空虚。</p>
-<p class="fade-in delay-3 highlight">蜀军直扑长安！</p>`
+<p class="fade-in delay-2">建兴十三年，曹魏内乱。曹叡病重，司马懿被调回洛阳与曹爽争权。关中防线空虚。</p>
+<p class="fade-in delay-3 highlight">蜀军倾巢而出，直扑长安！</p>`
       },
       {
         location: '长安 · 城破',
         content: `<p class="fade-in">建兴十三年秋，长安城破。</p>
-<p class="fade-in delay-1">你站在未央宫的废墟前，四百年前，高祖刘邦就是从这里开创了大汉基业。</p>
-<div class="inner-thought fade-in delay-2">
+<p class="fade-in delay-1">你站在未央宫的废墟前。四百年前，高祖刘邦就是从这里开创了大汉四百年基业。</p>
+<p class="fade-in delay-2">如今，你代刘氏收复故都。</p>
+<div class="inner-thought fade-in delay-3">
   <div class="thought-label">感慨</div>
   先帝……臣终于做到了第一步。
 </div>`,
         choices: [
-          { text: '安抚百姓，严禁烧杀', subtext: '王道治军，收拢人心', effectType: 'normal', result: { destiny: 15, flag: 'merciful_changan' } },
+          { text: '安抚百姓，严禁烧杀', subtext: '王道治军，收拢关中民心', effectType: 'normal', result: { destiny: 15, flag: 'merciful_changan' } },
           { text: '彻底清洗曹魏势力', subtext: '斩草除根，以绝后患', effectType: 'divergent', divergent: true, result: { military: 15, destiny: -10, divergence: 1, flag: 'purge_changan' } }
         ]
       },
@@ -1025,12 +1115,13 @@ const chapters = [
       {
         location: '长安 · 战略会议',
         content: `<p class="fade-in">占据关中两年，蜀汉实力大增。</p>
-<p class="fade-in delay-1">曹魏内乱不断，司马懿虎视眈眈。东吴孙权蠢蠢欲动。</p>
-<p class="fade-in delay-2">是时候做出决断了。</p>`,
+<p class="fade-in delay-1">关中沃野千里，人口数百万，曾是秦国统一天下的根基。如今，它是你的了。</p>
+<p class="fade-in delay-2">曹魏内乱不断，司马懿与曹爽斗得不可开交。东吴孙权蠢蠢欲动，想趁火打劫。</p>
+<p class="fade-in delay-3">是时候做出最终决断了。</p>`,
         choices: [
           { text: '挥师东进，直取洛阳', subtext: '一鼓作气，毕其功于一役', effectType: 'normal', result: { military: 15, health: -10, flag: 'march_luoyang' } },
           { text: '联合东吴，两路夹击', subtext: '稳扎稳打，分化曹魏', effectType: 'normal', result: { destiny: 10, wisdom: 10, flag: 'ally_wu' } },
-          { text: '休养生息，巩固关中', subtext: '徐图后计', effectType: 'health-up', healthChoice: true, result: { health: 10, flag: 'consolidate' } }
+          { text: '休养生息，巩固关中', subtext: '徐图后计，你已经五十七岁了', effectType: 'health-up', healthChoice: true, result: { health: 10, flag: 'consolidate' } }
         ]
       },
       { location: '洛阳 · 城下', dynamicContent: 'ch7_luoyang' }
@@ -1044,22 +1135,23 @@ const chapters = [
       {
         location: '洛阳 · 皇宫',
         content: `<p class="fade-in" style="color:var(--accent-gold);font-size:1.3rem;">曹魏覆灭。</p>
-<p class="fade-in delay-1">曹芳递上降书，魏国百官俯首。</p>
-<p class="fade-in delay-2">天下三分，如今只余蜀、吴。</p>
+<p class="fade-in delay-1">建兴十八年，魏帝曹芳递上降书，魏国百官俯首称臣。</p>
+<p class="fade-in delay-2">天下三分，如今只余蜀、吴。而东吴孙权已老，其子争位内乱不断。</p>
 <p class="fade-in delay-3 dim">你站在洛阳皇宫的大殿上，六十年的人生，走到了这一刻。</p>`
       },
       {
         location: '洛阳 · 夜',
         content: `<p class="fade-in">刘禅从成都赶来，接受曹魏的投降。</p>
 <p class="fade-in delay-1">他看着你，眼神复杂——有敬畏，有感激，也有一丝……忌惮？</p>
-<div class="inner-thought destiny fade-in delay-2">
+<p class="fade-in delay-2">三十四岁的刘禅，当了十七年傀儡皇帝。真正的权力，一直在你手中。</p>
+<div class="inner-thought destiny fade-in delay-3">
   <div class="thought-label">最终抉择</div>
   天下将定。接下来，你要走哪条路？
 </div>`,
         choices: [
-          { text: '还政刘禅，功成身退', subtext: '臣本布衣，躬耕于南阳', effectType: 'normal', result: { destiny: 20, flag: 'retire' } },
-          { text: '继续辅政，统一天下', subtext: '先灭东吴，再言其他', effectType: 'normal', result: { military: 10, flag: 'continue_war' } },
-          { text: '"君可自取"——先帝说过的', subtext: '刘禅不堪大任……', effectType: 'divergent', divergent: true, result: { divergence: 1, flag: 'take_throne' } }
+          { text: '还政刘禅，功成身退', subtext: '"臣本布衣，躬耕于南阳"——是时候回归田园了', effectType: 'normal', result: { destiny: 20, flag: 'retire' } },
+          { text: '继续辅政，统一天下', subtext: '先灭东吴，完成统一大业', effectType: 'normal', result: { military: 10, flag: 'continue_war' } },
+          { text: '"君可自取"——先帝说过的', subtext: '刘禅不堪大任，这天下，或许该换个主人？', effectType: 'divergent', divergent: true, result: { divergence: 1, flag: 'take_throne' } }
         ]
       },
       { location: '终章', dynamicContent: 'final_ending' }
