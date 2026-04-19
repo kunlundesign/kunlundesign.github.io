@@ -1299,16 +1299,17 @@ function getDynamicContent(key) {
       let t = '';
       
       if (h < 30) {
-        // 史实：病逝五丈原
+        // 史实：病逝五丈原 - 最悲剧的结局
         t = `<p class="fade-in">连日操劳，你终于病倒。</p>
-<p class="fade-in delay-1 health-warn">军医诊断：心力交瘁，油尽灯枯。</p>
+<p class="fade-in delay-1 health-warn">军医诊断：心力交瘁，油尽灯枯。已无回天之力。</p>
 <div class="inner-thought health fade-in delay-2">
   <div class="thought-label">回望</div>
   隆中的雪，赤壁的火，白帝城的托孤……五十四年，到底是为了什么？
 </div>
-<div class="choices-container fade-in delay-3">
-  <div class="choices-prompt">最后的选择</div>
-  <button class="choice-btn" onclick="showEnding('historical')">
+<p class="fade-in delay-3 dim">你知道自己时日无多了。还有什么未竟之事？</p>
+<div class="choices-container fade-in delay-4">
+  <div class="choices-prompt">最后的时光</div>
+  <button class="choice-btn" onclick="showEnding('shu_fall')">
     <span class="choice-text">安排撤军，从容赴死</span>
     <span class="choice-subtext">鞠躬尽瘁，死而后已</span>
   </button>
@@ -1318,25 +1319,32 @@ function getDynamicContent(key) {
   </button>
 </div>`;
       } else if (h >= 30 && h < 50) {
-        // 惨胜：击败司马懿但重伤
-        t = `<p class="fade-in">身体虽然疲惫，但你依然在坚持。</p>
+        // 中等健康：可以选择撤退养病或拼命
+        t = `<p class="fade-in">身体每况愈下，但你依然在坚持。</p>
 <p class="fade-in delay-1">司马懿见你屡出奇计，不敢轻敌。对峙百日，魏军粮草告急。</p>
-<div class="inner-thought fade-in delay-2">
-  <div class="thought-label">机会</div>
-  司马懿撤军在即。是追击，还是保守？
+<p class="fade-in delay-2 health-warn">然而，军医私下告诉你：若继续操劳，恐怕撑不过这个冬天。</p>
+<div class="inner-thought fade-in delay-3">
+  <div class="thought-label">抉择</div>
+  是继续拼命，还是撤军养病？
 </div>
-<div class="choices-container fade-in delay-3">
+<div class="choices-container fade-in delay-4">
   <button class="choice-btn" onclick="showEnding('pyrrhic')">
     <span class="choice-text">全力追击，不计代价</span>
     <span class="choice-subtext">拼尽最后一口气</span>
+    <span class="choice-effect health-down">-健康</span>
+  </button>
+  <button class="choice-btn" onclick="showEnding('retreat_chengdu')">
+    <span class="choice-text">撤军回成都养病</span>
+    <span class="choice-subtext">留得青山在，不怕没柴烧</span>
+    <span class="choice-effect health-up">养生</span>
   </button>
   <button class="choice-btn" onclick="proceedToChapter6()">
     <span class="choice-text">稳扎稳打，徐图后计</span>
-    <span class="choice-subtext">留得青山在</span>
+    <span class="choice-subtext">不急不躁，等待时机</span>
   </button>
 </div>`;
       } else {
-        // 活着继续
+        // 健康良好：可以继续
         t = `<p class="fade-in" style="color:var(--accent-green);">你的身体状况良好，精力充沛。</p>
 <p class="fade-in delay-1">司马懿使者来探，见你从容自若，回报说：</p>
 <div class="dialogue-bubble fade-in delay-2">
@@ -1400,7 +1408,27 @@ function showEnding(type) {
 
 后人评价："三顾频烦天下计，两朝开济老臣心。出师未捷身先死，长使英雄泪满襟。"
 
-蜀汉又延续了二十九年，最终在公元263年灭亡。但诸葛亮的名字，永远铭刻在历史之中。`
+蜀汉又延续了二十九年。公元263年，邓艾偷渡阴平，兵临成都。刘禅开城投降，蜀汉灭亡。
+
+但诸葛亮的名字，永远铭刻在历史之中——那个明知不可为而为之的人。`
+    },
+    'shu_fall': {
+      badge: '悲剧结局', badgeClass: '',
+      title: '蜀汉覆灭',
+      subtitle: '诸葛亮 · 181-234',
+      epitaph: `建兴十二年秋，诸葛亮病逝于五丈原军中。
+
+长年累月的操劳，终于拖垮了他的身体。临终前，他握着姜维的手："吾本欲竭忠尽智，恢复中原，重兴汉室。奈何天意如此，命也。"
+
+蜀军撤退，北伐梦碎。
+
+此后，蜀汉再无能臣。刘禅沉溺享乐，黄皓专权误国。公元263年，邓艾偷渡阴平，刘禅不战而降。
+
+"此间乐，不思蜀也。"
+
+诸葛亮若泉下有知，不知作何感想。
+
+鞠躬尽瘁，死而后已——这是他留给后人的遗言，也是他一生的写照。`
     },
     'heroic': {
       badge: '壮烈结局', badgeClass: '',
@@ -1427,6 +1455,26 @@ function showEnding(type) {
 "先帝……臣终究迈出了这一步。"
 
 姜维继承你的遗志，继续北伐，最终在公元248年攻入洛阳。`
+    },
+    'retreat_chengdu': {
+      badge: '遗憾结局', badgeClass: 'alternate',
+      title: '卧龙归巢',
+      subtitle: '诸葛亮 · 181-241',
+      epitaph: `五丈原上，你的病情突然恶化。
+
+军医跪地："丞相若再强撑，恐有性命之忧。唯有回成都静养，或可延续数年。"
+
+你闭上眼，良久不语。
+
+最终，你下令撤军。这是你一生中最艰难的决定——放弃北伐，承认失败。
+
+回到成都后，你将军政大事托付给蒋琬费祎，专心养病著书。《出师表》《诫子书》，都是这几年写就的。
+
+建兴十九年，你在丞相府中安然离世，享年六十一岁。
+
+北伐梦未竟，但蜀汉在你的布局下又延续了四十年。姜维九伐中原，虽未成功，却延续了你的遗志。
+
+有时候，活着本身就是一种胜利。`
     },
     'retire_peace': {
       badge: '圆满结局', badgeClass: 'golden',
@@ -1488,7 +1536,19 @@ function showEnding(type) {
   document.getElementById('endingTitle').textContent = e.title;
   document.getElementById('endingSubtitle').textContent = e.subtitle;
   document.getElementById('endingEpitaph').textContent = e.epitaph;
-  document.getElementById('statYears').textContent = type === 'historical' || type === 'heroic' ? 27 : type === 'pyrrhic' ? 28 : type.includes('retire') ? 34 : 33;
+  
+  // 计算辅佐年数（从207年隆中对开始）
+  const yearsByEnding = {
+    'historical': 27,    // 234-207
+    'heroic': 27,        // 234-207
+    'shu_fall': 27,      // 234-207
+    'pyrrhic': 28,       // 235-207
+    'retreat_chengdu': 34, // 241-207
+    'retire_peace': 44,  // 251-207
+    'unify_han': 42,     // 249-207
+    'emperor': 33        // 240-207
+  };
+  document.getElementById('statYears').textContent = yearsByEnding[type] || 27;
   document.getElementById('statHealth').textContent = state.stats.health;
   document.getElementById('statDivergence').textContent = (state.divergence * 20) + '%';
   
