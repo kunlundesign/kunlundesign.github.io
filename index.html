@@ -21,25 +21,21 @@
     .owl-container {
       position: relative;
       width: 180px;
-      height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 240px;
       margin-bottom: 1rem;
     }
     
     /* 像素猫头鹰 - 参考图重绘 */
     .pixel-owl {
       position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%) scale(2);
+      top: 10px;
+      left: 0;
       width: 6px;
       height: 6px;
       background: transparent;
-      cursor: pointer;
       animation: float 3s ease-in-out infinite;
       image-rendering: pixelated;
+      pointer-events: none;
       /* 6px 单位像素网格 */
       box-shadow:
         /* 耳朵左 */
@@ -81,19 +77,29 @@
     }
     
     @keyframes float {
-      0%, 100% { transform: translateX(-50%) scale(2) translateY(0); }
-      50% { transform: translateX(-50%) scale(2) translateY(-4px); }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
     
-    .pixel-owl:hover { filter: brightness(1.15); }
-    .pixel-owl:active { transform: translateX(-50%) scale(1.9); }
+    .owl-container:hover .pixel-owl { filter: brightness(1.15); }
     
     @keyframes shake {
-      0%, 100% { transform: translateX(-50%) scale(2) rotate(0); }
-      25% { transform: translateX(-50%) scale(2) rotate(-8deg); }
-      75% { transform: translateX(-50%) scale(2) rotate(8deg); }
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(-8deg); }
+      75% { transform: rotate(8deg); }
     }
     .pixel-owl.angry { animation: shake 0.2s ease-in-out 2; }
+    
+    /* 点击区域 */
+    .owl-hitbox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 10;
+    }
     
     /* 对话气泡 */
     .speech-bubble {
@@ -169,9 +175,10 @@
 <body>
   <div class="stars" id="stars"></div>
   
-  <div class="owl-container">
+  <div class="owl-container" id="owlContainer">
     <div class="speech-bubble" id="speech"></div>
     <div class="pixel-owl" id="owl"></div>
+    <div class="owl-hitbox" id="owlHitbox"></div>
   </div>
   
   <div class="text">
@@ -197,6 +204,7 @@
     const speech = document.getElementById('speech');
     const title = document.getElementById('title');
     const subtitle = document.getElementById('subtitle');
+    const hitbox = document.getElementById('owlHitbox');
     let clicks = 0;
     
     const responses = [
@@ -214,7 +222,7 @@
     
     const angry = ['别点了！','STOP!','烦死了！','Leave me alone!','再点报警','I\'ll bite','有病？','Touch grass','闲的？','Get a life!','下班了','*screams*','救命','Why','放过我','Just an owl','你赢了','U win','无语','Bruh'];
     
-    owl.onclick = () => {
+    hitbox.onclick = () => {
       clicks++;
       if (clicks <= responses.length) {
         const r = responses[clicks - 1];
