@@ -1728,21 +1728,10 @@ function restart() {
 document.addEventListener('DOMContentLoaded', renderScene);
 
 // ==================== 音乐系统 ====================
-// 使用 Internet Archive 免版权中国古典音乐
-const musicTracks = {
-  // Exotic Music of Ancient China - Lui Tsun Yuen (古琴演奏)
-  0: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 隆中 - 宁静
-  1: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 赤壁 - 十面埋伏
-  2: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.06.%20Side%20B%20-%20Yearning%20On%20River%20Shiang.mp3', // 白帝城 - 悲凉
-  3: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.05.%20Side%20A%20-%20The%20Great%20Ambuscade.mp3', // 北伐 - 悲壮
-  4: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.08.%20Side%20B%20-%20In%20Remembrance%20Of%20An%20Old%20Friend.mp3', // 五丈原 - 怀旧
-  5: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.01.%20Side%20A%20-%20Four%20Tokens%20Of%20Happiness.mp3', // 长安 - 胜利
-  6: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.07.%20Side%20B%20-%20The%20Flowing%20Streams.mp3', // 洛阳 - 流水
-  7: 'https://archive.org/download/lp_exotic-music-of-ancient-china_lui-tsun-yuen_0/disc1/01.09.%20Side%20B%20-%20The%20Elegant%20Orchid.mp3'  // 归一 - 平和
-};
+// 使用唐诗网页的古风背景音乐
+const musicTrack = '../poetry/audio/background-music.mp3';
 
 let musicPlaying = false;
-let currentTrack = -1;
 
 function toggleMusic() {
   const audio = document.getElementById('bgMusic');
@@ -1757,36 +1746,17 @@ function toggleMusic() {
     icon.textContent = '琴';
     text.textContent = '奏乐';
   } else {
-    playChapterMusic(state.chapter);
+    audio.src = musicTrack;
+    audio.volume = 0.3;
+    audio.play().catch(e => {
+      console.log('播放失败:', e);
+    });
     musicPlaying = true;
     control.classList.add('playing');
     icon.textContent = '樂';
     text.textContent = '止';
   }
 }
-
-function playChapterMusic(chapter) {
-  if (!musicPlaying) return;
-  
-  const audio = document.getElementById('bgMusic');
-  const track = musicTracks[chapter] || musicTracks[0];
-  
-  if (currentTrack !== chapter) {
-    currentTrack = chapter;
-    audio.src = track;
-    audio.volume = 0.3;
-    audio.play().catch(e => {
-      console.log('Autoplay blocked, user interaction required');
-    });
-  }
-}
-
-// 修改 showTransition 以切换音乐
-const originalShowTransition = showTransition;
-showTransition = function() {
-  originalShowTransition();
-  setTimeout(() => playChapterMusic(state.chapter), 500);
-};
 
 // ==================== 自动播放音乐 ====================
 // 用户首次交互时自动开始播放背景音乐
@@ -1798,15 +1768,21 @@ function startMusicOnInteraction() {
   
   // 自动开启音乐
   if (!musicPlaying) {
+    const audio = document.getElementById('bgMusic');
     const control = document.getElementById('audioControl');
     const icon = document.getElementById('audioIcon');
     const text = document.getElementById('audioText');
+    
+    audio.src = musicTrack;
+    audio.volume = 0.3;
+    audio.play().catch(e => {
+      console.log('自动播放失败:', e);
+    });
     
     musicPlaying = true;
     control.classList.add('playing');
     icon.textContent = '樂';
     text.textContent = '止';
-    playChapterMusic(state.chapter);
   }
   
   // 移除监听器
