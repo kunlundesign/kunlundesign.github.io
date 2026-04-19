@@ -209,11 +209,65 @@
       letter-spacing: 0.3em;
       color: #666;
       margin-bottom: 0.5rem;
+      transition: all 0.3s;
     }
     p {
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       color: #444;
+    }
+    
+    /* 对话气泡 */
+    .speech-bubble {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #ffd93d;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      margin-bottom: 10px;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #222;
+    }
+    .speech-bubble.show {
+      opacity: 1;
+    }
+    
+    /* 猫头鹰可点击 */
+    .owl {
+      cursor: pointer;
+      animation: sway 3s ease-in-out infinite;
+    }
+    .owl:hover {
+      filter: brightness(1.1);
+    }
+    .owl:active {
+      transform: scale(0.95);
+    }
+    
+    /* 抖动动画 */
+    @keyframes shake {
+      0%, 100% { transform: rotate(-1deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .owl.angry {
+      animation: shake 0.3s ease-in-out;
     }
     
     /* 星星背景 */
@@ -244,7 +298,8 @@
   <div class="stars" id="stars"></div>
   
   <div class="owl-container">
-    <div class="owl">
+    <div class="speech-bubble" id="speech"></div>
+    <div class="owl" id="owl">
       <div class="ear left"></div>
       <div class="ear right"></div>
       <div class="owl-head">
@@ -269,8 +324,8 @@
   </div>
   
   <div class="text">
-    <h1>HOOT HOOT</h1>
-    <p>the owl is watching you</p>
+    <h1 id="title">HOOT HOOT</h1>
+    <p id="subtitle">click the owl</p>
   </div>
 
   <script>
@@ -315,6 +370,58 @@
         clientY: touch.clientY
       });
       document.dispatchEvent(mouseEvent);
+    });
+    
+    // 点击交互
+    const owl = document.getElementById('owl');
+    const speech = document.getElementById('speech');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+    let clickCount = 0;
+    
+    const responses = [
+      { text: '📧 liukunlun@outlook.com', title: 'HOOT!', sub: 'here\'s my email' },
+      { text: 'You\'re welcome!', title: '🦉', sub: 'anything else?' },
+      { text: 'Okay okay...', title: 'HOOT?', sub: 'still here?' },
+      { text: 'Stop poking me!', title: '😤', sub: 'getting annoyed...' },
+      { text: 'I said STOP!', title: 'ANGRY OWL', sub: 'last warning!' },
+      { text: '...fine. I\'ll allow it.', title: '😒', sub: 'persistent human' },
+      { text: 'You\'re weird.', title: '🙄', sub: 'but okay' },
+      { text: '*angry owl noises*', title: '🔥', sub: 'HOOT HOOT HOOT' },
+      { text: 'GO AWAY', title: '💢', sub: 'I mean it!' },
+      { text: '...I respect your dedication', title: '🤝', sub: 'we\'re friends now' },
+    ];
+    
+    const angryResponses = [
+      '别点了！', 'STOP IT!', '烦死了！', 'Leave me alone!', 
+      '再点我就报警了', 'I\'m calling the police', '你有病吧', 'Touch grass please',
+      '闲的没事干？', 'Get a hobby!', '我要下班了', '*screams in owl*'
+    ];
+    
+    owl.addEventListener('click', () => {
+      clickCount++;
+      
+      let response;
+      if (clickCount <= responses.length) {
+        response = responses[clickCount - 1];
+        speech.textContent = response.text;
+        title.textContent = response.title;
+        subtitle.textContent = response.sub;
+      } else {
+        // 超过预设次数后随机骂人
+        const angry = angryResponses[Math.floor(Math.random() * angryResponses.length)];
+        speech.textContent = angry;
+        title.textContent = ['💢', '😡', '🤬', '💀'][Math.floor(Math.random() * 4)];
+        subtitle.textContent = `click #${clickCount}... seriously?`;
+        
+        // 抖动效果
+        owl.classList.add('angry');
+        setTimeout(() => owl.classList.remove('angry'), 300);
+      }
+      
+      // 显示气泡
+      speech.classList.add('show');
+      setTimeout(() => speech.classList.remove('show'), 2500);
     });
   </script>
 </body>
