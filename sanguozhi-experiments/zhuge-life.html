@@ -1306,12 +1306,16 @@ function getDynamicContent(key) {
   <div class="thought-label">回望</div>
   隆中的雪，赤壁的火，白帝城的托孤……五十四年，到底是为了什么？
 </div>
-<p class="fade-in delay-3 dim">你知道自己时日无多了。还有什么未竟之事？</p>
+<p class="fade-in delay-3 dim">你知道自己时日无多了。最后的时光，你选择如何度过？</p>
 <div class="choices-container fade-in delay-4">
   <div class="choices-prompt">最后的时光</div>
+  <button class="choice-btn" onclick="showEnding('historical')">
+    <span class="choice-text">继续操劳军务，至死方休</span>
+    <span class="choice-subtext">食少事繁，其能久乎？</span>
+  </button>
   <button class="choice-btn" onclick="showEnding('shu_fall')">
-    <span class="choice-text">安排撤军，从容赴死</span>
-    <span class="choice-subtext">鞠躬尽瘁，死而后已</span>
+    <span class="choice-text">安排后事，从容面对</span>
+    <span class="choice-subtext">托付姜维，嘱咐撤军</span>
   </button>
   <button class="choice-btn" onclick="showEnding('heroic')">
     <span class="choice-text">设下最后一计：木像退敌</span>
@@ -1402,15 +1406,19 @@ function showEnding(type) {
       badge: '史实结局', badgeClass: '',
       title: '星落秋风五丈原',
       subtitle: '诸葛亮 · 181-234',
-      epitaph: `建兴十二年秋，诸葛亮病逝于五丈原军中，享年五十四岁。
+      epitaph: `建兴十二年八月，五丈原。
 
-他用二十七年的时光，追随一个注定艰难的梦想。六出祁山，鞠躬尽瘁，死而后已。
+你依然每天处理军务，事必躬亲。奏章堆积如山，你逐一批阅，直到手中的笔再也握不住。
+
+司马懿派来的使者回报："诸葛亮每日食米仅数升，而所理之事，罚二十以上皆亲览。"司马懿叹道："食少事繁，其能久乎？"
+
+八月二十三日夜，秋风萧瑟。你在军帐中批阅最后一份奏章，笔落，人亡。
+
+临终前，你想起了二十七年前的那场雪，那个三顾茅庐的人。"先帝……臣尽力了……"
 
 后人评价："三顾频烦天下计，两朝开济老臣心。出师未捷身先死，长使英雄泪满襟。"
 
-蜀汉又延续了二十九年。公元263年，邓艾偷渡阴平，兵临成都。刘禅开城投降，蜀汉灭亡。
-
-但诸葛亮的名字，永远铭刻在历史之中——那个明知不可为而为之的人。`
+鞠躬尽瘁，死而后已——这八个字，是你一生的写照。`
     },
     'shu_fall': {
       badge: '悲剧结局', badgeClass: '',
