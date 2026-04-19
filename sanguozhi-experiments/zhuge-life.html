@@ -488,15 +488,11 @@
     }
     .ending-screen::before {
       content: '';
-      position: absolute;
+      position: fixed;
       inset: 0;
-      background: linear-gradient(to bottom, 
-        rgba(13,11,9,0.3) 0%, 
-        rgba(13,11,9,0.5) 30%,
-        rgba(13,11,9,0.6) 50%,
-        rgba(13,11,9,0.7) 70%,
-        rgba(13,11,9,0.85) 100%);
+      background: rgba(13,11,9,0.75);
       pointer-events: none;
+      z-index: -1;
     }
     .ending-screen.active { display: flex; }
     /* 结尾页星光粒子 */
@@ -1184,8 +1180,15 @@ const chapters = [
         location: '洛阳 · 皇宫',
         content: `<p class="fade-in" style="color:var(--accent-gold);font-size:1.3rem;">曹魏覆灭。</p>
 <p class="fade-in delay-1">建兴十八年，魏帝曹芳递上降书，魏国百官俯首称臣。</p>
-<p class="fade-in delay-2">天下三分，如今只余蜀、吴。而东吴孙权已老，其子争位内乱不断。</p>
-<p class="fade-in delay-3 dim">你站在洛阳皇宫的大殿上，六十年的人生，走到了这一刻。</p>`
+<div class="dialogue-box fade-in delay-2">
+  <img src="images/caofang.jpg" alt="曹芳" class="dialogue-portrait">
+  <div class="dialogue-content">
+    <span class="dialogue-name">曹芳</span>
+    <p>"朕……愿献国玺，乞丞相饶恕魏国臣民性命……"</p>
+  </div>
+</div>
+<p class="fade-in delay-3">天下三分，如今只余蜀、吴。而东吴孙权已老，其子争位内乱不断。</p>
+<p class="fade-in delay-4 dim">你站在洛阳皇宫的大殿上，六十年的人生，走到了这一刻。</p>`
       },
       {
         location: '洛阳 · 夜',
