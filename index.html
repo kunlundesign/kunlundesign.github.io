@@ -12,7 +12,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #1a1a2e;
+      background: #0d1117;
       font-family: 'Courier New', monospace;
       overflow: hidden;
       cursor: crosshair;
@@ -23,106 +23,87 @@
       margin-bottom: 2rem;
     }
     
-    /* 像素猫头鹰 - 用 box-shadow 画像素 */
+    /* 像素猫头鹰 - 参考图重绘 */
     .pixel-owl {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: transparent;
       cursor: pointer;
       animation: float 3s ease-in-out infinite;
-      /* 每个 box-shadow 是一个像素点，8px 为单位 */
+      image-rendering: pixelated;
+      /* 6px 单位像素网格 */
       box-shadow:
-        /* 耳朵 - 左 */
-        16px 0 0 #5D4037, 24px 0 0 #5D4037,
-        8px 8px 0 #5D4037, 16px 8px 0 #8D6E63, 24px 8px 0 #5D4037,
-        16px 16px 0 #5D4037,
-        /* 耳朵 - 右 */
-        72px 0 0 #5D4037, 80px 0 0 #5D4037,
-        72px 8px 0 #5D4037, 80px 8px 0 #8D6E63, 88px 8px 0 #5D4037,
-        80px 16px 0 #5D4037,
+        /* 耳朵左 */
+        18px 0 0 #5D4037, 24px 0 0 #3E2723,
+        12px 6px 0 #5D4037, 18px 6px 0 #6D4C41, 24px 6px 0 #3E2723, 30px 6px 0 #5D4037,
+        18px 12px 0 #5D4037, 24px 12px 0 #5D4037,
+        /* 耳朵右 */
+        60px 0 0 #3E2723, 66px 0 0 #5D4037,
+        54px 6px 0 #5D4037, 60px 6px 0 #3E2723, 66px 6px 0 #6D4C41, 72px 6px 0 #5D4037,
+        60px 12px 0 #5D4037, 66px 12px 0 #5D4037,
         /* 头顶 */
-        32px 8px 0 #6D4C41, 40px 8px 0 #5D4037, 48px 8px 0 #5D4037, 56px 8px 0 #5D4037, 64px 8px 0 #6D4C41,
-        24px 16px 0 #6D4C41, 32px 16px 0 #5D4037, 40px 16px 0 #6D4C41, 48px 16px 0 #5D4037, 56px 16px 0 #6D4C41, 64px 16px 0 #5D4037, 72px 16px 0 #6D4C41,
-        /* 脸部第一行 */
-        16px 24px 0 #5D4037, 24px 24px 0 #6D4C41, 32px 24px 0 #FFECB3, 40px 24px 0 #FFECB3, 48px 24px 0 #FFECB3, 56px 24px 0 #FFECB3, 64px 24px 0 #FFECB3, 72px 24px 0 #6D4C41, 80px 24px 0 #5D4037,
-        /* 眼睛那一行 */
-        8px 32px 0 #5D4037, 16px 32px 0 #6D4C41, 24px 32px 0 #FFECB3, 32px 32px 0 #3E2723, 40px 32px 0 #FFA000, 48px 32px 0 #FFECB3, 56px 32px 0 #FFA000, 64px 32px 0 #3E2723, 72px 32px 0 #FFECB3, 80px 32px 0 #6D4C41, 88px 32px 0 #5D4037,
-        8px 40px 0 #5D4037, 16px 40px 0 #FFECB3, 24px 40px 0 #3E2723, 32px 40px 0 #FFA000, 40px 40px 0 #000, 48px 40px 0 #FFECB3, 56px 40px 0 #000, 64px 40px 0 #FFA000, 72px 40px 0 #3E2723, 80px 40px 0 #FFECB3, 88px 40px 0 #5D4037,
-        8px 48px 0 #5D4037, 16px 48px 0 #FFECB3, 24px 48px 0 #3E2723, 32px 48px 0 #FFA000, 40px 48px 0 #FFA000, 48px 48px 0 #FFECB3, 56px 48px 0 #FFA000, 64px 48px 0 #FFA000, 72px 48px 0 #3E2723, 80px 48px 0 #FFECB3, 88px 48px 0 #5D4037,
-        /* 嘴巴那一行 */
-        8px 56px 0 #6D4C41, 16px 56px 0 #FFECB3, 24px 56px 0 #FFECB3, 32px 56px 0 #3E2723, 40px 56px 0 #FFECB3, 48px 56px 0 #FF8F00, 56px 56px 0 #FFECB3, 64px 56px 0 #3E2723, 72px 56px 0 #FFECB3, 80px 56px 0 #FFECB3, 88px 56px 0 #6D4C41,
-        16px 64px 0 #6D4C41, 24px 64px 0 #FFECB3, 32px 64px 0 #FFECB3, 40px 64px 0 #FFECB3, 48px 64px 0 #E65100, 56px 64px 0 #FFECB3, 64px 64px 0 #FFECB3, 72px 64px 0 #FFECB3, 80px 64px 0 #6D4C41,
-        /* 身体 */
-        16px 72px 0 #5D4037, 24px 72px 0 #6D4C41, 32px 72px 0 #8D6E63, 40px 72px 0 #6D4C41, 48px 72px 0 #8D6E63, 56px 72px 0 #6D4C41, 64px 72px 0 #8D6E63, 72px 72px 0 #6D4C41, 80px 72px 0 #5D4037,
-        8px 80px 0 #5D4037, 16px 80px 0 #6D4C41, 24px 80px 0 #D7CCC8, 32px 80px 0 #8D6E63, 40px 80px 0 #D7CCC8, 48px 80px 0 #8D6E63, 56px 80px 0 #D7CCC8, 64px 80px 0 #8D6E63, 72px 80px 0 #D7CCC8, 80px 80px 0 #6D4C41, 88px 80px 0 #5D4037,
-        8px 88px 0 #5D4037, 16px 88px 0 #8D6E63, 24px 88px 0 #D7CCC8, 32px 88px 0 #A1887F, 40px 88px 0 #D7CCC8, 48px 88px 0 #A1887F, 56px 88px 0 #D7CCC8, 64px 88px 0 #A1887F, 72px 88px 0 #D7CCC8, 80px 88px 0 #8D6E63, 88px 88px 0 #5D4037,
-        8px 96px 0 #6D4C41, 16px 96px 0 #8D6E63, 24px 96px 0 #A1887F, 32px 96px 0 #D7CCC8, 40px 96px 0 #A1887F, 48px 96px 0 #D7CCC8, 56px 96px 0 #A1887F, 64px 96px 0 #D7CCC8, 72px 96px 0 #A1887F, 80px 96px 0 #8D6E63, 88px 96px 0 #6D4C41,
-        16px 104px 0 #6D4C41, 24px 104px 0 #8D6E63, 32px 104px 0 #A1887F, 40px 104px 0 #8D6E63, 48px 104px 0 #A1887F, 56px 104px 0 #8D6E63, 64px 104px 0 #A1887F, 72px 104px 0 #8D6E63, 80px 104px 0 #6D4C41,
-        24px 112px 0 #5D4037, 32px 112px 0 #6D4C41, 40px 112px 0 #6D4C41, 48px 112px 0 #5D4037, 56px 112px 0 #6D4C41, 64px 112px 0 #6D4C41, 72px 112px 0 #5D4037,
+        30px 6px 0 #5D4037, 36px 6px 0 #6D4C41, 42px 6px 0 #5D4037, 48px 6px 0 #6D4C41, 54px 6px 0 #5D4037,
+        24px 12px 0 #6D4C41, 30px 12px 0 #5D4037, 36px 12px 0 #3E2723, 42px 12px 0 #5D4037, 48px 12px 0 #3E2723, 54px 12px 0 #5D4037, 60px 12px 0 #6D4C41,
+        /* 脸 - 第一行 */
+        18px 18px 0 #5D4037, 24px 18px 0 #6D4C41, 30px 18px 0 #FFF8E1, 36px 18px 0 #FFF8E1, 42px 18px 0 #FFF8E1, 48px 18px 0 #FFF8E1, 54px 18px 0 #FFF8E1, 60px 18px 0 #6D4C41, 66px 18px 0 #5D4037,
+        /* 眼睛行上 */
+        12px 24px 0 #5D4037, 18px 24px 0 #8D6E63, 24px 24px 0 #FFF8E1, 30px 24px 0 #3E2723, 36px 24px 0 #FFB74D, 42px 24px 0 #FFF8E1, 48px 24px 0 #FFB74D, 54px 24px 0 #3E2723, 60px 24px 0 #FFF8E1, 66px 24px 0 #8D6E63, 72px 24px 0 #5D4037,
+        /* 眼睛行中 - 瞳孔 */
+        12px 30px 0 #6D4C41, 18px 30px 0 #FFF8E1, 24px 30px 0 #3E2723, 30px 30px 0 #FFB74D, 36px 30px 0 #1a1a1a, 42px 30px 0 #FFF8E1, 48px 30px 0 #1a1a1a, 54px 30px 0 #FFB74D, 60px 30px 0 #3E2723, 66px 30px 0 #FFF8E1, 72px 30px 0 #6D4C41,
+        /* 眼睛行下 */
+        12px 36px 0 #6D4C41, 18px 36px 0 #FFF8E1, 24px 36px 0 #3E2723, 30px 36px 0 #FFB74D, 36px 36px 0 #FFB74D, 42px 36px 0 #FFF8E1, 48px 36px 0 #FFB74D, 54px 36px 0 #FFB74D, 60px 36px 0 #3E2723, 66px 36px 0 #FFF8E1, 72px 36px 0 #6D4C41,
+        /* 嘴上 */
+        12px 42px 0 #8D6E63, 18px 42px 0 #FFF8E1, 24px 42px 0 #FFF8E1, 30px 42px 0 #3E2723, 36px 42px 0 #FFF8E1, 42px 42px 0 #FF8F00, 48px 42px 0 #FFF8E1, 54px 42px 0 #3E2723, 60px 42px 0 #FFF8E1, 66px 42px 0 #FFF8E1, 72px 42px 0 #8D6E63,
+        /* 嘴下 */
+        18px 48px 0 #8D6E63, 24px 48px 0 #FFF8E1, 30px 48px 0 #FFF8E1, 36px 48px 0 #FFF8E1, 42px 48px 0 #E65100, 48px 48px 0 #FFF8E1, 54px 48px 0 #FFF8E1, 60px 48px 0 #FFF8E1, 66px 48px 0 #8D6E63,
+        /* 身体上 - 翅膀开始 */
+        6px 54px 0 #6D4C41, 12px 54px 0 #8D6E63, 18px 54px 0 #6D4C41, 24px 54px 0 #8D6E63, 30px 54px 0 #BCAAA4, 36px 54px 0 #8D6E63, 42px 54px 0 #BCAAA4, 48px 54px 0 #8D6E63, 54px 54px 0 #BCAAA4, 60px 54px 0 #8D6E63, 66px 54px 0 #6D4C41, 72px 54px 0 #8D6E63, 78px 54px 0 #6D4C41,
+        /* 身体 - 翅膀 */
+        6px 60px 0 #8D6E63, 12px 60px 0 #A1887F, 18px 60px 0 #8D6E63, 24px 60px 0 #BCAAA4, 30px 60px 0 #D7CCC8, 36px 60px 0 #BCAAA4, 42px 60px 0 #D7CCC8, 48px 60px 0 #BCAAA4, 54px 60px 0 #D7CCC8, 60px 60px 0 #BCAAA4, 66px 60px 0 #8D6E63, 72px 60px 0 #A1887F, 78px 60px 0 #8D6E63,
+        6px 66px 0 #6D4C41, 12px 66px 0 #8D6E63, 18px 66px 0 #A1887F, 24px 66px 0 #BCAAA4, 30px 66px 0 #D7CCC8, 36px 66px 0 #EFEBE9, 42px 66px 0 #D7CCC8, 48px 66px 0 #EFEBE9, 54px 66px 0 #D7CCC8, 60px 66px 0 #BCAAA4, 66px 66px 0 #A1887F, 72px 66px 0 #8D6E63, 78px 66px 0 #6D4C41,
+        12px 72px 0 #6D4C41, 18px 72px 0 #8D6E63, 24px 72px 0 #A1887F, 30px 72px 0 #BCAAA4, 36px 72px 0 #D7CCC8, 42px 72px 0 #BCAAA4, 48px 72px 0 #D7CCC8, 54px 72px 0 #BCAAA4, 60px 72px 0 #A1887F, 66px 72px 0 #8D6E63, 72px 72px 0 #6D4C41,
+        18px 78px 0 #5D4037, 24px 78px 0 #6D4C41, 30px 78px 0 #8D6E63, 36px 78px 0 #A1887F, 42px 78px 0 #8D6E63, 48px 78px 0 #A1887F, 54px 78px 0 #8D6E63, 60px 78px 0 #6D4C41, 66px 78px 0 #5D4037,
+        24px 84px 0 #5D4037, 30px 84px 0 #6D4C41, 36px 84px 0 #6D4C41, 42px 84px 0 #5D4037, 48px 84px 0 #6D4C41, 54px 84px 0 #6D4C41, 60px 84px 0 #5D4037,
         /* 脚 */
-        24px 120px 0 #FF8F00, 32px 120px 0 #FF8F00, 40px 120px 0 #FF8F00, 56px 120px 0 #FF8F00, 64px 120px 0 #FF8F00, 72px 120px 0 #FF8F00,
-        24px 128px 0 #E65100, 40px 128px 0 #E65100, 56px 128px 0 #E65100, 72px 128px 0 #E65100;
-      transform: scale(1.5);
+        24px 90px 0 #FF8F00, 30px 90px 0 #FF8F00, 36px 90px 0 #FF8F00, 48px 90px 0 #FF8F00, 54px 90px 0 #FF8F00, 60px 90px 0 #FF8F00,
+        24px 96px 0 #E65100, 36px 96px 0 #E65100, 48px 96px 0 #E65100, 60px 96px 0 #E65100,
+        /* 站立台 */
+        18px 102px 0 #78909C, 24px 102px 0 #90A4AE, 30px 102px 0 #B0BEC5, 36px 102px 0 #90A4AE, 42px 102px 0 #B0BEC5, 48px 102px 0 #90A4AE, 54px 102px 0 #B0BEC5, 60px 102px 0 #90A4AE, 66px 102px 0 #78909C;
+      transform: scale(2);
     }
     
     @keyframes float {
-      0%, 100% { transform: scale(1.5) translateY(0); }
-      50% { transform: scale(1.5) translateY(-6px); }
+      0%, 100% { transform: scale(2) translateY(0); }
+      50% { transform: scale(2) translateY(-4px); }
     }
     
     .pixel-owl:hover { filter: brightness(1.15); }
-    .pixel-owl:active { transform: scale(1.4); }
+    .pixel-owl:active { transform: scale(1.9); }
     
-    /* 抖动 */
     @keyframes shake {
-      0%, 100% { transform: scale(1.5) rotate(0); }
-      25% { transform: scale(1.5) rotate(-8deg); }
-      75% { transform: scale(1.5) rotate(8deg); }
+      0%, 100% { transform: scale(2) rotate(0); }
+      25% { transform: scale(2) rotate(-8deg); }
+      75% { transform: scale(2) rotate(8deg); }
     }
     .pixel-owl.angry { animation: shake 0.2s ease-in-out 2; }
-    
-    /* 眨眼层 - 覆盖眼睛 */
-    .blink-overlay {
-      position: absolute;
-      top: 60px; /* 调整到眼睛位置 */
-      left: 57px;
-      width: 80px;
-      height: 12px;
-      display: flex;
-      gap: 24px;
-      pointer-events: none;
-      opacity: 0;
-    }
-    .blink-overlay div {
-      width: 28px;
-      height: 12px;
-      background: #3E2723;
-    }
-    @keyframes blink {
-      0%, 95%, 100% { opacity: 0; }
-      97% { opacity: 1; }
-    }
-    .blink-overlay { animation: blink 4s infinite; }
     
     /* 对话气泡 */
     .speech-bubble {
       position: absolute;
-      bottom: calc(100% + 20px);
+      bottom: calc(100% + 30px);
       left: 50%;
       transform: translateX(-50%);
-      background: #0d1117;
-      color: #FFA000;
-      padding: 10px 16px;
+      background: #1a1a2e;
+      color: #FFB74D;
+      padding: 12px 18px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: bold;
-      letter-spacing: 0.02em;
       white-space: nowrap;
       opacity: 0;
       transition: all 0.3s;
       pointer-events: none;
-      border: 2px solid #FFA000;
-      text-shadow: 0 0 10px rgba(255,160,0,0.5);
+      border: 2px solid #FFB74D;
     }
     .speech-bubble::after {
       content: '';
@@ -131,7 +112,7 @@
       left: 50%;
       transform: translateX(-50%);
       border: 8px solid transparent;
-      border-top-color: #FFA000;
+      border-top-color: #FFB74D;
     }
     .speech-bubble.show {
       opacity: 1;
@@ -141,15 +122,15 @@
     /* 文字 */
     .text {
       text-align: center;
-      margin-top: 2rem;
+      margin-top: 2.5rem;
     }
     h1 {
       font-size: 1.8rem;
       font-weight: bold;
       letter-spacing: 0.5em;
-      color: #FFA000;
+      color: #FFB74D;
       margin-bottom: 0.8rem;
-      text-shadow: 0 0 30px rgba(255,160,0,0.4);
+      text-shadow: 0 0 30px rgba(255,183,77,0.3);
     }
     p {
       font-size: 1rem;
@@ -168,11 +149,12 @@
     .star {
       position: absolute;
       background: #fff;
+      border-radius: 50%;
       animation: twinkle 2s ease-in-out infinite;
     }
     @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; }
     }
   </style>
 </head>
@@ -182,7 +164,6 @@
   <div class="owl-container">
     <div class="speech-bubble" id="speech"></div>
     <div class="pixel-owl" id="owl"></div>
-    <div class="blink-overlay"><div></div><div></div></div>
   </div>
   
   <div class="text">
@@ -193,17 +174,17 @@
   <script>
     // 星星
     const stars = document.getElementById('stars');
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 60; i++) {
       const star = document.createElement('div');
       star.className = 'star';
       star.style.left = Math.random() * 100 + '%';
       star.style.top = Math.random() * 100 + '%';
-      star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+      star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
       star.style.animationDelay = Math.random() * 2 + 's';
       stars.appendChild(star);
     }
     
-    // 点击交互
+    // 点击
     const owl = document.getElementById('owl');
     const speech = document.getElementById('speech');
     const title = document.getElementById('title');
@@ -213,23 +194,17 @@
     const responses = [
       { text: '📧 liukunlun@outlook.com', title: 'HOOT!', sub: 'here\'s my email' },
       { text: 'You\'re welcome!', title: '🦉', sub: 'anything else?' },
-      { text: 'Still here?', title: 'HOOT?', sub: 'okay then...' },
+      { text: 'Still here?', title: 'HOOT?', sub: 'okay...' },
       { text: 'Stop poking me!', title: '😤', sub: 'getting annoyed' },
       { text: 'I SAID STOP!', title: '💢', sub: 'final warning!' },
-      { text: '...fine. whatever.', title: '😒', sub: 'stubborn human' },
+      { text: '...fine.', title: '😒', sub: 'stubborn human' },
       { text: 'You\'re weird.', title: '🙄', sub: 'just saying' },
-      { text: '*angry owl noises*', title: '🔥', sub: 'HOOT HOOT HOOT' },
-      { text: 'GO. AWAY.', title: '💀', sub: 'I mean it!' },
-      { text: '...we\'re friends now I guess', title: '🤝', sub: 'you earned it' },
+      { text: '*angry owl noises*', title: '🔥', sub: 'HOOT HOOT' },
+      { text: 'GO AWAY', title: '💀', sub: 'I mean it!' },
+      { text: '...friends now', title: '🤝', sub: 'you earned it' },
     ];
     
-    const angry = [
-      '别点了！', 'STOP IT!', '烦死了！', 'Leave me alone!', 
-      '再点就报警', 'I will bite', '你有病？', 'Touch grass',
-      '闲得慌？', 'Get a life!', '下班了！', '*screams*',
-      '救命', 'Why tho', '放过我', 'I\'m just an owl',
-      '你赢了', 'U win', '无语', 'Bruh'
-    ];
+    const angry = ['别点了！','STOP!','烦死了！','Leave me alone!','再点报警','I\'ll bite','有病？','Touch grass','闲的？','Get a life!','下班了','*screams*','救命','Why','放过我','Just an owl','你赢了','U win','无语','Bruh'];
     
     owl.onclick = () => {
       clicks++;
@@ -241,7 +216,7 @@
       } else {
         speech.textContent = angry[Math.floor(Math.random() * angry.length)];
         title.textContent = ['💢','😡','🤬','💀','😫'][Math.floor(Math.random()*5)];
-        subtitle.textContent = `#${clicks} ...seriously?`;
+        subtitle.textContent = `#${clicks} ...why?`;
         owl.classList.add('angry');
         setTimeout(() => owl.classList.remove('angry'), 400);
       }
