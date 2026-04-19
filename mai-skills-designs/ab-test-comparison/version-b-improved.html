@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Version B - With Claude Design Insights</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('./fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--smtc-background-web-page-secondary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    /* 
+     * Claude Design Insight Applied:
+     * - NO gradient backgrounds (avoid AI slop)
+     * - NO emoji usage
+     * - NO left-border accent containers
+     * - Placeholder > bad SVG attempts
+     * - Less is more - no data slop
+     * - text-wrap: pretty for better line breaks
+     */
+
+    .card {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      max-width: 880px;
+      width: 100%;
+      background: var(--smtc-background-card-on-primary-default-rest);
+      border-radius: var(--mai-smtc-corner-card-default, 24px);
+      corner-shape: squircle;
+      box-shadow: var(--smtc-shadow-card-rest-key), var(--smtc-shadow-card-rest-ambient);
+      overflow: hidden;
+      border: 1px solid var(--smtc-stroke-card-on-primary-rest);
+    }
+
+    /* Left Column - Visuals */
+    /* Claude Insight: NO gradient, use solid color */
+    .left-column {
+      background: #f5f1ed;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .card-image {
+      width: 200px;
+      height: 126px;
+      border-radius: 10px;
+      object-fit: cover;
+      /* Subtle shadow only - no aggressive effects */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Claude Insight: Button uses regular weight, not bold */
+    .apply-btn {
+      width: 100%;
+      padding: 13px 20px;
+      background: var(--smtc-background-ctrl-brand-rest);
+      color: var(--smtc-foreground-ctrl-on-brand-rest);
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 500; /* regular, not 600/700 */
+      cursor: pointer;
+      transition: background 100ms ease;
+    }
+
+    .apply-btn:hover {
+      background: var(--smtc-background-ctrl-brand-hover);
+    }
+
+    /* Claude Insight: No icon SVG attempt - just text */
+    .trust-text {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    .rates-link {
+      font-size: 13px;
+      color: var(--smtc-status-brand-foreground);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      cursor: pointer;
+    }
+
+    /* Right Column - Content */
+    .right-column {
+      padding: 28px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Claude Insight: Kicker uses natural color, no ALL CAPS */
+    .kicker {
+      font-size: 13px;
+      font-weight: 500;
+      color: #9a7b4f;
+      /* Sentence case, not uppercase */
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 600; /* not 700 - less heavy */
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      line-height: 1.25;
+      text-wrap: pretty; /* Claude Insight: better line breaks */
+    }
+
+    /* Metrics Grid */
+    /* Claude Insight: Simpler divider, no double borders */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 16px 0;
+      border-top: 1px solid var(--smtc-stroke-divider-subtle);
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Claude Insight: No uppercase labels */
+    .metric-label {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Claude Insight: Variable indicator is subtle, not loud */
+    .metric-note {
+      font-size: 11px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    /* Status Bar */
+    /* Claude Insight: No separate background box - cleaner */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid var(--smtc-stroke-divider-subtle);
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    .status-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Footer */
+    /* Claude Insight: No chevron icon attempt */
+    .footer {
+      cursor: pointer;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      font-size: 13px;
+      padding-top: 4px;
+    }
+
+    .footer:hover {
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Version label */
+    .version-label {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: #0066cc;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* 
+     * Claude Design Insights Applied:
+     * 1. NO gradient backgrounds ✓
+     * 2. NO emoji ✓
+     * 3. NO left-border accent cards ✓
+     * 4. NO hand-drawn SVG icons (used text instead) ✓
+     * 5. Regular font weight for buttons ✓
+     * 6. text-wrap: pretty ✓
+     * 7. Less visual noise - simpler dividers ✓
+     * 8. No UPPERCASE text ✓
+     * 9. Placeholder > bad attempt (avoided shield icon) ✓
+     * 10. Less is more - removed redundant borders ✓
+     */
+  </style>
+</head>
+<body>
+  <div class="version-label">Version B: With Claude Design Insights</div>
+  
+  <div class="card">
+    <div class="left-column">
+      <img src="../experiments/images/chase-sapphire-preferred.png" alt="Chase Sapphire Preferred Card" class="card-image">
+      
+      <button class="apply-btn">Apply now</button>
+      
+      <span class="trust-text">On Chase's secure site</span>
+      
+      <a class="rates-link">Rates & fees</a>
+    </div>
+    
+    <div class="right-column">
+      <div class="header">
+        <span class="kicker">Build credit with no annual fee</span>
+        <h1 class="title">Chase Sapphire Preferred® Credit Card</h1>
+      </div>
+      
+      <div class="metrics-grid">
+        <div class="metric">
+          <span class="metric-label">Annual fee</span>
+          <span class="metric-value">$95/yr</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Regular APR</span>
+          <span class="metric-value">27.99%</span>
+          <span class="metric-note">Variable</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Rewards</span>
+          <span class="metric-value">3X – 5X</span>
+        </div>
+      </div>
+      
+      <div class="status-bar">
+        <span class="status-label">Recommended credit</span>
+        <span class="status-value">Good – Excellent</span>
+      </div>
+      
+      <div class="footer">
+        See details ↓
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Version A - Original MAI Skill</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('./fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--smtc-background-web-page-secondary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 30% 70%;
+      max-width: 900px;
+      width: 100%;
+      background: var(--smtc-background-card-on-primary-default-rest);
+      border-radius: var(--mai-smtc-corner-card-default, 24px);
+      corner-shape: squircle;
+      box-shadow: var(--smtc-shadow-card-rest-key), var(--smtc-shadow-card-rest-ambient);
+      overflow: hidden;
+      border: 1px solid var(--smtc-stroke-card-on-primary-rest);
+    }
+
+    /* Left Column - Visuals */
+    .left-column {
+      background: linear-gradient(180deg, #f8f4f0 0%, #ebe5de 100%);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .card-image {
+      width: 180px;
+      height: 114px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .apply-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--smtc-background-ctrl-brand-rest);
+      color: var(--smtc-foreground-ctrl-on-brand-rest);
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--durationFaster, 100ms) ease;
+    }
+
+    .apply-btn:hover {
+      background: var(--smtc-background-ctrl-brand-hover);
+    }
+
+    .trust-text {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .trust-text svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .rates-link {
+      font-size: 13px;
+      color: var(--smtc-status-brand-foreground);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Right Column - Content */
+    .right-column {
+      padding: 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kicker {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8B6914;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      line-height: 1.2;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding: 20px 0;
+      border-top: 1px solid var(--smtc-stroke-divider-subtle);
+      border-bottom: 1px solid var(--smtc-stroke-divider-subtle);
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    .metric-value.variable::after {
+      content: ' (V)';
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: var(--smtc-background-web-page-secondary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    .status-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      font-size: 14px;
+    }
+
+    .footer svg {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--durationFaster, 100ms) ease;
+    }
+
+    .footer:hover svg {
+      transform: translateY(2px);
+    }
+
+    /* Version label */
+    .version-label {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: #333;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="version-label">Version A: Original MAI Skill</div>
+  
+  <div class="card">
+    <div class="left-column">
+      <img src="../experiments/images/chase-sapphire-preferred.png" alt="Chase Sapphire Preferred Card" class="card-image">
+      
+      <button class="apply-btn">Apply Now</button>
+      
+      <span class="trust-text">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+        </svg>
+        On Chase's secure site
+      </span>
+      
+      <a class="rates-link">Rates & Fees</a>
+    </div>
+    
+    <div class="right-column">
+      <div class="header">
+        <span class="kicker">Build credit with no annual fee</span>
+        <h1 class="title">Chase Sapphire Preferred® Credit Card</h1>
+      </div>
+      
+      <div class="metrics-grid">
+        <div class="metric">
+          <span class="metric-label">Annual Fee</span>
+          <span class="metric-value">$95/yr</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Regular APR</span>
+          <span class="metric-value variable">27.99%</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Rewards</span>
+          <span class="metric-value">3X - 5X</span>
+        </div>
+      </div>
+      
+      <div class="status-bar">
+        <span class="status-label">Recommended credit</span>
+        <span class="status-value">Good - Excellent</span>
+      </div>
+      
+      <div class="footer">
+        <span>See details</span>
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
