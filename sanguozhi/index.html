@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>三国志 · 互动叙事</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=12073ae6e28fcd015d4e79c03c2c162a"></script>
   <style>
     :root {
       --bg-primary: #1a1612;
@@ -2309,100 +2308,74 @@
       document.getElementById('mapTitle').textContent = h.name + ' · 行迹';
       document.querySelectorAll('.hero-list-item').forEach(b => b.classList.toggle('active', b.dataset.id === id));
 
-      ['journey-line', 'journey-points'].forEach(src => {
-        if (map.getSource(src)) {
-          map.removeLayer(src + '-layer');
-          map.removeSource(src);
-        }
-      });
+      // 清除旧标记和折线
+      if (window.journeyMarkers) {
+        window.journeyMarkers.forEach(m => map.remove(m));
+      }
+      if (window.journeyLine) {
+        map.remove(window.journeyLine);
+      }
+      window.journeyMarkers = [];
 
       const coords = h.journeys.map(j => j.coords);
       
-      map.addSource('journey-line', {
-        type: 'geojson',
-        data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+      // 绘制行迹折线
+      window.journeyLine = new AMap.Polyline({
+        path: coords.map(c => new AMap.LngLat(c[0], c[1])),
+        strokeColor: '#c9a55c',
+        strokeWeight: 2,
+        strokeOpacity: 0.7,
+        strokeStyle: 'dashed',
+        strokeDasharray: [6, 4]
       });
+      map.add(window.journeyLine);
+
+      // 添加标记点
+      const typeColors = { birth: '#5a8a5a', battle: '#b33c3c', capital: '#c9a55c', death: '#666' };
+      const typeNames = { birth: '诞生', battle: '战役', capital: '都城', death: '陨落' };
       
-      map.addLayer({
-        id: 'journey-line-layer',
-        type: 'line',
-        source: 'journey-line',
-        paint: { 'line-color': '#c9a55c', 'line-width': 2, 'line-opacity': 0.7, 'line-dasharray': [6, 4] }
+      h.journeys.forEach(j => {
+        const color = typeColors[j.type] || '#888';
+        const marker = new AMap.Marker({
+          position: new AMap.LngLat(j.coords[0], j.coords[1]),
+          content: `<div style="width:18px;height:18px;background:${color};border:2px solid rgba(255,255,255,0.6);border-radius:50%;box-shadow:0 0 6px ${color};"></div>`,
+          offset: new AMap.Pixel(-9, -9)
+        });
+        
+        // 点击显示信息窗
+        const infoWindow = new AMap.InfoWindow({
+          content: `
+            <div style="padding: 8px; min-width: 150px;">
+              <div style="font-size: 14px; font-weight: 600; color: #c9a55c; margin-bottom: 4px;">${j.name}</div>
+              <div style="font-size: 11px; color: #888; margin-bottom: 6px;">${j.year}年 · ${typeNames[j.type] || j.type}</div>
+              <div style="font-size: 12px; color: #333; line-height: 1.5;">${j.desc || ''}</div>
+            </div>
+          `,
+          offset: new AMap.Pixel(0, -15)
+        });
+        
+        marker.on('click', () => {
+          infoWindow.open(map, marker.getPosition());
+        });
+        
+        map.add(marker);
+        window.journeyMarkers.push(marker);
       });
 
-      map.addSource('journey-points', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: h.journeys.map(j => ({
-            type: 'Feature',
-            geometry: { type: 'Point', coordinates: j.coords },
-            properties: j
-          }))
-        }
-      });
-
-      map.addLayer({
-        id: 'journey-points-layer',
-        type: 'circle',
-        source: 'journey-points',
-        paint: {
-          'circle-radius': 9,
-          'circle-color': ['match', ['get', 'type'], 'birth', '#5a8a5a', 'battle', '#b33c3c', 'capital', '#c9a55c', 'death', '#666', '#888'],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': 'rgba(255,255,255,0.6)',
-          'circle-blur': 0.1
-        }
-      });
-
-      const bounds = coords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]));
-      map.fitBounds(bounds, { padding: 80 });
-
-      // 移除旧的点击事件
-      map.off('click', 'journey-points-layer', handlePointClick);
-      map.on('click', 'journey-points-layer', handlePointClick);
-      
-      // 鼠标样式
-      map.on('mouseenter', 'journey-points-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
-      map.on('mouseleave', 'journey-points-layer', () => { map.getCanvas().style.cursor = ''; });
+      // 调整视野
+      map.setFitView(window.journeyMarkers, false, [80, 80, 80, 80]);
       
       // 更新按钮状态
       updateTrailButtons();
     }
 
-    function handlePointClick(e) {
-      const p = e.features[0].properties;
-      const typeNames = { birth: '诞生', battle: '战役', capital: '都城', death: '陨落' };
-      new maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
-        .setLngLat(e.lngLat)
-        .setHTML(`
-          <div style="padding: 8px;">
-            <div style="font-size: 14px; font-weight: 600; color: #c9a55c; margin-bottom: 4px;">${p.name}</div>
-            <div style="font-size: 11px; color: #888; margin-bottom: 6px;">${p.year}年 · ${typeNames[p.type] || p.type}</div>
-            <div style="font-size: 12px; color: #ccc; line-height: 1.5;">${p.desc || ''}</div>
-          </div>
-        `)
-        .addTo(map);
-    }
-
     function initMap() {
-      map = new maplibregl.Map({
-        container: 'map',
-        style: {
-          version: 8,
-          sources: { 
-            'carto': { 
-              type: 'raster', 
-              tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.jpg'], 
-              tileSize: 256 
-            } 
-          },
-          layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
-        },
+      map = new AMap.Map('map', {
+        mapStyle: 'amap://styles/dark',
         center: [110, 34],
         zoom: 4.5
       });
-      map.on('load', () => loadJourney(heroId));
+      map.on('complete', () => loadJourney(heroId));
     }
 
     document.getElementById('exploreBtn').onclick = () => {
