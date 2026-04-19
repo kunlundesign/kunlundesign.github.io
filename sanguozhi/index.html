@@ -1261,6 +1261,39 @@
       border: 1px solid var(--border);
     }
 
+    /* 足迹探索进度条 */
+    .journey-progress {
+      position: absolute;
+      bottom: 4rem;
+      left: 1rem;
+      right: 1rem;
+      background: rgba(26, 22, 18, 0.95);
+      border: 1px solid var(--border);
+      padding: 0.8rem 1rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gold);
+      transition: width 0.3s ease;
+    }
+
     .journey-actions {
       position: absolute;
       bottom: 1rem;
@@ -1300,6 +1333,18 @@
     .journey-story-btn.locked {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .journey-story-btn.unlocked {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(201, 165, 92, 0.15);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(201, 165, 92, 0.3); }
+      50% { box-shadow: 0 0 15px rgba(201, 165, 92, 0.6); }
     }
 
     .btn-icon {
@@ -1561,6 +1606,16 @@
         background: var(--bg-secondary);
         border-top: 1px solid var(--border);
       }
+      .journey-progress {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        padding: 0.8rem 1rem;
+        background: var(--bg-secondary);
+        border: none;
+        border-top: 1px solid var(--border);
+      }
       .journey-actions {
         position: relative;
         bottom: auto;
@@ -1572,7 +1627,6 @@
         background: var(--bg-secondary);
         border-top: 1px solid var(--border);
       }
-      .journey-complete-btn,
       .journey-story-btn {
         padding: 0.7rem 1rem;
         font-size: 0.75rem;
@@ -1817,11 +1871,17 @@
           <div class="legend-item"><span class="legend-dot capital"></span>都城</div>
           <div class="legend-item"><span class="legend-dot death"></span>陨落</div>
         </div>
+        <!-- 足迹探索进度 -->
+        <div class="journey-progress">
+          <div class="progress-label">
+            <span>足迹探索</span>
+            <span id="progressText">0 / 0</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+        </div>
         <div class="journey-actions">
-          <button class="journey-complete-btn" id="completeTrailBtn" onclick="completeTrail()">
-            <span class="btn-icon">✓</span>
-            <span>完成足迹探索</span>
-          </button>
           <button class="journey-story-btn" id="goToStoryBtn" onclick="goToStory()">
             <span class="btn-icon">📖</span>
             <span>进入演义</span>
@@ -2195,6 +2255,24 @@
         localStorage.setItem('sanguozhi_progress', JSON.stringify(data));
       },
       
+      // 获取已访问的点
+      getVisitedPoints(heroId) {
+        const p = this.get();
+        return p[heroId]?.visitedPoints || [];
+      },
+      
+      // 标记点已访问
+      markPointVisited(heroId, pointName) {
+        const p = this.get();
+        if (!p[heroId]) p[heroId] = {};
+        if (!p[heroId].visitedPoints) p[heroId].visitedPoints = [];
+        if (!p[heroId].visitedPoints.includes(pointName)) {
+          p[heroId].visitedPoints.push(pointName);
+          this.save(p);
+        }
+        return p[heroId].visitedPoints;
+      },
+      
       // 检查足迹是否完成
       isTrailDone(heroId) {
         const p = this.get();
@@ -2354,26 +2432,37 @@
       playStory(heroId, isAvailable, true);
     }
     
-    // 更新足迹按钮状态
-    function updateTrailButtons() {
-      const trailBtn = document.getElementById('completeTrailBtn');
+    // 更新足迹进度条
+    function updateJourneyProgress(id) {
+      const h = heroes.find(x => x.id === id);
+      if (!h) return;
+      
+      const total = h.journeys.length;
+      const visited = heroProgress.getVisitedPoints(id).length;
+      const percent = total > 0 ? Math.round((visited / total) * 100) : 0;
+      
+      document.getElementById('progressText').textContent = `${visited} / ${total}`;
+      document.getElementById('progressFill').style.width = `${percent}%`;
+      
       const storyBtn = document.getElementById('goToStoryBtn');
       
-      if (heroProgress.isTrailDone(heroId)) {
-        trailBtn.classList.add('done');
-        trailBtn.innerHTML = '<span class="btn-icon">✓</span><span>足迹已完成</span>';
-      } else {
-        trailBtn.classList.remove('done');
-        trailBtn.innerHTML = '<span class="btn-icon">✓</span><span>完成足迹探索</span>';
-      }
-      
-      if (heroProgress.isStoryUnlocked(heroId)) {
+      // 如果全部点完，自动标记足迹完成并解锁演义
+      if (visited >= total && total > 0) {
+        heroProgress.markTrailDone(id);
+        storyBtn.classList.remove('locked');
+        storyBtn.classList.add('unlocked');
+        storyBtn.onclick = goToStory;
+      } else if (heroProgress.isStoryUnlocked(id)) {
         storyBtn.classList.remove('locked');
         storyBtn.onclick = goToStory;
       } else {
         storyBtn.classList.add('locked');
-        storyBtn.onclick = () => alert('请先完成足迹探索');
+        storyBtn.classList.remove('unlocked');
+        storyBtn.onclick = () => alert('请先完成足迹探索（点击地图上所有地点）');
       }
+      
+      // 刷新英雄卡片状态
+      initHeroes();
     }
 
     function initSelector() {
@@ -2540,15 +2629,16 @@
       const typeColors = { birth: '#5a8a5a', battle: '#b33c3c', capital: '#c9a55c', death: '#666' };
       const typeNames = { birth: '诞生', battle: '战役', capital: '都城', death: '陨落' };
       
-      h.journeys.forEach(j => {
+      h.journeys.forEach((j, idx) => {
         const color = typeColors[j.type] || '#888';
+        const visited = heroProgress.getVisitedPoints(id).includes(j.name);
         const marker = new AMap.Marker({
           position: new AMap.LngLat(j.coords[0], j.coords[1]),
-          content: `<div style="width:18px;height:18px;background:${color};border:2px solid rgba(255,255,255,0.6);border-radius:50%;box-shadow:0 0 6px ${color};"></div>`,
+          content: `<div class="map-point ${visited ? 'visited' : ''}" style="width:18px;height:18px;background:${color};border:2px solid ${visited ? '#fff' : 'rgba(255,255,255,0.6)'};border-radius:50%;box-shadow:0 0 6px ${color};${visited ? 'opacity:0.5;' : ''}"></div>`,
           offset: new AMap.Pixel(-9, -9)
         });
         
-        // 点击显示信息窗
+        // 点击显示信息窗并记录进度
         const infoWindow = new AMap.InfoWindow({
           content: `
             <div style="padding: 8px; min-width: 150px;">
@@ -2562,6 +2652,11 @@
         
         marker.on('click', () => {
           infoWindow.open(map, marker.getPosition());
+          // 记录访问并更新进度
+          heroProgress.markPointVisited(id, j.name);
+          updateJourneyProgress(id);
+          // 更新标记样式
+          marker.setContent(`<div class="map-point visited" style="width:18px;height:18px;background:${color};border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px ${color};opacity:0.5;"></div>`);
         });
         
         map.add(marker);
@@ -2571,8 +2666,8 @@
       // 调整视野
       map.setFitView(window.journeyMarkers, false, [80, 80, 80, 80]);
       
-      // 更新按钮状态
-      updateTrailButtons();
+      // 更新进度条和按钮状态
+      updateJourneyProgress(id);
     }
 
     function initMap() {
