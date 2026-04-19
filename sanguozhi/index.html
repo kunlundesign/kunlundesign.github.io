@@ -1245,6 +1245,11 @@
       height: 500px;
     }
 
+    /* 移动端地图遮罩 - 桌面端隐藏 */
+    .map-overlay {
+      display: none;
+    }
+
     .map-legend {
       position: absolute;
       bottom: 1rem;
@@ -1579,6 +1584,31 @@
       /* 隐藏高德地图 logo */
       .amap-logo, .amap-copyright { display: none !important; }
       
+      /* 移动端地图遮罩 */
+      .map-overlay {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(26, 22, 18, 0.85);
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+      }
+      .map-overlay span {
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        padding: 0.8rem 1.5rem;
+        border: 1px solid var(--accent-gold);
+      }
+      .map-overlay.hidden {
+        display: none;
+      }
+      
       /* 沙场征战 */
       .attractions-grid { grid-template-columns: 1fr; gap: 1rem; }
       .attraction-card { height: 180px; }
@@ -1777,6 +1807,10 @@
       </div>
       <div class="journey-map">
         <div id="map"></div>
+        <!-- 移动端地图遮罩 -->
+        <div class="map-overlay" id="mapOverlay" onclick="enableMap()">
+          <span>点击查看地图</span>
+        </div>
         <div class="map-legend">
           <div class="legend-item"><span class="legend-dot birth"></span>诞生</div>
           <div class="legend-item"><span class="legend-dot battle"></span>战役</div>
@@ -2474,7 +2508,11 @@
       if (!h) return;
       
       document.getElementById('mapTitle').textContent = h.name + ' · 行迹';
+      // 更新桌面端列表高亮
       document.querySelectorAll('.hero-list-item').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+      // 更新移动端下拉选择器
+      updateDropdownSelected(id);
+      document.querySelectorAll('.hero-dropdown-item').forEach(x => x.classList.toggle('active', x.dataset.id === id));
 
       // 清除旧标记和折线
       if (window.journeyMarkers) {
@@ -2544,6 +2582,11 @@
         zoom: 4.5
       });
       map.on('complete', () => loadJourney(heroId));
+    }
+
+    // 移动端点击遮罩启用地图
+    function enableMap() {
+      document.getElementById('mapOverlay').classList.add('hidden');
     }
 
     document.getElementById('exploreBtn').onclick = () => {
