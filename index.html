@@ -20,11 +20,20 @@
     
     .owl-container {
       position: relative;
-      margin-bottom: 2rem;
+      width: 180px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
     }
     
     /* 像素猫头鹰 - 参考图重绘 */
     .pixel-owl {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scale(2);
       width: 6px;
       height: 6px;
       background: transparent;
@@ -69,21 +78,20 @@
         24px 96px 0 #E65100, 36px 96px 0 #E65100, 48px 96px 0 #E65100, 60px 96px 0 #E65100,
         /* 站立台 */
         18px 102px 0 #78909C, 24px 102px 0 #90A4AE, 30px 102px 0 #B0BEC5, 36px 102px 0 #90A4AE, 42px 102px 0 #B0BEC5, 48px 102px 0 #90A4AE, 54px 102px 0 #B0BEC5, 60px 102px 0 #90A4AE, 66px 102px 0 #78909C;
-      transform: scale(2);
     }
     
     @keyframes float {
-      0%, 100% { transform: scale(2) translateY(0); }
-      50% { transform: scale(2) translateY(-4px); }
+      0%, 100% { transform: translateX(-50%) scale(2) translateY(0); }
+      50% { transform: translateX(-50%) scale(2) translateY(-4px); }
     }
     
     .pixel-owl:hover { filter: brightness(1.15); }
-    .pixel-owl:active { transform: scale(1.9); }
+    .pixel-owl:active { transform: translateX(-50%) scale(1.9); }
     
     @keyframes shake {
-      0%, 100% { transform: scale(2) rotate(0); }
-      25% { transform: scale(2) rotate(-8deg); }
-      75% { transform: scale(2) rotate(8deg); }
+      0%, 100% { transform: translateX(-50%) scale(2) rotate(0); }
+      25% { transform: translateX(-50%) scale(2) rotate(-8deg); }
+      75% { transform: translateX(-50%) scale(2) rotate(8deg); }
     }
     .pixel-owl.angry { animation: shake 0.2s ease-in-out 2; }
     
