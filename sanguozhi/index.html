@@ -795,19 +795,19 @@
     }
 
     .hero-game-card.locked {
-      cursor: default;
+      cursor: pointer;
     }
 
     .hero-game-card.locked:hover {
-      transform: none;
+      transform: rotateY(10deg) rotateX(5deg);
     }
 
     .hero-game-card.locked .card-image img {
-      filter: grayscale(100%) brightness(0.5);
+      filter: sepia(10%);
     }
 
     .hero-game-card.locked .card-info {
-      opacity: 0.5;
+      opacity: 1;
     }
 
     .card-front {
@@ -908,10 +908,6 @@
       transform: translateY(0);
     }
 
-    .hero-game-card.locked:hover .card-actions {
-      transform: translateY(100%);
-    }
-
     .action-btn {
       flex: 1;
       padding: 0.6rem;
@@ -965,7 +961,7 @@
     .card-rarity.r { background: var(--accent-blue); }
 
     .card-image {
-      flex: 1;
+      flex: 2.5;
       overflow: hidden;
       position: relative;
     }
@@ -1000,7 +996,7 @@
     }
 
     .card-info {
-      padding: 1rem;
+      padding: 0.8rem 1rem;
       background: linear-gradient(to bottom, transparent, var(--bg-card));
       position: relative;
     }
@@ -1009,14 +1005,21 @@
       font-size: 1.1rem;
       font-weight: 500;
       letter-spacing: 0.2em;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.2rem;
     }
 
     .card-title {
       font-size: 0.65rem;
       color: var(--text-secondary);
       letter-spacing: 0.1em;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-quote {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      font-style: italic;
+      letter-spacing: 0.05em;
     }
 
     .card-stats {
@@ -1994,7 +1997,7 @@
         
         return `
         <div class="hero-card-wrapper">
-          <div class="${cardClass}" data-id="${h.id}">
+          <div class="${cardClass}" data-id="${h.id}" data-available="${isAvailable}">
             <div class="card-front">
               ${isCollected ? '<div class="collected-badge">已收集</div>' : ''}
               <div class="card-rarity ${h.rarity}"></div>
@@ -2005,14 +2008,7 @@
               <div class="card-info">
                 <h3 class="card-name">${h.name}</h3>
                 <p class="card-title">${h.title}</p>
-                <div class="card-stats">
-                  ${Object.entries(h.stats).map(([k,v]) => `
-                    <div class="card-stat">
-                      <div class="stat-icon">${k}</div>
-                      <div class="stat-num">${v}</div>
-                    </div>
-                  `).join('')}
-                </div>
+                <p class="card-quote">"${h.quote}"</p>
               </div>
               <div class="card-progress">
                 <div class="progress-item ${trailDone ? 'done' : ''}">
@@ -2024,23 +2020,17 @@
                   <span>演义</span>
                 </div>
               </div>
-              ${isAvailable ? `
               <div class="card-actions">
                 <button class="action-btn" onclick="event.stopPropagation(); viewTrail('${h.id}')">📍 足迹</button>
-                <button class="action-btn ${storyUnlocked ? '' : 'locked'}" onclick="event.stopPropagation(); ${storyUnlocked ? `playStory('${h.id}')` : ''}">📖 演义</button>
+                <button class="action-btn ${storyUnlocked && isAvailable ? '' : 'locked'}" onclick="event.stopPropagation(); playStory('${h.id}', ${isAvailable}, ${storyUnlocked})">📖 演义</button>
               </div>
-              ` : `
-              <div class="card-wip-overlay">
-                <div class="wip-text">制作中</div>
-              </div>
-              `}
             </div>
           </div>
         </div>
       `}).join('');
       
       // 点击卡片默认进入足迹
-      document.querySelectorAll('.hero-game-card:not(.locked)').forEach(c => {
+      document.querySelectorAll('.hero-game-card').forEach(c => {
         c.onclick = () => viewTrail(c.dataset.id);
       });
     }
@@ -2052,7 +2042,15 @@
     }
     
     // 进入演义
-    function playStory(heroId) {
+    function playStory(heroId, isAvailable, storyUnlocked) {
+      if (!isAvailable) {
+        alert('该英雄演义制作中，敬请期待！');
+        return;
+      }
+      if (!storyUnlocked) {
+        alert('请先完成该英雄的足迹探索，解锁演义模式！');
+        return;
+      }
       const storyUrls = {
         'zhugeliang': '../sanguozhi-experiments/zhuge-life.html',
         'caocao': '../sanguozhi-experiments/caocao-life.html'
