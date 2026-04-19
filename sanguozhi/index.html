@@ -1502,10 +1502,6 @@
       <div class="timeline-dot"></div>
       <span class="timeline-label">序章</span>
     </div>
-    <div class="timeline-item" data-section="story">
-      <div class="timeline-dot"></div>
-      <span class="timeline-label">故事</span>
-    </div>
     <div class="timeline-item" data-section="heroes">
       <div class="timeline-dot"></div>
       <span class="timeline-label">群英</span>
@@ -1562,6 +1558,11 @@
     </div>
   </section>
 
+  <!-- 
+  ========================================
+  [备份] 当前任务模块 - 2026-04-19 暂时移除
+  功能与英雄卡片区重复，后续可恢复
+  ========================================
   <section class="story-section" id="story">
     <div class="section-header">
       <div class="section-icon">卷</div>
@@ -1603,6 +1604,10 @@
       </div>
     </div>
   </section>
+  ========================================
+  [备份结束]
+  ========================================
+  -->
 
   <section class="heroes-section" id="heroes">
     <div class="section-header">
@@ -1984,7 +1989,7 @@
 
     // Update timeline on scroll
     window.addEventListener('scroll', () => {
-      const sections = ['hero-section', 'story', 'heroes', 'journey', 'attractions'];
+      const sections = ['hero-section', 'heroes', 'journey', 'attractions'];
       const scrollPos = window.scrollY + window.innerHeight / 3;
       
       sections.forEach((id, i) => {
