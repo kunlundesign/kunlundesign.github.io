@@ -12,7 +12,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
+      background: #0d1117;
       font-family: 'Courier New', monospace;
       color: #888;
       overflow: hidden;
@@ -24,100 +24,106 @@
       margin-bottom: 2rem;
     }
     
-    /* 像素风猫头鹰 */
+    /* 像素风猫头鹰 - 重新设计 */
     .owl {
-      width: 120px;
-      height: 140px;
       position: relative;
-      image-rendering: pixelated;
+      width: 140px;
+      height: 160px;
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
     }
     
-    /* 猫头鹰身体 - 用 CSS 画像素风 */
-    .owl-body {
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .owl:hover { filter: brightness(1.1); }
+    .owl:active { transform: scale(0.95); }
+    
+    /* 耳羽 */
+    .ear-tuft {
       position: absolute;
-      width: 100px;
-      height: 90px;
-      left: 10px;
-      top: 50px;
-      background: #5c4a3d;
-      border-radius: 0 0 40px 40px;
-      box-shadow: 
-        inset -10px 0 0 #4a3c32,
-        inset 10px 0 0 #6b5847;
+      top: 0;
+      width: 25px;
+      height: 35px;
+      background: #8B5A2B;
     }
-    
-    /* 肚子花纹 */
-    .owl-body::after {
+    .ear-tuft.left {
+      left: 20px;
+      border-radius: 50% 50% 0 0;
+      transform: rotate(-20deg);
+    }
+    .ear-tuft.right {
+      right: 20px;
+      border-radius: 50% 50% 0 0;
+      transform: rotate(20deg);
+    }
+    .ear-tuft::after {
       content: '';
       position: absolute;
-      width: 60px;
-      height: 50px;
-      left: 20px;
-      top: 20px;
-      background: repeating-linear-gradient(
-        0deg,
-        #8b7355 0px, #8b7355 6px,
-        #5c4a3d 6px, #5c4a3d 12px
-      );
-      border-radius: 0 0 30px 30px;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 15px;
+      height: 20px;
+      background: #A0522D;
+      border-radius: 50% 50% 0 0;
     }
     
-    /* 头部 */
-    .owl-head {
+    /* 头/身体 - 一体化圆形 */
+    .body {
       position: absolute;
-      width: 100px;
-      height: 70px;
+      top: 25px;
       left: 10px;
-      top: 10px;
-      background: #5c4a3d;
-      border-radius: 50px 50px 30px 30px;
+      width: 120px;
+      height: 130px;
+      background: radial-gradient(ellipse at 50% 30%, #A0522D 0%, #8B4513 50%, #654321 100%);
+      border-radius: 50% 50% 45% 45%;
     }
     
-    /* 耳朵 */
-    .ear {
+    /* 脸盘 - 猫头鹰标志性的心形脸 */
+    .face {
       position: absolute;
-      width: 0;
-      height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 25px solid #5c4a3d;
-      top: -5px;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 75px;
+      background: radial-gradient(ellipse, #DEB887 0%, #D2B48C 60%, #C4A574 100%);
+      border-radius: 50% 50% 50% 50%;
     }
-    .ear.left { left: 5px; transform: rotate(-15deg); }
-    .ear.right { right: 5px; transform: rotate(15deg); }
     
-    /* 眼眶 */
-    .eye-socket {
+    /* 眼眶 - 深色圆环 */
+    .eye-ring {
       position: absolute;
-      width: 38px;
-      height: 38px;
-      background: #1a1a1a;
+      width: 36px;
+      height: 36px;
+      background: radial-gradient(circle, #1a1a1a 60%, #3d2914 100%);
       border-radius: 50%;
-      top: 20px;
-      border: 4px solid #8b7355;
+      top: 45px;
     }
-    .eye-socket.left { left: 8px; }
-    .eye-socket.right { right: 8px; }
+    .eye-ring.left { left: 22px; }
+    .eye-ring.right { right: 22px; }
     
     /* 眼球 */
     .eye {
       position: absolute;
-      width: 26px;
-      height: 26px;
-      background: #ffd93d;
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(circle at 35% 35%, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
       border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 4px;
+      left: 4px;
       transition: transform 0.1s ease-out;
     }
     
     /* 瞳孔 */
     .pupil {
       position: absolute;
-      width: 12px;
-      height: 14px;
-      background: #0a0a0a;
+      width: 14px;
+      height: 16px;
+      background: #000;
       border-radius: 50%;
       top: 50%;
       left: 50%;
@@ -125,97 +131,114 @@
     }
     
     /* 高光 */
+    .eye::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      top: 3px;
+      right: 5px;
+    }
     .eye::after {
       content: '';
       position: absolute;
-      width: 6px;
-      height: 6px;
-      background: #fff;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.6);
       border-radius: 50%;
-      top: 4px;
-      right: 4px;
+      bottom: 6px;
+      left: 6px;
     }
     
-    /* 嘴巴 */
+    /* 眨眼动画 */
+    @keyframes blink {
+      0%, 94%, 100% { clip-path: inset(0 0 0 0); }
+      97% { clip-path: inset(40% 0 40% 0); }
+    }
+    .eye { animation: blink 4s ease-in-out infinite; }
+    .eye-ring.right .eye { animation-delay: 0.1s; }
+    
+    /* 喙 */
     .beak {
       position: absolute;
+      top: 85px;
       left: 50%;
-      top: 55px;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 15px solid #d4a84b;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 18px solid #FF8C00;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+    }
+    .beak::after {
+      content: '';
+      position: absolute;
+      top: -18px;
+      left: -6px;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 10px solid #FFa500;
+    }
+    
+    /* 胸部羽毛纹理 */
+    .chest {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 45px;
+      background: 
+        repeating-linear-gradient(
+          180deg,
+          transparent 0px,
+          transparent 4px,
+          rgba(255,255,255,0.1) 4px,
+          rgba(255,255,255,0.1) 8px
+        ),
+        radial-gradient(ellipse, #C4A574 0%, #A0522D 100%);
+      border-radius: 40% 40% 50% 50%;
     }
     
     /* 脚 */
     .feet {
       position: absolute;
-      bottom: -10px;
+      bottom: -8px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 20px;
+      gap: 30px;
     }
     .foot {
-      width: 20px;
-      height: 10px;
-      background: #d4a84b;
-      border-radius: 0 0 10px 10px;
-      position: relative;
+      display: flex;
+      gap: 3px;
     }
-    .foot::before, .foot::after, .foot span {
+    .toe {
+      width: 8px;
+      height: 16px;
+      background: linear-gradient(180deg, #B8860B 0%, #8B6914 100%);
+      border-radius: 0 0 4px 4px;
+    }
+    .toe:nth-child(2) { height: 18px; }
+    
+    /* 翅膀暗示 */
+    .body::before,
+    .body::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      width: 6px;
-      height: 12px;
-      background: #d4a84b;
-      border-radius: 0 0 3px 3px;
+      top: 50px;
+      width: 20px;
+      height: 50px;
+      background: linear-gradient(180deg, #654321 0%, #5D4E37 100%);
+      border-radius: 50%;
     }
-    .foot::before { left: 1px; }
-    .foot::after { right: 1px; }
-    .foot span { left: 50%; transform: translateX(-50%); }
-    
-    /* 眨眼动画 */
-    @keyframes blink {
-      0%, 90%, 100% { transform: translate(-50%, -50%) scaleY(1); }
-      95% { transform: translate(-50%, -50%) scaleY(0.1); }
-    }
-    
-    .eye {
-      animation: blink 4s ease-in-out infinite;
-    }
-    
-    /* 身体微微晃动 */
-    @keyframes sway {
-      0%, 100% { transform: rotate(-1deg); }
-      50% { transform: rotate(1deg); }
-    }
-    
-    .owl {
-      animation: sway 3s ease-in-out infinite;
-    }
-    
-    /* 文字 */
-    .text {
-      text-align: center;
-      opacity: 0.6;
-    }
-    h1 {
-      font-size: 0.9rem;
-      font-weight: normal;
-      letter-spacing: 0.3em;
-      color: #666;
-      margin-bottom: 0.5rem;
-      transition: all 0.3s;
-    }
-    p {
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: #444;
-    }
+    .body::before { left: -5px; transform: rotate(15deg); }
+    .body::after { right: -5px; transform: rotate(-15deg); }
     
     /* 对话气泡 */
     .speech-bubble {
@@ -223,17 +246,18 @@
       bottom: 100%;
       left: 50%;
       transform: translateX(-50%);
-      background: #222;
-      color: #ffd93d;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
+      background: #1a1a1a;
+      color: #FFD700;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
       white-space: nowrap;
       opacity: 0;
-      transition: opacity 0.3s;
+      transition: all 0.3s;
       pointer-events: none;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
     }
     .speech-bubble::after {
       content: '';
@@ -241,33 +265,38 @@
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
-      border: 8px solid transparent;
-      border-top-color: #222;
+      border: 10px solid transparent;
+      border-top-color: #1a1a1a;
     }
     .speech-bubble.show {
       opacity: 1;
-    }
-    
-    /* 猫头鹰可点击 */
-    .owl {
-      cursor: pointer;
-      animation: sway 3s ease-in-out infinite;
-    }
-    .owl:hover {
-      filter: brightness(1.1);
-    }
-    .owl:active {
-      transform: scale(0.95);
+      transform: translateX(-50%) translateY(-5px);
     }
     
     /* 抖动动画 */
     @keyframes shake {
-      0%, 100% { transform: rotate(-1deg); }
-      25% { transform: rotate(-5deg); }
-      75% { transform: rotate(5deg); }
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(-5px) rotate(-5deg); }
+      75% { transform: translateY(-5px) rotate(5deg); }
     }
-    .owl.angry {
-      animation: shake 0.3s ease-in-out;
+    .owl.angry { animation: shake 0.3s ease-in-out; }
+    
+    /* 文字 */
+    .text {
+      text-align: center;
+    }
+    h1 {
+      font-size: 1rem;
+      font-weight: normal;
+      letter-spacing: 0.4em;
+      color: #C4A574;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s;
+    }
+    p {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: #666;
     }
     
     /* 星星背景 */
@@ -285,12 +314,13 @@
       width: 2px;
       height: 2px;
       background: #fff;
-      opacity: 0.3;
-      animation: twinkle 2s ease-in-out infinite;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: twinkle 3s ease-in-out infinite;
     }
     @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.8; }
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.2); }
     }
   </style>
 </head>
@@ -300,25 +330,30 @@
   <div class="owl-container">
     <div class="speech-bubble" id="speech"></div>
     <div class="owl" id="owl">
-      <div class="ear left"></div>
-      <div class="ear right"></div>
-      <div class="owl-head">
-        <div class="eye-socket left">
-          <div class="eye" id="eyeLeft">
-            <div class="pupil"></div>
-          </div>
+      <div class="ear-tuft left"></div>
+      <div class="ear-tuft right"></div>
+      <div class="body">
+        <div class="face"></div>
+        <div class="eye-ring left">
+          <div class="eye" id="eyeLeft"><div class="pupil"></div></div>
         </div>
-        <div class="eye-socket right">
-          <div class="eye" id="eyeRight">
-            <div class="pupil"></div>
-          </div>
+        <div class="eye-ring right">
+          <div class="eye" id="eyeRight"><div class="pupil"></div></div>
         </div>
         <div class="beak"></div>
+        <div class="chest"></div>
       </div>
-      <div class="owl-body"></div>
       <div class="feet">
-        <div class="foot"><span></span></div>
-        <div class="foot"><span></span></div>
+        <div class="foot">
+          <div class="toe"></div>
+          <div class="toe"></div>
+          <div class="toe"></div>
+        </div>
+        <div class="foot">
+          <div class="toe"></div>
+          <div class="toe"></div>
+          <div class="toe"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -331,12 +366,14 @@
   <script>
     // 生成星星
     const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 60; i++) {
       const star = document.createElement('div');
       star.className = 'star';
       star.style.left = Math.random() * 100 + '%';
       star.style.top = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 2 + 's';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.width = (Math.random() * 2 + 1) + 'px';
+      star.style.height = star.style.width;
       starsContainer.appendChild(star);
     }
     
@@ -345,31 +382,28 @@
     const eyeRight = document.getElementById('eyeRight');
     
     document.addEventListener('mousemove', (e) => {
-      const eyes = [eyeLeft, eyeRight];
-      
-      eyes.forEach(eye => {
-        const rect = eye.parentElement.getBoundingClientRect();
+      [eyeLeft, eyeRight].forEach(eye => {
+        const rect = eye.getBoundingClientRect();
         const eyeCenterX = rect.left + rect.width / 2;
         const eyeCenterY = rect.top + rect.height / 2;
         
         const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
-        const distance = Math.min(6, Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY) / 30);
+        const distance = Math.min(4, Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY) / 50);
         
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
         
-        eye.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        eye.style.transform = `translate(${x}px, ${y}px)`;
       });
     });
     
-    // 移动端支持
+    // 移动端
     document.addEventListener('touchmove', (e) => {
       const touch = e.touches[0];
-      const mouseEvent = new MouseEvent('mousemove', {
+      document.dispatchEvent(new MouseEvent('mousemove', {
         clientX: touch.clientX,
         clientY: touch.clientY
-      });
-      document.dispatchEvent(mouseEvent);
+      }));
     });
     
     // 点击交互
@@ -382,44 +416,41 @@
     const responses = [
       { text: '📧 liukunlun@outlook.com', title: 'HOOT!', sub: 'here\'s my email' },
       { text: 'You\'re welcome!', title: '🦉', sub: 'anything else?' },
-      { text: 'Okay okay...', title: 'HOOT?', sub: 'still here?' },
-      { text: 'Stop poking me!', title: '😤', sub: 'getting annoyed...' },
-      { text: 'I said STOP!', title: 'ANGRY OWL', sub: 'last warning!' },
-      { text: '...fine. I\'ll allow it.', title: '😒', sub: 'persistent human' },
-      { text: 'You\'re weird.', title: '🙄', sub: 'but okay' },
+      { text: 'Still here?', title: 'HOOT?', sub: 'okay then...' },
+      { text: 'Stop poking me!', title: '😤', sub: 'getting annoyed' },
+      { text: 'I SAID STOP!', title: '💢', sub: 'last warning!' },
+      { text: '...fine. whatever.', title: '😒', sub: 'persistent human' },
+      { text: 'You\'re weird, you know?', title: '🙄', sub: 'but okay' },
       { text: '*angry owl noises*', title: '🔥', sub: 'HOOT HOOT HOOT' },
-      { text: 'GO AWAY', title: '💢', sub: 'I mean it!' },
-      { text: '...I respect your dedication', title: '🤝', sub: 'we\'re friends now' },
+      { text: 'GO. AWAY.', title: '💀', sub: 'I mean it!' },
+      { text: '...okay we\'re friends now', title: '🤝', sub: 'you earned it' },
     ];
     
     const angryResponses = [
       '别点了！', 'STOP IT!', '烦死了！', 'Leave me alone!', 
-      '再点我就报警了', 'I\'m calling the police', '你有病吧', 'Touch grass please',
-      '闲的没事干？', 'Get a hobby!', '我要下班了', '*screams in owl*'
+      '再点就报警了', 'I will bite you', '你是不是有病', 'Touch grass please',
+      '闲得慌？', 'Get a life!', '我要下班了', '*screams internally*',
+      '救命啊', 'Why are you like this', '放过我吧', 'I\'m just an owl',
+      '你赢了', 'Fine you win', '无语子', 'Bruh moment'
     ];
     
     owl.addEventListener('click', () => {
       clickCount++;
       
-      let response;
       if (clickCount <= responses.length) {
-        response = responses[clickCount - 1];
-        speech.textContent = response.text;
-        title.textContent = response.title;
-        subtitle.textContent = response.sub;
+        const r = responses[clickCount - 1];
+        speech.textContent = r.text;
+        title.textContent = r.title;
+        subtitle.textContent = r.sub;
       } else {
-        // 超过预设次数后随机骂人
         const angry = angryResponses[Math.floor(Math.random() * angryResponses.length)];
         speech.textContent = angry;
-        title.textContent = ['💢', '😡', '🤬', '💀'][Math.floor(Math.random() * 4)];
-        subtitle.textContent = `click #${clickCount}... seriously?`;
-        
-        // 抖动效果
+        title.textContent = ['💢', '😡', '🤬', '💀', '😫'][Math.floor(Math.random() * 5)];
+        subtitle.textContent = `click #${clickCount}... why?`;
         owl.classList.add('angry');
         setTimeout(() => owl.classList.remove('angry'), 300);
       }
       
-      // 显示气泡
       speech.classList.add('show');
       setTimeout(() => speech.classList.remove('show'), 2500);
     });
