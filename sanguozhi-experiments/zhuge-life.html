@@ -1787,6 +1787,36 @@ showTransition = function() {
   originalShowTransition();
   setTimeout(() => playChapterMusic(state.chapter), 500);
 };
+
+// ==================== 自动播放音乐 ====================
+// 用户首次交互时自动开始播放背景音乐
+let hasInteracted = false;
+
+function startMusicOnInteraction() {
+  if (hasInteracted) return;
+  hasInteracted = true;
+  
+  // 自动开启音乐
+  if (!musicPlaying) {
+    const control = document.getElementById('audioControl');
+    const icon = document.getElementById('audioIcon');
+    const text = document.getElementById('audioText');
+    
+    musicPlaying = true;
+    control.classList.add('playing');
+    icon.textContent = '樂';
+    text.textContent = '止';
+    playChapterMusic(state.chapter);
+  }
+  
+  // 移除监听器
+  document.removeEventListener('click', startMusicOnInteraction);
+  document.removeEventListener('touchstart', startMusicOnInteraction);
+}
+
+// 监听首次交互
+document.addEventListener('click', startMusicOnInteraction);
+document.addEventListener('touchstart', startMusicOnInteraction);
 </script>
 </body>
 </html>
