@@ -1323,7 +1323,7 @@ function getDynamicContent(key) {
   </button>
 </div>`;
       } else if (h >= 30 && h < 50) {
-        // 中等健康：可以选择撤退养病或拼命
+        // 中等健康：可以选择继续坚持（史实）、撤退养病或追击
         t = `<p class="fade-in">身体每况愈下，但你依然在坚持。</p>
 <p class="fade-in delay-1">司马懿见你屡出奇计，不敢轻敌。对峙百日，魏军粮草告急。</p>
 <p class="fade-in delay-2 health-warn">然而，军医私下告诉你：若继续操劳，恐怕撑不过这个冬天。</p>
@@ -1332,10 +1332,10 @@ function getDynamicContent(key) {
   是继续拼命，还是撤军养病？
 </div>
 <div class="choices-container fade-in delay-4">
-  <button class="choice-btn" onclick="showEnding('pyrrhic')">
-    <span class="choice-text">全力追击，不计代价</span>
-    <span class="choice-subtext">拼尽最后一口气</span>
-    <span class="choice-effect health-down">-健康</span>
+  <button class="choice-btn" onclick="showEnding('historical')">
+    <span class="choice-text">继续坚持，事必躬亲</span>
+    <span class="choice-subtext">食少事繁，至死方休</span>
+    <span class="choice-effect health-down">史实</span>
   </button>
   <button class="choice-btn" onclick="showEnding('retreat_chengdu')">
     <span class="choice-text">撤军回成都养病</span>
