@@ -20,9 +20,9 @@
     
     .owl-container {
       position: relative;
-      width: 180px;
-      height: 240px;
-      margin-bottom: 1rem;
+      width: 270px;
+      height: 360px;
+      margin-bottom: 56px;
     }
     
     /* 像素猫头鹰 - 参考图重绘 */
@@ -30,13 +30,14 @@
       position: absolute;
       top: 10px;
       left: 50%;
-      margin-left: -42px; /* 图像宽度约84px的一半 */
+      margin-left: -63px; /* 放大后图像宽度约126px的一半 */
       width: 6px;
       height: 6px;
       background: transparent;
       animation: float 3s ease-in-out infinite;
       image-rendering: pixelated;
       pointer-events: none;
+      transform: scale(1.5);
       /* 6px 单位像素网格 */
       box-shadow:
         /* 耳朵左 */
@@ -78,16 +79,16 @@
     }
     
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      0%, 100% { transform: scale(1.5) translateY(0); }
+      50% { transform: scale(1.5) translateY(-6px); }
     }
     
     .owl-container:hover .pixel-owl { filter: brightness(1.15); }
     
     @keyframes shake {
-      0%, 100% { transform: rotate(0); }
-      25% { transform: rotate(-8deg); }
-      75% { transform: rotate(8deg); }
+      0%, 100% { transform: scale(1.5) rotate(0); }
+      25% { transform: scale(1.5) rotate(-8deg); }
+      75% { transform: scale(1.5) rotate(8deg); }
     }
     .pixel-owl.angry { animation: shake 0.2s ease-in-out 2; }
     
