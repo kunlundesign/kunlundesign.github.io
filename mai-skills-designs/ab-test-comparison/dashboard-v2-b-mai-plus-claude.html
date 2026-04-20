@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Version B - MAI Skill + Claude Design Insights</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('./fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /*
+     * MAI Skill + Claude Design Insights:
+     * 
+     * MAI Foundation:
+     * - Design tokens for colors, spacing, shadows
+     * - 4px spacing ramp
+     * - Squircle corners
+     * - Segoe Sans typography
+     * 
+     * Claude Insights Added:
+     * 1. Remove decorative icon boxes - just show icons inline
+     * 2. Tighter visual hierarchy - less "boxes in boxes"
+     * 3. No SVG icons unless from Fluent catalog - use simpler indicators
+     * 4. text-wrap: pretty for better line breaks
+     * 5. Reduce visual noise - fewer shadows, borders
+     * 6. More breathing room between sections
+     * 7. Status colors only where meaningful
+     * 8. Placeholder > bad attempt (simplified chart)
+     */
+
+    body {
+      font-family: 'Segoe Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--smtc-background-web-page-secondary);
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .dashboard {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header - Cleaner, less decorative */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    .header-meta {
+      font-size: 13px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    /* Stats - Simplified, no icon boxes */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--smtc-stroke-divider-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--smtc-background-card-on-primary-default-rest);
+      padding: 24px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      margin-bottom: 6px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    .stat-trend {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .stat-trend.up { color: var(--smtc-status-success-foreground); }
+    .stat-trend.down { color: var(--smtc-status-danger-foreground); }
+
+    /* Main Content - More whitespace */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--smtc-background-card-on-primary-default-rest);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .card-header h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Tabs - Simpler */
+    .tabs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .tab {
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      border: none;
+      font-family: inherit;
+      border-radius: 6px;
+    }
+
+    .tab:hover {
+      background: var(--smtc-background-ctrl-subtle-rest);
+    }
+
+    .tab.active {
+      background: var(--smtc-background-ctrl-subtle-rest);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* Chart - Simple, no decorative elements */
+    .chart-area {
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      border-bottom: 1px solid var(--smtc-stroke-divider-subtle);
+      padding-bottom: 8px;
+    }
+
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar {
+      width: 100%;
+      background: var(--smtc-status-brand-foreground);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.85;
+    }
+
+    .bar:hover {
+      opacity: 1;
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    /* Activity - Minimal, no icon boxes */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+    }
+
+    .activity-item + .activity-item {
+      border-top: 1px solid var(--smtc-stroke-divider-subtle);
+    }
+
+    /* Just a colored dot instead of icon box */
+    .activity-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .activity-dot.sale { background: var(--smtc-status-success-foreground); }
+    .activity-dot.user { background: var(--smtc-status-brand-foreground); }
+    .activity-dot.alert { background: var(--smtc-status-warning-foreground); }
+
+    .activity-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-title {
+      font-size: 14px;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      text-wrap: pretty;
+    }
+
+    .activity-meta {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      margin-top: 2px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .activity-amount {
+      color: var(--smtc-status-success-foreground);
+      font-weight: 500;
+    }
+
+    /* Version label */
+    .version-label {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: var(--smtc-status-brand-foreground);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <div class="version-label">Version B: MAI + Claude Insights</div>
+  
+  <div class="dashboard">
+    <header class="header">
+      <h1>Analytics</h1>
+      <span class="header-meta">Updated 5 min ago</span>
+    </header>
+
+    <!-- Stats: No icon boxes, joined card effect, cleaner -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-row">
+          <span class="stat-value">$48,562</span>
+          <span class="stat-trend up">+12.5%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active users</div>
+        <div class="stat-row">
+          <span class="stat-value">2,845</span>
+          <span class="stat-trend up">+8.2%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Orders</div>
+        <div class="stat-row">
+          <span class="stat-value">1,257</span>
+          <span class="stat-trend down">-3.1%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Satisfaction</div>
+        <div class="stat-row">
+          <span class="stat-value">94.2%</span>
+          <span class="stat-trend up">+2.4%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header">
+          <h2>Revenue</h2>
+          <div class="tabs">
+            <button class="tab">Day</button>
+            <button class="tab active">Week</button>
+            <button class="tab">Month</button>
+          </div>
+        </div>
+        <div class="chart-area">
+          <div class="chart-col">
+            <div class="bar" style="height: 60%;"></div>
+            <span class="bar-label">Mon</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 80%;"></div>
+            <span class="bar-label">Tue</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 45%;"></div>
+            <span class="bar-label">Wed</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 90%;"></div>
+            <span class="bar-label">Thu</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 70%;"></div>
+            <span class="bar-label">Fri</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 55%;"></div>
+            <span class="bar-label">Sat</span>
+          </div>
+          <div class="chart-col">
+            <div class="bar" style="height: 85%;"></div>
+            <span class="bar-label">Sun</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Activity</h2>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-dot sale"></div>
+            <div class="activity-content">
+              <div class="activity-title">New sale completed</div>
+              <div class="activity-meta">
+                <span>2 min ago</span>
+                <span class="activity-amount">+$420</span>
+              </div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot user"></div>
+            <div class="activity-content">
+              <div class="activity-title">New user signed up</div>
+              <div class="activity-meta">15 min ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot alert"></div>
+            <div class="activity-content">
+              <div class="activity-title">Server load elevated</div>
+              <div class="activity-meta">1 hour ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot sale"></div>
+            <div class="activity-content">
+              <div class="activity-title">Enterprise plan upgrade</div>
+              <div class="activity-meta">
+                <span>3 hours ago</span>
+                <span class="activity-amount">+$2,400</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
