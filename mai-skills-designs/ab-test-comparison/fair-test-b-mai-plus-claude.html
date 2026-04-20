@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Card Offer - MAI + Claude Design</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    /* ===== Font Setup ===== */
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--smtc-text-style-default-regular-font-family);
+      font-weight: var(--smtc-text-style-default-regular-weight);
+      background: var(--smtc-background-web-page-primary);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--smtc-padding-content-xx-large);
+    }
+
+    /* ===== Card Container ===== */
+    .offer-card {
+      background: var(--smtc-background-card-on-primary-default-rest);
+      border: var(--mai-smtc-stroke-width-card-default) solid var(--smtc-stroke-card-on-primary-rest);
+      border-radius: var(--mai-smtc-corner-card-default);
+      corner-shape: squircle;
+      box-shadow: var(--smtc-shadow-card-rest-key), var(--smtc-shadow-card-rest-ambient);
+      max-width: 800px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 2.2fr;
+      overflow: hidden;
+    }
+
+    /* ===== Left Column ===== */
+    .card-left {
+      padding: var(--smtc-padding-content-x-large);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--smtc-gap-between-content-medium);
+      border-right: var(--smtc-stroke-width-default) solid var(--smtc-stroke-divider-subtle);
+    }
+
+    .credit-card-image {
+      width: 100%;
+      max-width: 160px;
+      aspect-ratio: 1.586;
+      object-fit: contain;
+      border-radius: var(--smtc-corner-ctrl-rest);
+      corner-shape: squircle;
+    }
+
+    /* ===== Primary Button (Brand) ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: var(--smtc-size-ctrl-default);
+      padding: 0 var(--smtc-padding-ctrl-horizontal-default);
+      background: var(--smtc-background-ctrl-brand-rest);
+      color: var(--smtc-foreground-ctrl-on-brand-rest);
+      border: none;
+      border-radius: var(--smtc-corner-ctrl-rest);
+      corner-shape: squircle;
+      font-family: inherit;
+      font-size: var(--smtc-text-global-body3-font-size);
+      font-weight: var(--smtc-text-style-default-regular-weight);
+      line-height: var(--smtc-text-global-body3-line-height);
+      cursor: pointer;
+      width: 100%;
+      text-wrap: pretty;
+      transition: background var(--durationFast) var(--curveEasyEase);
+      box-shadow: var(--mai-smtc-shadow-ctrl-brand-key);
+    }
+
+    .btn-primary:hover {
+      background: var(--smtc-background-ctrl-brand-hover);
+    }
+
+    .btn-primary:active {
+      background: var(--smtc-background-ctrl-brand-pressed);
+      color: var(--smtc-foreground-ctrl-on-brand-pressed);
+    }
+
+    /* ===== Trust Text ===== */
+    .trust-text {
+      font-size: var(--smtc-text-global-caption1-font-size);
+      line-height: var(--smtc-text-global-caption1-line-height);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+      text-align: center;
+      text-wrap: pretty;
+    }
+
+    /* ===== Link Styles ===== */
+    .link {
+      font-size: var(--smtc-text-global-caption1-font-size);
+      line-height: var(--smtc-text-global-caption1-line-height);
+      color: var(--smtc-ctrl-link-foreground-brand-rest);
+      text-decoration: none;
+      border-bottom: 1px dashed currentColor;
+      transition: color var(--durationFast) var(--curveEasyEase);
+    }
+
+    .link:hover {
+      color: var(--smtc-ctrl-link-foreground-brand-hover);
+    }
+
+    /* ===== Right Column ===== */
+    .card-right {
+      padding: var(--smtc-padding-content-x-large);
+      display: flex;
+      flex-direction: column;
+      gap: var(--smtc-gap-between-content-large);
+    }
+
+    /* ===== Header ===== */
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--smtc-gap-between-content-xx-small);
+    }
+
+    .tagline {
+      font-size: var(--smtc-text-global-caption1-font-size);
+      line-height: var(--smtc-text-global-caption1-line-height);
+      color: var(--smtc-status-brand-tint-foreground);
+      font-weight: var(--smtc-text-style-default-header-weight);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      font-size: var(--smtc-text-global-title1-font-size);
+      line-height: var(--smtc-text-global-title1-line-height);
+      font-weight: var(--smtc-text-style-default-header-weight);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      text-wrap: pretty;
+    }
+
+    /* ===== Metrics Grid ===== */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--smtc-gap-between-content-medium);
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--mai-smtc-gap-between-content-xxx-small);
+    }
+
+    .metric-label {
+      font-size: var(--smtc-text-global-caption1-font-size);
+      line-height: var(--smtc-text-global-caption1-line-height);
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+    }
+
+    .metric-value {
+      font-size: var(--smtc-text-global-subtitle1-font-size);
+      line-height: var(--smtc-text-global-subtitle1-line-height);
+      font-weight: var(--smtc-text-style-default-header-weight);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+    }
+
+    /* ===== Status Bar ===== */
+    .status-bar {
+      background: var(--smtc-status-informative-tint-background);
+      border-radius: var(--smtc-corner-ctrl-sm-rest);
+      corner-shape: squircle;
+      padding: var(--smtc-padding-content-small) var(--smtc-padding-content-medium);
+      display: flex;
+      align-items: center;
+      gap: var(--smtc-gap-between-content-x-small);
+    }
+
+    .status-label {
+      font-size: var(--smtc-text-global-body3-font-size);
+      line-height: var(--smtc-text-global-body3-line-height);
+      color: var(--smtc-status-informative-tint-foreground);
+    }
+
+    .status-value {
+      font-size: var(--smtc-text-global-body3-font-size);
+      line-height: var(--smtc-text-global-body3-line-height);
+      font-weight: var(--smtc-text-style-default-header-weight);
+      color: var(--smtc-status-informative-tint-foreground);
+    }
+
+    /* ===== Footer ===== */
+    .card-footer {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .btn-subtle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--smtc-gap-inside-ctrl-to-label);
+      height: var(--smtc-size-ctrl-sm-default);
+      padding: 0 var(--smtc-padding-ctrl-sm-horizontal-default);
+      background: var(--smtc-background-ctrl-subtle-rest);
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+      border: none;
+      border-radius: var(--smtc-corner-ctrl-sm-rest);
+      corner-shape: squircle;
+      font-family: inherit;
+      font-size: var(--smtc-text-global-body3-font-size);
+      font-weight: var(--smtc-text-style-default-regular-weight);
+      line-height: var(--smtc-text-global-body3-line-height);
+      cursor: pointer;
+      transition: background var(--durationFast) var(--curveEasyEase);
+    }
+
+    .btn-subtle:hover {
+      background: var(--smtc-background-ctrl-subtle-hover);
+    }
+
+    .btn-subtle:active {
+      background: var(--smtc-background-ctrl-subtle-pressed);
+      color: var(--smtc-foreground-ctrl-on-transparent-pressed);
+    }
+
+    /* Chevron icon placeholder */
+    .chevron {
+      width: var(--smtc-size-ctrl-icon-tertiary);
+      height: var(--smtc-size-ctrl-icon-tertiary);
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .offer-card {
+        grid-template-columns: 1fr;
+      }
+
+      .card-left {
+        border-right: none;
+        border-bottom: var(--smtc-stroke-width-default) solid var(--smtc-stroke-divider-subtle);
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: var(--smtc-gap-between-content-small);
+      }
+    }
+  </style>
+</head>
+<body>
+  <article class="offer-card">
+    <!-- Left Column -->
+    <div class="card-left">
+      <img 
+        src="marriott-bonvoy.jpg" 
+        alt="Marriott Bonvoy Boundless Credit Card" 
+        class="credit-card-image"
+      >
+      <button class="btn-primary">Apply Now</button>
+      <p class="trust-text">On Chase's secure site</p>
+      <a href="#" class="link">Rates & Fees</a>
+    </div>
+
+    <!-- Right Column -->
+    <div class="card-right">
+      <header class="card-header">
+        <span class="tagline">Limited Time Offer</span>
+        <h2 class="card-title">Marriott Bonvoy Boundless Card</h2>
+      </header>
+
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <span class="metric-label">Annual Fee</span>
+          <span class="metric-value">$95</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">APR</span>
+          <span class="metric-value">21.49%–28.49%</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Rewards</span>
+          <span class="metric-value">6X Points</span>
+        </div>
+      </div>
+
+      <div class="status-bar">
+        <span class="status-label">Recommended Credit:</span>
+        <span class="status-value">Good to Excellent</span>
+      </div>
+
+      <footer class="card-footer">
+        <button class="btn-subtle">
+          See details
+          <span class="chevron"></span>
+        </button>
+      </footer>
+    </div>
+  </article>
+</body>
+</html>

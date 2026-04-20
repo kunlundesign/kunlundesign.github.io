@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test A: MAI Universal Skill Only - Credit Card Offer</title>
+    <link rel="stylesheet" href="design-tokens/default.light.css">
+    <style>
+        /* Font Faces - MAI Segoe Sans */
+        @font-face {
+            font-family: 'Segoe Sans';
+            src: url('fonts/segoe-sans.woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body */
+        body {
+            font-family: var(--smtc-text-style-default-regular-font-family);
+            font-weight: var(--smtc-text-style-default-regular-weight);
+            background: var(--smtc-background-web-page-primary);
+            min-height: 100vh;
+            padding: var(--smtc-padding-content-xx-large); /* 32px */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* MAI Card Container - Pattern 1 */
+        .offer-card {
+            background: var(--smtc-background-card-on-primary-default-rest);
+            border: var(--mai-smtc-stroke-width-card-default) solid var(--smtc-stroke-card-on-primary-rest);
+            border-radius: var(--mai-smtc-corner-card-default); /* 60px squircle */
+            box-shadow: var(--smtc-shadow-card-rest-key), var(--smtc-shadow-card-rest-ambient);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Left Column - 30% */
+        .offer-card__left {
+            flex: 0 0 30%;
+            background: var(--smtc-background-card-on-secondary-default-rest);
+            padding: var(--smtc-padding-content-x-large); /* 24px */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--smtc-gap-between-content-medium); /* 16px */
+            border-radius: var(--mai-smtc-corner-card-default) 0 0 var(--mai-smtc-corner-card-default);
+        }
+
+        /* Credit Card Image */
+        .card-image {
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 1.586 / 1;
+            object-fit: contain;
+            border-radius: var(--smtc-corner-ctrl-lg-rest); /* 20px */
+            box-shadow: var(--mai-smtc-shadow-ctrl-neutral-key);
+        }
+
+        /* Apply Now Button - MAI Brand Style */
+        .btn-apply {
+            width: 100%;
+            max-width: 200px;
+            height: var(--smtc-size-ctrl-lg-default); /* 48px */
+            background: var(--smtc-background-ctrl-brand-rest);
+            color: var(--smtc-foreground-ctrl-on-brand-rest);
+            border: none;
+            border-radius: var(--smtc-corner-ctrl-lg-rest); /* 20px */
+            font-family: var(--smtc-text-style-default-regular-font-family);
+            font-size: var(--smtc-text-global-body2-font-size); /* 16px */
+            font-weight: var(--smtc-text-style-default-header-weight); /* 650 */
+            cursor: pointer;
+            transition: background var(--durationFast) var(--curveEasyEase);
+            box-shadow: var(--mai-smtc-shadow-ctrl-brand-key);
+        }
+
+        .btn-apply:hover {
+            background: var(--smtc-background-ctrl-brand-hover);
+        }
+
+        .btn-apply:active {
+            background: var(--smtc-background-ctrl-brand-pressed);
+        }
+
+        /* Trust Text */
+        .trust-text {
+            font-size: var(--smtc-text-global-caption1-font-size); /* 12px */
+            line-height: var(--smtc-text-global-caption1-line-height); /* 16px */
+            color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+            text-align: center;
+        }
+
+        /* Rates & Fees Link */
+        .link-rates {
+            font-size: var(--smtc-text-global-caption1-font-size); /* 12px */
+            line-height: var(--smtc-text-global-caption1-line-height); /* 16px */
+            color: var(--smtc-ctrl-link-foreground-brand-rest);
+            text-decoration: none;
+            transition: color var(--durationFast) var(--curveEasyEase);
+        }
+
+        .link-rates:hover {
+            text-decoration: underline;
+            text-decoration-style: dashed;
+        }
+
+        /* Right Column - 70% */
+        .offer-card__right {
+            flex: 1;
+            padding: var(--mai-smtc-padding-card-nested-default); /* 18px */
+            display: flex;
+            flex-direction: column;
+            gap: var(--smtc-gap-between-content-medium); /* 16px */
+        }
+
+        /* Header Section */
+        .offer-header {
+            display: flex;
+            flex-direction: column;
+            gap: var(--smtc-gap-between-content-xx-small); /* 4px */
+        }
+
+        .offer-tagline {
+            font-size: var(--smtc-text-global-caption1-font-size); /* 12px */
+            line-height: var(--smtc-text-global-caption1-line-height); /* 16px */
+            font-weight: var(--smtc-text-style-default-header-weight); /* 650 */
+            color: var(--smtc-status-brand-tint-foreground); /* 棕色/金色 #6b3900 */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .offer-title {
+            font-size: var(--smtc-text-global-title1-font-size); /* 24px */
+            line-height: var(--smtc-text-global-title1-line-height); /* 32px */
+            font-weight: var(--smtc-text-style-default-header-weight); /* 650 */
+            color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+        }
+
+        /* Metrics Grid - 3 columns */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--smtc-gap-between-content-small); /* 12px */
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--mai-smtc-gap-between-content-xxx-small); /* 2px */
+        }
+
+        .metric-label {
+            font-size: var(--smtc-text-global-caption1-font-size); /* 12px */
+            line-height: var(--smtc-text-global-caption1-line-height); /* 16px */
+            color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: var(--smtc-text-global-subtitle1-font-size); /* 20px */
+            line-height: var(--smtc-text-global-subtitle1-line-height); /* 26px */
+            font-weight: var(--smtc-text-style-default-header-weight); /* 650 */
+            color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+        }
+
+        .metric-note {
+            font-size: var(--smtc-text-global-caption2-font-size); /* 10px */
+            line-height: var(--smtc-text-global-caption2-line-height); /* 14px */
+            color: var(--smtc-foreground-ctrl-neutral-secondary-rest);
+        }
+
+        /* Status Bar - Gray Background */
+        .status-bar {
+            background: var(--smtc-status-informative-tint-background); /* #efeae7 */
+            border-radius: var(--smtc-corner-ctrl-rest); /* 12px */
+            padding: var(--smtc-padding-content-small) var(--smtc-padding-content-medium); /* 12px 16px */
+            display: flex;
+            align-items: center;
+            gap: var(--smtc-gap-between-content-x-small); /* 8px */
+        }
+
+        .status-icon {
+            width: var(--smtc-size-ctrl-icon-secondary); /* 16px */
+            height: var(--smtc-size-ctrl-icon-secondary);
+            color: var(--smtc-status-informative-tint-foreground);
+        }
+
+        .status-text {
+            font-size: var(--smtc-text-global-body3-font-size); /* 14px */
+            line-height: var(--smtc-text-global-body3-line-height); /* 20px */
+            color: var(--smtc-status-informative-tint-foreground);
+        }
+
+        .status-value {
+            font-weight: var(--smtc-text-style-default-header-weight); /* 650 */
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--smtc-stroke-divider-subtle);
+        }
+
+        /* Footer - See Details Button */
+        .offer-footer {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-details {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--smtc-gap-inside-ctrl-to-label); /* 8px */
+            height: var(--smtc-size-ctrl-default); /* 40px */
+            padding: 0 var(--smtc-padding-ctrl-horizontal-default); /* 0 10px */
+            background: var(--smtc-background-ctrl-subtle-rest);
+            border: none;
+            border-radius: var(--smtc-corner-ctrl-rest); /* 12px */
+            font-family: var(--smtc-text-style-default-regular-font-family);
+            font-size: var(--smtc-text-global-body3-font-size); /* 14px */
+            color: var(--smtc-foreground-ctrl-neutral-primary-rest);
+            cursor: pointer;
+            transition: background var(--durationFast) var(--curveEasyEase);
+        }
+
+        .btn-details:hover {
+            background: var(--smtc-background-ctrl-subtle-hover);
+        }
+
+        .btn-details:active {
+            background: var(--smtc-background-ctrl-subtle-pressed);
+        }
+
+        .btn-details__icon {
+            width: var(--smtc-size-ctrl-icon-secondary); /* 16px */
+            height: var(--smtc-size-ctrl-icon-secondary);
+            transition: transform var(--durationFast) var(--curveEasyEase);
+        }
+
+        .btn-details[aria-expanded="true"] .btn-details__icon {
+            transform: rotate(180deg);
+        }
+
+        /* Responsive - Stack on smaller screens */
+        @media (max-width: 640px) {
+            .offer-card {
+                flex-direction: column;
+                border-radius: var(--mai-smtc-corner-card-small); /* 48px */
+            }
+
+            .offer-card__left {
+                flex: none;
+                border-radius: var(--mai-smtc-corner-card-small) var(--mai-smtc-corner-card-small) 0 0;
+                padding: var(--smtc-padding-content-large); /* 20px */
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: var(--smtc-gap-between-content-medium); /* 16px */
+            }
+        }
+    </style>
+</head>
+<body>
+    <article class="offer-card">
+        <!-- Left Column: Card Image + CTA -->
+        <div class="offer-card__left">
+            <img 
+                src="marriott-bonvoy.jpg" 
+                alt="Marriott Bonvoy Boundless Credit Card" 
+                class="card-image"
+            >
+            <button class="btn-apply">Apply Now</button>
+            <p class="trust-text">Secure application in minutes</p>
+            <a href="#" class="link-rates">Rates &amp; Fees</a>
+        </div>
+
+        <!-- Right Column: Product Details -->
+        <div class="offer-card__right">
+            <!-- Header -->
+            <header class="offer-header">
+                <span class="offer-tagline">Limited Time Offer</span>
+                <h1 class="offer-title">Marriott Bonvoy Boundless® Credit Card</h1>
+            </header>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <span class="metric-label">Annual Fee</span>
+                    <span class="metric-value">$95</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">APR</span>
+                    <span class="metric-value">21.99%–28.99%</span>
+                    <span class="metric-note">Variable</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Rewards</span>
+                    <span class="metric-value">6X Points</span>
+                    <span class="metric-note">at Marriott hotels</span>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <svg class="status-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 1.5C4.41 1.5 1.5 4.41 1.5 8C1.5 11.59 4.41 14.5 8 14.5C11.59 14.5 14.5 11.59 14.5 8C14.5 4.41 11.59 1.5 8 1.5ZM8 13C5.24 13 3 10.76 3 8C3 5.24 5.24 3 8 3C10.76 3 13 5.24 13 8C13 10.76 10.76 13 8 13Z" fill="currentColor"/>
+                    <path d="M8 4.5C7.45 4.5 7 4.95 7 5.5V8.5C7 9.05 7.45 9.5 8 9.5C8.55 9.5 9 9.05 9 8.5V5.5C9 4.95 8.55 4.5 8 4.5Z" fill="currentColor"/>
+                    <path d="M8 10.5C7.45 10.5 7 10.95 7 11.5C7 12.05 7.45 12.5 8 12.5C8.55 12.5 9 12.05 9 11.5C9 10.95 8.55 10.5 8 10.5Z" fill="currentColor"/>
+                </svg>
+                <span class="status-text">
+                    <span class="status-value">Recommended Credit:</span> Good to Excellent (670+)
+                </span>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Footer -->
+            <footer class="offer-footer">
+                <button class="btn-details" aria-expanded="false">
+                    See details
+                    <svg class="btn-details__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </footer>
+        </div>
+    </article>
+</body>
+</html>
