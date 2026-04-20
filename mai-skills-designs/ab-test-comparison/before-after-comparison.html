@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Before & After: AI Slop → MAI Universal</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('./fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 60px 40px;
+    }
+
+    .comparison {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .label {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    .label.before {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .label.after {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    /* ==================== */
+    /* BEFORE: AI Slop Card */
+    /* ==================== */
+    .card-before {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+    }
+
+    .card-before .card-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card-before .card-body {
+      padding: 24px;
+      color: white;
+    }
+
+    .card-before .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-before .title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .card-before .description {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .card-before .stats {
+      display: flex;
+      gap: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-before .stat {
+      text-align: center;
+      flex: 1;
+    }
+
+    .card-before .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .card-before .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+    }
+
+    .card-before .cta {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .card-before .features {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .card-before .feature {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ==================== */
+    /* AFTER: MAI Universal */
+    /* ==================== */
+    .card-after {
+      background: var(--smtc-background-card-on-primary-default-rest, #fff);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--smtc-stroke-card-on-primary-rest, #e5e7eb);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .card-after .card-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card-after .card-body {
+      padding: 24px;
+    }
+
+    .card-after .eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      color: #9a7b4f;
+      margin-bottom: 8px;
+    }
+
+    .card-after .title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest, #111);
+      margin-bottom: 10px;
+      line-height: 1.35;
+      text-wrap: pretty;
+    }
+
+    .card-after .description {
+      font-size: 14px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest, #6b7280);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .card-after .metrics {
+      display: flex;
+      gap: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--smtc-stroke-divider-subtle, #f0f0f0);
+      margin-bottom: 20px;
+    }
+
+    .card-after .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .card-after .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--smtc-foreground-ctrl-neutral-primary-rest, #111);
+    }
+
+    .card-after .metric-label {
+      font-size: 12px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest, #9ca3af);
+    }
+
+    .card-after .cta {
+      width: 100%;
+      padding: 14px;
+      background: var(--smtc-background-ctrl-brand-rest, #0066cc);
+      border: none;
+      border-radius: 12px;
+      color: var(--smtc-foreground-ctrl-on-brand-rest, #fff);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .card-after .footer {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--smtc-foreground-ctrl-neutral-secondary-rest, #9ca3af);
+    }
+
+    .card-after .footer a {
+      color: var(--smtc-status-brand-foreground, #0066cc);
+      text-decoration: none;
+    }
+
+    /* Annotations */
+    .annotations {
+      margin-top: 24px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .annotations h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+
+    .annotations ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .annotations li {
+      font-size: 12px;
+      color: #6b7280;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .annotations li::before {
+      content: '×';
+      color: #ef4444;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .annotations.good li::before {
+      content: '✓';
+      color: #10b981;
+    }
+
+    /* Page title */
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      font-size: 15px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>Content Card: Before & After</h1>
+    <p>AI Slop → MAI Universal Design System</p>
+  </div>
+
+  <div class="comparison">
+    <!-- BEFORE Column -->
+    <div class="column">
+      <div class="label before">BEFORE — AI Slop</div>
+      
+      <div class="card-before">
+        <img src="marriott-bonvoy.jpg" alt="Marriott Bonvoy" class="card-image">
+        <div class="card-body">
+          <div class="badge">🔥 LIMITED TIME OFFER</div>
+          <h2 class="title">Marriott Bonvoy Boundless® Credit Card</h2>
+          <p class="description">Earn amazing rewards on every purchase! Unlock exclusive benefits and premium travel perks. ✨</p>
+          
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-value">$95</div>
+              <div class="stat-label">💰 ANNUAL FEE</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">6X</div>
+              <div class="stat-label">⭐ REWARDS</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">21%</div>
+              <div class="stat-label">📊 APR</div>
+            </div>
+          </div>
+          
+          <button class="cta">🚀 Apply Now — Get Started!</button>
+          
+          <div class="features">
+            <span class="feature">✅ No Foreign Fees</span>
+            <span class="feature">✅ Free Nights</span>
+            <span class="feature">✅ Elite Status</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations">
+        <h3>AI Slop Problems</h3>
+        <ul>
+          <li>Gradient background (purple-blue)</li>
+          <li>Excessive emoji usage</li>
+          <li>UPPERCASE labels</li>
+          <li>Bold button text + gradient</li>
+          <li>Low contrast text on gradient</li>
+          <li>Aggressive shadow</li>
+          <li>Cluttered information density</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AFTER Column -->
+    <div class="column">
+      <div class="label after">AFTER — MAI Universal</div>
+      
+      <div class="card-after">
+        <img src="marriott-bonvoy.jpg" alt="Marriott Bonvoy" class="card-image">
+        <div class="card-body">
+          <div class="eyebrow">Limited time offer</div>
+          <h2 class="title">Marriott Bonvoy Boundless® Credit Card</h2>
+          <p class="description">Earn rewards on every purchase with exclusive travel benefits and premium hotel perks.</p>
+          
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value">$95</div>
+              <div class="metric-label">Annual fee</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">6X Points</div>
+              <div class="metric-label">At Marriott hotels</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">21.49%</div>
+              <div class="metric-label">Variable APR</div>
+            </div>
+          </div>
+          
+          <button class="cta">Apply now</button>
+          
+          <div class="footer">
+            <span>On Chase's secure site</span>
+            <a href="#">Rates & fees</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations good">
+        <h3>MAI Universal Improvements</h3>
+        <ul>
+          <li>Clean white background</li>
+          <li>No emoji — professional tone</li>
+          <li>Sentence case labels</li>
+          <li>Regular weight button text</li>
+          <li>Proper contrast hierarchy</li>
+          <li>Subtle, appropriate shadow</li>
+          <li>Breathing room, clear structure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

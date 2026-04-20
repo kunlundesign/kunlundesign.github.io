@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Before & After: AI Slop → MAI Universal</title>
+  <link rel="stylesheet" href="design-tokens/default.light.css">
+  <style>
+    @font-face {
+      font-family: 'Segoe Sans';
+      src: url('./fonts/segoe-sans.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f5f7;
+      min-height: 100vh;
+      padding: 80px 60px;
+    }
+
+    .comparison {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .label.before {
+      color: #9ca3af;
+    }
+
+    .label.after {
+      color: #111;
+    }
+
+    /* ==================== */
+    /* BEFORE: AI Slop Card */
+    /* ==================== */
+    .card-before {
+      width: 100%;
+      max-width: 380px;
+      background: linear-gradient(145deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 
+        0 25px 50px -12px rgba(99, 102, 241, 0.5),
+        0 0 0 1px rgba(255,255,255,0.1) inset;
+      position: relative;
+    }
+
+    .card-before::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .card-before .card-image-wrap {
+      padding: 20px 20px 0;
+      position: relative;
+    }
+
+    .card-before .card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .card-before .card-body {
+      padding: 20px;
+      color: white;
+      position: relative;
+    }
+
+    .card-before .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    }
+
+    .card-before .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.25;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .card-before .description {
+      font-size: 13px;
+      opacity: 0.9;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .card-before .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card-before .stat {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-before .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card-before .stat-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .card-before .cta {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.4);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .card-before .features {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 14px;
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    /* ==================== */
+    /* AFTER: MAI Universal */
+    /* ==================== */
+    .card-after {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .card-after .card-image-wrap {
+      padding: 16px 16px 0;
+    }
+
+    .card-after .card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .card-after .card-body {
+      padding: 20px 24px 24px;
+    }
+
+    .card-after .eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      color: #92734a;
+      margin-bottom: 6px;
+    }
+
+    .card-after .title {
+      font-size: 19px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .card-after .description {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .card-after .divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin-bottom: 18px;
+    }
+
+    .card-after .metrics {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 22px;
+    }
+
+    .card-after .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .card-after .metric-value {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .card-after .metric-label {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .card-after .cta {
+      width: 100%;
+      padding: 14px;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .card-after .cta:hover {
+      background: #2d2d2d;
+    }
+
+    .card-after .footer {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .card-after .footer a {
+      color: #6b7280;
+      text-decoration: none;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Page title */
+    .page-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .page-header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.01em;
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    /* Arrow */
+    .arrow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      color: #d1d5db;
+    }
+
+    .comparison-wrap {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>Content Card Redesign</h1>
+    <p>Before → After</p>
+  </div>
+
+  <div class="comparison-wrap">
+    <div class="arrow">→</div>
+    <div class="comparison">
+      <!-- BEFORE Column -->
+      <div class="column">
+        <div class="label before">Before</div>
+        
+        <div class="card-before">
+          <div class="card-image-wrap">
+            <img src="marriott-bonvoy.jpg" alt="Marriott Bonvoy" class="card-image">
+          </div>
+          <div class="card-body">
+            <div class="badge">🔥 LIMITED OFFER</div>
+            <h2 class="title">Marriott Bonvoy Boundless® Credit Card</h2>
+            <p class="description">Earn amazing rewards on every purchase! Unlock exclusive benefits ✨</p>
+            
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-value">$95</div>
+                <div class="stat-label">💰 FEE</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">6X</div>
+                <div class="stat-label">⭐ POINTS</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">21%</div>
+                <div class="stat-label">📊 APR</div>
+              </div>
+            </div>
+            
+            <button class="cta">🚀 Apply Now</button>
+            
+            <div class="features">
+              <span>✅ No Fees</span>
+              <span>✅ Free Nights</span>
+              <span>✅ Elite</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AFTER Column -->
+      <div class="column">
+        <div class="label after">After</div>
+        
+        <div class="card-after">
+          <div class="card-image-wrap">
+            <img src="marriott-bonvoy.jpg" alt="Marriott Bonvoy" class="card-image">
+          </div>
+          <div class="card-body">
+            <div class="eyebrow">Limited time offer</div>
+            <h2 class="title">Marriott Bonvoy Boundless® Credit Card</h2>
+            <p class="description">Earn rewards on every purchase with exclusive travel benefits.</p>
+            
+            <div class="divider"></div>
+            
+            <div class="metrics">
+              <div class="metric">
+                <div class="metric-value">$95</div>
+                <div class="metric-label">Annual fee</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value">6X</div>
+                <div class="metric-label">Points at hotels</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value">21.49%</div>
+                <div class="metric-label">Variable APR</div>
+              </div>
+            </div>
+            
+            <button class="cta">Apply now</button>
+            
+            <div class="footer">
+              <span>Secure site</span>
+              <a href="#">Rates & fees</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
