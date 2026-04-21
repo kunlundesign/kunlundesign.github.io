@@ -1267,6 +1267,7 @@
       padding: 0.8rem 1.2rem;
       background: rgba(26, 22, 18, 0.95);
       border: 1px solid var(--border);
+      z-index: 100;
     }
 
     /* 足迹探索进度条 */
@@ -1274,11 +1275,15 @@
       position: absolute;
       bottom: 4rem;
       left: 1rem;
-      right: 1rem;
+      right: 10rem;
       background: rgba(26, 22, 18, 0.95);
       border: 1px solid var(--border);
-      padding: 0.8rem 1rem;
+      padding: 0.6rem 1rem;
+      z-index: 100;
     }
+
+    /* 隐藏高德地图水印 */
+    .amap-logo, .amap-copyright { display: none !important; }
 
     .progress-label {
       display: flex;
