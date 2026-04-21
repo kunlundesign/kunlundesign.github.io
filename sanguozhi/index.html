@@ -353,10 +353,10 @@
     /* 史诗级动画 - 模糊→清晰 + 缩放 */
     .hero-badge {
       display: inline-block;
-      padding: 0.5rem 2rem;
+      padding: 0.8rem 2.5rem;
       border: 1px solid var(--accent-gold);
-      font-size: 0.65rem;
-      letter-spacing: 0.4em;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
       color: var(--accent-gold);
       margin-bottom: 3rem;
       opacity: 0;
@@ -420,7 +420,7 @@
     }
 
     .hero-btn {
-      padding: 1.2rem 3rem;
+      padding: 0.8rem 2.5rem;
       background: transparent;
       border: 1px solid var(--accent-gold);
       color: var(--accent-gold);
@@ -1083,7 +1083,7 @@
     .journey-panel {
       display: grid;
       grid-template-columns: 300px 1fr;
-      gap: 2rem;
+      gap: 0;
       max-width: 1400px;
       margin: 0 auto;
       background: var(--bg-card);
@@ -1247,10 +1247,15 @@
 
     .journey-map {
       position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     #map {
-      height: 500px;
+      height: 508px;
+      flex-shrink: 0;
+      margin: 0;
     }
 
     /* 移动端地图遮罩 - 桌面端隐藏 */
@@ -1258,28 +1263,39 @@
       display: none;
     }
 
-    .map-legend {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
+    /* 地图底部控件栏 */
+    .map-controls {
       display: flex;
-      gap: 1.5rem;
-      padding: 0.8rem 1.2rem;
+      align-items: stretch;
       background: rgba(26, 22, 18, 0.95);
-      border: 1px solid var(--border);
-      z-index: 100;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    .map-legend {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
     }
 
     /* 足迹探索进度条 */
     .journey-progress {
-      position: absolute;
-      bottom: 4rem;
-      left: 1rem;
-      right: 10rem;
-      background: rgba(26, 22, 18, 0.95);
-      border: 1px solid var(--border);
-      padding: 0.6rem 1rem;
-      z-index: 100;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      border-right: 1px solid var(--border);
     }
 
     /* 隐藏高德地图水印 */
@@ -1287,15 +1303,17 @@
 
     .progress-label {
       display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
     }
 
     .progress-bar {
-      height: 4px;
+      flex: 1;
+      height: 3px;
       background: var(--border);
       border-radius: 2px;
       overflow: hidden;
@@ -1308,16 +1326,31 @@
     }
 
     .journey-actions {
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
       display: flex;
-      gap: 0.8rem;
+      align-items: center;
     }
 
-    .journey-complete-btn,
     .journey-story-btn {
       display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .journey-story-btn:hover {
+      color: var(--accent-gold);
+    }
+
+    .journey-complete-btn {
       align-items: center;
       gap: 0.5rem;
       padding: 0.8rem 1.2rem;
@@ -1878,27 +1911,29 @@
         <div class="map-overlay" id="mapOverlay" onclick="enableMap()">
           <span>点击查看地图</span>
         </div>
-        <div class="map-legend">
-          <div class="legend-item"><span class="legend-dot birth"></span>诞生</div>
-          <div class="legend-item"><span class="legend-dot battle"></span>战役</div>
-          <div class="legend-item"><span class="legend-dot capital"></span>都城</div>
-          <div class="legend-item"><span class="legend-dot death"></span>陨落</div>
-        </div>
-        <!-- 足迹探索进度 -->
-        <div class="journey-progress">
-          <div class="progress-label">
-            <span>足迹探索</span>
-            <span id="progressText">0 / 0</span>
+        <!-- 底部控件栏 -->
+        <div class="map-controls">
+          <div class="map-legend">
+            <div class="legend-item"><span class="legend-dot birth"></span>诞生</div>
+            <div class="legend-item"><span class="legend-dot battle"></span>战役</div>
+            <div class="legend-item"><span class="legend-dot capital"></span>都城</div>
+            <div class="legend-item"><span class="legend-dot death"></span>陨落</div>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          <div class="journey-progress">
+            <div class="progress-label">
+              <span>足迹探索</span>
+              <span id="progressText">0 / 0</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
           </div>
-        </div>
-        <div class="journey-actions">
-          <button class="journey-story-btn" id="goToStoryBtn" onclick="goToStory()">
-            <span class="btn-icon">📖</span>
-            <span>进入演义</span>
-          </button>
+          <div class="journey-actions">
+            <button class="journey-story-btn" id="goToStoryBtn" onclick="goToStory()">
+              <span class="btn-icon">📖</span>
+              <span>进入演义</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
