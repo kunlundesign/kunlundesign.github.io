@@ -944,65 +944,73 @@
       speakLetter(letter);
     }
 
-    // Use audio files from a reliable CDN for authentic American pronunciation
-    const audioCache = {};
-    
-    // Preload audio for better responsiveness
-    function preloadAudio(letter) {
-      const url = `https://ssl.gstatic.com/dictionary/static/sounds/20200429/${letter.toLowerCase()}--_us_1.mp3`;
-      const audio = new Audio(url);
-      audioCache[letter] = audio;
-      return audio;
+    // Letter name pronunciations - spelled out phonetically for clear American English
+    const letterNames = {
+      A: 'ay', B: 'bee', C: 'see', D: 'dee', E: 'ee',
+      F: 'eff', G: 'jee', H: 'aitch', I: 'eye', J: 'jay',
+      K: 'kay', L: 'el', M: 'em', N: 'en', O: 'oh',
+      P: 'pee', Q: 'cue', R: 'are', S: 'ess', T: 'tee',
+      U: 'you', V: 'vee', W: 'double you', X: 'ex', Y: 'why', Z: 'zee'
+    };
+
+    // Get best US English voice
+    let bestVoice = null;
+    function findBestVoice() {
+      const voices = speechSynthesis.getVoices();
+      // Priority: Samantha (macOS), Google US, any en-US
+      bestVoice = voices.find(v => v.name === 'Samantha') ||
+                  voices.find(v => v.name === 'Google US English') ||
+                  voices.find(v => v.name.includes('English') && v.name.includes('United States')) ||
+                  voices.find(v => v.lang === 'en-US') ||
+                  voices.find(v => v.lang.startsWith('en'));
+      console.log('Using voice:', bestVoice?.name || 'default');
     }
     
-    // Preload all letters
-    letters.forEach(letter => preloadAudio(letter));
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = findBestVoice;
+    }
+    findBestVoice();
 
-    // Play letter sound using Google Dictionary audio (authentic American pronunciation)
+    // Speak letter with proper pronunciation
     function speakLetter(letter, callback) {
-      const audio = audioCache[letter] || preloadAudio(letter);
-      audio.currentTime = 0;
+      if (!('speechSynthesis' in window)) return;
+      
+      speechSynthesis.cancel();
+      
+      const text = letterNames[letter] || letter;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      if (bestVoice) {
+        utterance.voice = bestVoice;
+      }
       
       if (callback) {
-        audio.onended = callback;
+        utterance.onend = callback;
       }
       
-      audio.play().catch(err => {
-        // Fallback to Web Speech API if audio fails
-        console.log('Audio failed, using TTS fallback');
-        speakLetterFallback(letter, callback);
-      });
-    }
-    
-    // Fallback TTS
-    function speakLetterFallback(letter, callback) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(letter);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.8;
-        if (callback) utterance.onend = callback;
-        window.speechSynthesis.speak(utterance);
-      }
+      speechSynthesis.speak(utterance);
     }
 
+    // Speak word
     function speakWord(word) {
-      // Use Web Speech API for words (more reliable for full words)
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.75;
-        
-        // Try to get a good US English voice
-        const voices = speechSynthesis.getVoices();
-        const usVoice = voices.find(v => v.name === 'Samantha') ||
-                        voices.find(v => v.name.includes('Google US English')) ||
-                        voices.find(v => v.lang === 'en-US');
-        if (usVoice) utterance.voice = usVoice;
-        
-        window.speechSynthesis.speak(utterance);
+      if (!('speechSynthesis' in window)) return;
+      
+      speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      utterance.pitch = 1.0;
+      
+      if (bestVoice) {
+        utterance.voice = bestVoice;
       }
+      
+      speechSynthesis.speak(utterance);
     }
 
     // Writing canvas
