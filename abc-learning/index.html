@@ -946,12 +946,19 @@
 
     // Preload audio files (Google TTS - authentic American English)
     const audioCache = {};
+    const wordAudioCache = {};
     const audioBase = 'audio/';
     
     letters.forEach(letter => {
+      // Letter audio
       const audio = new Audio(audioBase + letter + '.mp3');
       audio.preload = 'auto';
       audioCache[letter] = audio;
+      
+      // Word audio
+      const wordAudio = new Audio(audioBase + 'word_' + letter + '.mp3');
+      wordAudio.preload = 'auto';
+      wordAudioCache[letter] = wordAudio;
     });
 
     // Speak letter using preloaded audio
@@ -966,14 +973,13 @@
       }
     }
 
-    // Speak word using Web Speech API
-    function speakWord(word) {
-      if (!('speechSynthesis' in window)) return;
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(word);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
+    // Speak word using preloaded audio
+    function speakWord(letter) {
+      const audio = wordAudioCache[letter];
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log('Word audio play failed:', e));
+      }
     }
 
     // Writing canvas
@@ -1206,7 +1212,7 @@
     document.getElementById('playSoundBtn').addEventListener('click', () => {
       speakLetter(currentLetter);
       setTimeout(() => {
-        speakWord(letterData[currentLetter].word);
+        speakWord(currentLetter);
       }, 800);
     });
 
