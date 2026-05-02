@@ -759,12 +759,12 @@
             <div class="value" id="lowerCase">a</div>
           </div>
           <div class="info-item">
-            <div class="label">字母音</div>
-            <div class="value" id="phonicsSound" style="cursor: pointer;">🔊 /æ/</div>
+            <div class="label">第几个</div>
+            <div class="value" id="letterNum">1</div>
           </div>
         </div>
         <button class="play-sound-btn" id="playSoundBtn">
-          🔊 听发音 (A → /æ/ → Apple)
+          🔊 听发音
         </button>
         <div class="example-word" id="exampleWord">
           <div class="word">🍎 Apple</div>
@@ -920,25 +920,16 @@
       });
     }
 
-    // Phonics sounds (IPA notation)
-    const phonicsIPA = {
-      A: '/æ/', B: '/b/', C: '/k/', D: '/d/', E: '/e/', F: '/f/', G: '/g/',
-      H: '/h/', I: '/ɪ/', J: '/dʒ/', K: '/k/', L: '/l/', M: '/m/', N: '/n/',
-      O: '/ɒ/', P: '/p/', Q: '/kw/', R: '/r/', S: '/s/', T: '/t/', U: '/ʌ/',
-      V: '/v/', W: '/w/', X: '/ks/', Y: '/j/', Z: '/z/'
-    };
-
     // Select letter
     function selectLetter(letter) {
       currentLetter = letter;
       const data = letterData[letter];
-      const ipa = phonicsIPA[letter];
+      const index = letters.indexOf(letter) + 1;
 
       document.getElementById('detailLetter').textContent = letter;
       document.getElementById('upperCase').textContent = letter;
       document.getElementById('lowerCase').textContent = letter.toLowerCase();
-      document.getElementById('phonicsSound').textContent = '🔊 ' + ipa;
-      document.getElementById('playSoundBtn').textContent = '🔊 听发音 (' + letter + ' → ' + ipa + ' → ' + data.word + ')';
+      document.getElementById('letterNum').textContent = index;
       document.getElementById('exampleWord').innerHTML = `
         <div class="word">${data.emoji} ${data.word}</div>
         <div class="meaning">${data.meaning}</div>
@@ -955,7 +946,6 @@
 
     // Preload audio files (Google TTS - authentic American English)
     const audioCache = {};       // Letter names: A, B, C...
-    const phonicsCache = {};     // Letter sounds: /æ/, /b/, /k/...
     const wordAudioCache = {};   // Words: Apple, Ball, Cat...
     const audioBase = 'audio/';
     
@@ -965,41 +955,26 @@
       audio.preload = 'auto';
       audioCache[letter] = audio;
       
-      // Phonics sound audio
-      const phonicsAudio = new Audio(audioBase + 'phonics_' + letter + '.mp3');
-      phonicsAudio.preload = 'auto';
-      phonicsCache[letter] = phonicsAudio;
-      
       // Word audio
       const wordAudio = new Audio(audioBase + 'word_' + letter + '.mp3');
       wordAudio.preload = 'auto';
       wordAudioCache[letter] = wordAudio;
     });
 
-    // Play sequence: letter name -> letter sound -> word
+    // Play sequence: letter name -> word (clear and simple for kids)
     function playFullSequence(letter) {
       const letterAudio = audioCache[letter];
-      const phonicsAudio = phonicsCache[letter];
       const wordAudio = wordAudioCache[letter];
       
       letterAudio.currentTime = 0;
-      phonicsAudio.currentTime = 0;
       wordAudio.currentTime = 0;
       
-      // Play letter name first
+      // Play letter name first, then word
       letterAudio.play().then(() => {
         letterAudio.onended = () => {
-          // Then play phonics sound after 300ms
           setTimeout(() => {
-            phonicsAudio.play().then(() => {
-              phonicsAudio.onended = () => {
-                // Finally play word after 300ms
-                setTimeout(() => {
-                  wordAudio.play();
-                }, 300);
-              };
-            });
-          }, 300);
+            wordAudio.play();
+          }, 400);
         };
       }).catch(e => console.log('Audio play failed:', e));
     }
@@ -1013,15 +988,6 @@
           audio.onended = callback;
         }
         audio.play().catch(e => console.log('Audio play failed:', e));
-      }
-    }
-    
-    // Speak phonics sound
-    function speakPhonics(letter) {
-      const audio = phonicsCache[letter];
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(e => console.log('Phonics audio play failed:', e));
       }
     }
 
@@ -1263,11 +1229,6 @@
     // Event listeners
     document.getElementById('playSoundBtn').addEventListener('click', () => {
       playFullSequence(currentLetter);
-    });
-    
-    // Click on phonics sound to play just the phonics
-    document.getElementById('phonicsSound').addEventListener('click', () => {
-      speakPhonics(currentLetter);
     });
 
     document.getElementById('gamePlayBtn').addEventListener('click', () => {
