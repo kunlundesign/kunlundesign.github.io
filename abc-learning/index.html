@@ -944,29 +944,63 @@
       speakLetter(letter);
     }
 
-    // Text-to-speech
+    // Use audio files from a reliable CDN for authentic American pronunciation
+    const audioCache = {};
+    
+    // Preload audio for better responsiveness
+    function preloadAudio(letter) {
+      const url = `https://ssl.gstatic.com/dictionary/static/sounds/20200429/${letter.toLowerCase()}--_us_1.mp3`;
+      const audio = new Audio(url);
+      audioCache[letter] = audio;
+      return audio;
+    }
+    
+    // Preload all letters
+    letters.forEach(letter => preloadAudio(letter));
+
+    // Play letter sound using Google Dictionary audio (authentic American pronunciation)
     function speakLetter(letter, callback) {
+      const audio = audioCache[letter] || preloadAudio(letter);
+      audio.currentTime = 0;
+      
+      if (callback) {
+        audio.onended = callback;
+      }
+      
+      audio.play().catch(err => {
+        // Fallback to Web Speech API if audio fails
+        console.log('Audio failed, using TTS fallback');
+        speakLetterFallback(letter, callback);
+      });
+    }
+    
+    // Fallback TTS
+    function speakLetterFallback(letter, callback) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        
         const utterance = new SpeechSynthesisUtterance(letter);
         utterance.lang = 'en-US';
-        utterance.rate = 0.7;
-        utterance.pitch = 1.2;
-        
-        if (callback) {
-          utterance.onend = callback;
-        }
-        
+        utterance.rate = 0.8;
+        if (callback) utterance.onend = callback;
         window.speechSynthesis.speak(utterance);
       }
     }
 
     function speakWord(word) {
+      // Use Web Speech API for words (more reliable for full words)
       if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.lang = 'en-US';
-        utterance.rate = 0.8;
+        utterance.rate = 0.75;
+        
+        // Try to get a good US English voice
+        const voices = speechSynthesis.getVoices();
+        const usVoice = voices.find(v => v.name === 'Samantha') ||
+                        voices.find(v => v.name.includes('Google US English')) ||
+                        voices.find(v => v.lang === 'en-US');
+        if (usVoice) utterance.voice = usVoice;
+        
         window.speechSynthesis.speak(utterance);
       }
     }
