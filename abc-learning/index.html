@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🌈 ABC 字母乐园</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #FFF8E7;
+      --bg-secondary: #FFE4B8;
+      --text-primary: #5D4037;
+      --text-secondary: #8D6E63;
+      --accent-red: #FF6B6B;
+      --accent-orange: #FFA94D;
+      --accent-yellow: #FFE066;
+      --accent-green: #69DB7C;
+      --accent-blue: #74C0FC;
+      --accent-purple: #DA77F2;
+      --accent-pink: #F783AC;
+      --shadow-soft: 0 4px 20px rgba(93, 64, 55, 0.1);
+      --shadow-medium: 0 8px 30px rgba(93, 64, 55, 0.15);
+      --radius-small: 12px;
+      --radius-medium: 20px;
+      --radius-large: 32px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '☁️';
+      position: absolute;
+      font-size: 40px;
+      top: 10px;
+      left: 10%;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .header::after {
+      content: '🌟';
+      position: absolute;
+      font-size: 30px;
+      top: 15px;
+      right: 15%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 700;
+      color: white;
+      text-shadow: 2px 2px 0 rgba(93, 64, 55, 0.2);
+    }
+
+    .header p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 5px;
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+      background: var(--bg-secondary);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-large);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .tab-btn:nth-child(1) { background: var(--accent-blue); color: white; }
+    .tab-btn:nth-child(2) { background: var(--accent-green); color: white; }
+    .tab-btn:nth-child(3) { background: var(--accent-purple); color: white; }
+    .tab-btn:nth-child(4) { background: var(--accent-pink); color: white; }
+
+    .tab-btn:not(.active) {
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
+
+    /* Main Content */
+    .main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Letter Grid */
+    .letter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .letter-card {
+      aspect-ratio: 1;
+      background: white;
+      border-radius: var(--radius-medium);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.3) 100%);
+    }
+
+    .letter-card:hover, .letter-card:active {
+      transform: scale(1.1) rotate(-3deg);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .letter-card.selected {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px var(--accent-orange), var(--shadow-medium);
+    }
+
+    .letter-card .letter {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .letter-card .small-letter {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* Color each letter differently */
+    .letter-card:nth-child(26n+1) .letter { color: var(--accent-red); }
+    .letter-card:nth-child(26n+2) .letter { color: var(--accent-orange); }
+    .letter-card:nth-child(26n+3) .letter { color: var(--accent-yellow); }
+    .letter-card:nth-child(26n+4) .letter { color: var(--accent-green); }
+    .letter-card:nth-child(26n+5) .letter { color: var(--accent-blue); }
+    .letter-card:nth-child(26n+6) .letter { color: var(--accent-purple); }
+    .letter-card:nth-child(26n+7) .letter { color: var(--accent-pink); }
+    .letter-card:nth-child(26n+8) .letter { color: #FF8A65; }
+    .letter-card:nth-child(26n+9) .letter { color: #4DB6AC; }
+    .letter-card:nth-child(26n+10) .letter { color: #7986CB; }
+    .letter-card:nth-child(26n+11) .letter { color: #AED581; }
+    .letter-card:nth-child(26n+12) .letter { color: #F06292; }
+    .letter-card:nth-child(26n+13) .letter { color: #BA68C8; }
+    .letter-card:nth-child(26n+14) .letter { color: var(--accent-red); }
+    .letter-card:nth-child(26n+15) .letter { color: var(--accent-orange); }
+    .letter-card:nth-child(26n+16) .letter { color: var(--accent-green); }
+    .letter-card:nth-child(26n+17) .letter { color: var(--accent-blue); }
+    .letter-card:nth-child(26n+18) .letter { color: var(--accent-purple); }
+    .letter-card:nth-child(26n+19) .letter { color: #FF7043; }
+    .letter-card:nth-child(26n+20) .letter { color: #26A69A; }
+    .letter-card:nth-child(26n+21) .letter { color: #5C6BC0; }
+    .letter-card:nth-child(26n+22) .letter { color: #9CCC65; }
+    .letter-card:nth-child(26n+23) .letter { color: #EC407A; }
+    .letter-card:nth-child(26n+24) .letter { color: #AB47BC; }
+    .letter-card:nth-child(26n+25) .letter { color: var(--accent-red); }
+    .letter-card:nth-child(26n+26) .letter { color: var(--accent-blue); }
+
+    /* Letter Detail Panel */
+    .letter-detail {
+      background: white;
+      border-radius: var(--radius-large);
+      padding: 30px;
+      text-align: center;
+      box-shadow: var(--shadow-medium);
+      margin-bottom: 20px;
+    }
+
+    .detail-letter {
+      font-size: clamp(5rem, 15vw, 10rem);
+      font-weight: 700;
+      color: var(--accent-orange);
+      line-height: 1;
+      text-shadow: 4px 4px 0 var(--accent-yellow);
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .detail-info {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      background: var(--bg-secondary);
+      padding: 15px 25px;
+      border-radius: var(--radius-medium);
+    }
+
+    .info-item .label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .info-item .value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .play-sound-btn {
+      margin-top: 25px;
+      padding: 18px 50px;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+      color: white;
+      border: none;
+      border-radius: var(--radius-large);
+      font-family: inherit;
+      font-size: 1.3rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-sound-btn:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .play-sound-btn:active {
+      transform: scale(0.98);
+    }
+
+    .example-word {
+      margin-top: 25px;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: var(--radius-medium);
+      color: white;
+    }
+
+    .example-word .word {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .example-word .meaning {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    /* Writing Section */
+    .writing-area {
+      background: white;
+      border-radius: var(--radius-large);
+      padding: 20px;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .writing-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .writing-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .writing-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .control-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-small);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn.clear {
+      background: var(--accent-red);
+      color: white;
+    }
+
+    .control-btn.hint {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .canvas-container {
+      position: relative;
+      background: #FFFDF7;
+      border-radius: var(--radius-medium);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .canvas-container canvas {
+      display: block;
+      width: 100%;
+      cursor: crosshair;
+    }
+
+    .guide-letter {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 200px;
+      font-weight: 700;
+      color: rgba(255, 165, 77, 0.15);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Game Section */
+    .game-area {
+      background: white;
+      border-radius: var(--radius-large);
+      padding: 30px;
+      box-shadow: var(--shadow-medium);
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .game-instruction {
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+    }
+
+    .game-display {
+      font-size: clamp(6rem, 20vw, 12rem);
+      font-weight: 700;
+      color: var(--accent-purple);
+      text-shadow: 4px 4px 0 var(--accent-pink);
+      margin: 30px 0;
+      animation: pulse 1s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .game-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .game-option {
+      padding: 20px;
+      background: var(--bg-secondary);
+      border: 3px solid transparent;
+      border-radius: var(--radius-medium);
+      font-family: inherit;
+      font-size: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .game-option:hover {
+      background: var(--accent-yellow);
+      transform: scale(1.05);
+    }
+
+    .game-option.correct {
+      background: var(--accent-green);
+      color: white;
+      animation: correct 0.5s ease;
+    }
+
+    .game-option.wrong {
+      background: var(--accent-red);
+      color: white;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes correct {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .game-score {
+      margin-top: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+      border-radius: var(--radius-medium);
+      color: white;
+    }
+
+    .game-score .score-label {
+      font-size: 1rem;
+    }
+
+    .game-score .score-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .game-feedback {
+      font-size: 3rem;
+      margin: 20px 0;
+      min-height: 60px;
+    }
+
+    .next-btn {
+      padding: 15px 40px;
+      background: var(--accent-green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-large);
+      font-family: inherit;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .next-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Song Section */
+    .song-area {
+      background: white;
+      border-radius: var(--radius-large);
+      padding: 30px;
+      box-shadow: var(--shadow-medium);
+      text-align: center;
+    }
+
+    .song-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .song-visual {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 30px 0;
+    }
+
+    .song-letter {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-small);
+      font-size: 1.3rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .song-letter.active {
+      background: var(--accent-orange);
+      color: white;
+      transform: scale(1.2);
+    }
+
+    .song-letter.sung {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .song-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .song-btn {
+      padding: 18px 35px;
+      border: none;
+      border-radius: var(--radius-large);
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .song-btn.play {
+      background: linear-gradient(135deg, var(--accent-green), #4CAF50);
+      color: white;
+    }
+
+    .song-btn.slow {
+      background: linear-gradient(135deg, var(--accent-blue), #2196F3);
+      color: white;
+    }
+
+    .song-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .song-lyrics {
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-medium);
+      font-size: 1.1rem;
+      line-height: 2;
+    }
+
+    /* Floating decorations */
+    .decoration {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.15;
+      z-index: -1;
+    }
+
+    .decoration.star {
+      font-size: 60px;
+      top: 20%;
+      left: 5%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .decoration.heart {
+      font-size: 50px;
+      top: 60%;
+      right: 5%;
+      animation: float 5s ease-in-out infinite reverse;
+    }
+
+    .decoration.rainbow {
+      font-size: 70px;
+      bottom: 10%;
+      left: 10%;
+      animation: float 7s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .tabs {
+        padding: 15px 10px;
+        gap: 8px;
+      }
+
+      .tab-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+
+      .letter-grid {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+        gap: 8px;
+      }
+
+      .letter-detail {
+        padding: 20px;
+      }
+
+      .game-options {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .song-letter {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Celebration overlay */
+    .celebration {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .celebration.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .celebration-content {
+      background: white;
+      padding: 40px 60px;
+      border-radius: var(--radius-large);
+      text-align: center;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .celebration.show .celebration-content {
+      transform: scale(1);
+    }
+
+    .celebration-emoji {
+      font-size: 5rem;
+      animation: bounce 0.6s ease infinite;
+    }
+
+    .celebration-text {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-orange);
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorations -->
+  <div class="decoration star">⭐</div>
+  <div class="decoration heart">💖</div>
+  <div class="decoration rainbow">🌈</div>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>🌈 ABC 字母乐园</h1>
+    <p>和小朋友一起快乐学字母！</p>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="learn">📚 学字母</button>
+    <button class="tab-btn" data-tab="write">✏️ 写字母</button>
+    <button class="tab-btn" data-tab="game">🎮 小游戏</button>
+    <button class="tab-btn" data-tab="song">🎵 字母歌</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Learn Section -->
+    <section id="learn" class="section active">
+      <div class="letter-grid" id="letterGrid"></div>
+      <div class="letter-detail" id="letterDetail">
+        <div class="detail-letter" id="detailLetter">A</div>
+        <div class="detail-info">
+          <div class="info-item">
+            <div class="label">大写</div>
+            <div class="value" id="upperCase">A</div>
+          </div>
+          <div class="info-item">
+            <div class="label">小写</div>
+            <div class="value" id="lowerCase">a</div>
+          </div>
+          <div class="info-item">
+            <div class="label">第几个</div>
+            <div class="value" id="letterNum">1</div>
+          </div>
+        </div>
+        <button class="play-sound-btn" id="playSoundBtn">
+          🔊 听发音
+        </button>
+        <div class="example-word" id="exampleWord">
+          <div class="word">🍎 Apple</div>
+          <div class="meaning">苹果</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Write Section -->
+    <section id="write" class="section">
+      <div class="writing-area">
+        <div class="writing-header">
+          <div class="writing-title">✏️ 练习写字母：<span id="writeLetter">A</span></div>
+          <div class="writing-controls">
+            <button class="control-btn hint" id="hintBtn">💡 提示</button>
+            <button class="control-btn clear" id="clearBtn">🗑️ 清除</button>
+          </div>
+        </div>
+        <div class="canvas-container">
+          <div class="guide-letter" id="guideLetter">A</div>
+          <canvas id="writeCanvas"></canvas>
+        </div>
+      </div>
+      <div class="letter-grid" id="writeLetterGrid" style="margin-top: 20px;"></div>
+    </section>
+
+    <!-- Game Section -->
+    <section id="game" class="section">
+      <div class="game-area">
+        <div class="game-title">🎯 猜猜这是什么字母？</div>
+        <div class="game-instruction">听发音，选择正确的字母</div>
+        <button class="play-sound-btn" id="gamePlayBtn" style="margin-bottom: 20px;">
+          🔊 再听一次
+        </button>
+        <div class="game-display" id="gameDisplay">?</div>
+        <div class="game-feedback" id="gameFeedback"></div>
+        <div class="game-options" id="gameOptions"></div>
+        <button class="next-btn" id="nextBtn" style="display: none;">下一题 ➡️</button>
+        <div class="game-score">
+          <div class="score-label">得分</div>
+          <div class="score-value" id="scoreValue">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Song Section -->
+    <section id="song" class="section">
+      <div class="song-area">
+        <div class="song-title">🎵 ABC 字母歌</div>
+        <div class="song-visual" id="songVisual"></div>
+        <div class="song-controls">
+          <button class="song-btn play" id="playSongBtn">▶️ 播放</button>
+          <button class="song-btn slow" id="slowSongBtn">🐢 慢速</button>
+        </div>
+        <div class="song-lyrics">
+          A B C D E F G<br>
+          H I J K L M N O P<br>
+          Q R S T U V<br>
+          W X Y and Z<br>
+          Now I know my ABCs<br>
+          Next time won't you sing with me? 🎶
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration" id="celebration">
+    <div class="celebration-content">
+      <div class="celebration-emoji">🎉</div>
+      <div class="celebration-text">太棒了！</div>
+    </div>
+  </div>
+
+  <script>
+    // Letter data with examples
+    const letterData = {
+      A: { word: 'Apple', meaning: '苹果', emoji: '🍎' },
+      B: { word: 'Ball', meaning: '球', emoji: '⚽' },
+      C: { word: 'Cat', meaning: '猫', emoji: '🐱' },
+      D: { word: 'Dog', meaning: '狗', emoji: '🐕' },
+      E: { word: 'Elephant', meaning: '大象', emoji: '🐘' },
+      F: { word: 'Fish', meaning: '鱼', emoji: '🐟' },
+      G: { word: 'Grapes', meaning: '葡萄', emoji: '🍇' },
+      H: { word: 'House', meaning: '房子', emoji: '🏠' },
+      I: { word: 'Ice cream', meaning: '冰淇淋', emoji: '🍦' },
+      J: { word: 'Juice', meaning: '果汁', emoji: '🧃' },
+      K: { word: 'Kite', meaning: '风筝', emoji: '🪁' },
+      L: { word: 'Lion', meaning: '狮子', emoji: '🦁' },
+      M: { word: 'Moon', meaning: '月亮', emoji: '🌙' },
+      N: { word: 'Nest', meaning: '鸟窝', emoji: '🪺' },
+      O: { word: 'Orange', meaning: '橙子', emoji: '🍊' },
+      P: { word: 'Panda', meaning: '熊猫', emoji: '🐼' },
+      Q: { word: 'Queen', meaning: '女王', emoji: '👸' },
+      R: { word: 'Rainbow', meaning: '彩虹', emoji: '🌈' },
+      S: { word: 'Sun', meaning: '太阳', emoji: '☀️' },
+      T: { word: 'Tiger', meaning: '老虎', emoji: '🐯' },
+      U: { word: 'Umbrella', meaning: '雨伞', emoji: '☂️' },
+      V: { word: 'Violin', meaning: '小提琴', emoji: '🎻' },
+      W: { word: 'Watermelon', meaning: '西瓜', emoji: '🍉' },
+      X: { word: 'Xylophone', meaning: '木琴', emoji: '🎹' },
+      Y: { word: 'Yellow', meaning: '黄色', emoji: '💛' },
+      Z: { word: 'Zebra', meaning: '斑马', emoji: '🦓' }
+    };
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    let currentLetter = 'A';
+    let gameScore = 0;
+    let gameLetter = '';
+    let isPlaying = false;
+
+    // Initialize letter grids
+    function initLetterGrids() {
+      const learnGrid = document.getElementById('letterGrid');
+      const writeGrid = document.getElementById('writeLetterGrid');
+      
+      letters.forEach(letter => {
+        // Learn grid
+        const card = document.createElement('div');
+        card.className = 'letter-card';
+        card.innerHTML = `
+          <span class="letter">${letter}</span>
+          <span class="small-letter">${letter.toLowerCase()}</span>
+        `;
+        card.addEventListener('click', () => selectLetter(letter));
+        learnGrid.appendChild(card);
+
+        // Write grid
+        const writeCard = card.cloneNode(true);
+        writeCard.addEventListener('click', () => {
+          currentLetter = letter;
+          updateWriteSection();
+          writeCard.parentElement.querySelectorAll('.letter-card').forEach(c => c.classList.remove('selected'));
+          writeCard.classList.add('selected');
+        });
+        writeGrid.appendChild(writeCard);
+      });
+
+      // Select first letter by default
+      learnGrid.querySelector('.letter-card').classList.add('selected');
+      writeGrid.querySelector('.letter-card').classList.add('selected');
+    }
+
+    // Initialize song visual
+    function initSongVisual() {
+      const songVisual = document.getElementById('songVisual');
+      letters.forEach(letter => {
+        const el = document.createElement('div');
+        el.className = 'song-letter';
+        el.textContent = letter;
+        el.dataset.letter = letter;
+        songVisual.appendChild(el);
+      });
+    }
+
+    // Select letter
+    function selectLetter(letter) {
+      currentLetter = letter;
+      const data = letterData[letter];
+      const index = letters.indexOf(letter) + 1;
+
+      document.getElementById('detailLetter').textContent = letter;
+      document.getElementById('upperCase').textContent = letter;
+      document.getElementById('lowerCase').textContent = letter.toLowerCase();
+      document.getElementById('letterNum').textContent = index;
+      document.getElementById('exampleWord').innerHTML = `
+        <div class="word">${data.emoji} ${data.word}</div>
+        <div class="meaning">${data.meaning}</div>
+      `;
+
+      // Update selected state
+      document.querySelectorAll('#letterGrid .letter-card').forEach((card, i) => {
+        card.classList.toggle('selected', letters[i] === letter);
+      });
+
+      // Play sound
+      speakLetter(letter);
+    }
+
+    // Text-to-speech
+    function speakLetter(letter, callback) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(letter);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.7;
+        utterance.pitch = 1.2;
+        
+        if (callback) {
+          utterance.onend = callback;
+        }
+        
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Writing canvas
+    function initCanvas() {
+      const canvas = document.getElementById('writeCanvas');
+      const container = canvas.parentElement;
+      const ctx = canvas.getContext('2d');
+      
+      function resizeCanvas() {
+        const rect = container.getBoundingClientRect();
+        const size = Math.min(rect.width, 400);
+        canvas.width = size;
+        canvas.height = size;
+        canvas.style.height = size + 'px';
+        ctx.strokeStyle = '#5D4037';
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+      
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        if (e.touches) {
+          return {
+            x: (e.touches[0].clientX - rect.left) * scaleX,
+            y: (e.touches[0].clientY - rect.top) * scaleY
+          };
+        }
+        return {
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top) * scaleY
+        };
+      }
+
+      function startDrawing(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function draw(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+        
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+      
+      canvas.addEventListener('touchstart', startDrawing, { passive: false });
+      canvas.addEventListener('touchmove', draw, { passive: false });
+      canvas.addEventListener('touchend', stopDrawing);
+
+      // Clear button
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
+
+      // Hint button
+      document.getElementById('hintBtn').addEventListener('click', () => {
+        const guide = document.getElementById('guideLetter');
+        guide.style.opacity = guide.style.opacity === '1' ? '0' : '1';
+        guide.style.color = 'rgba(255, 165, 77, 0.3)';
+        setTimeout(() => {
+          guide.style.opacity = '0';
+          guide.style.color = 'rgba(255, 165, 77, 0.15)';
+        }, 2000);
+      });
+    }
+
+    function updateWriteSection() {
+      document.getElementById('writeLetter').textContent = currentLetter;
+      document.getElementById('guideLetter').textContent = currentLetter;
+      // Clear canvas
+      const canvas = document.getElementById('writeCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Game logic
+    function startGame() {
+      const available = letters.filter(l => l !== gameLetter);
+      gameLetter = available[Math.floor(Math.random() * available.length)];
+      
+      document.getElementById('gameDisplay').textContent = '?';
+      document.getElementById('gameFeedback').textContent = '';
+      document.getElementById('nextBtn').style.display = 'none';
+      
+      // Generate options
+      const options = [gameLetter];
+      while (options.length < 4) {
+        const random = letters[Math.floor(Math.random() * letters.length)];
+        if (!options.includes(random)) {
+          options.push(random);
+        }
+      }
+      
+      // Shuffle
+      options.sort(() => Math.random() - 0.5);
+      
+      const optionsEl = document.getElementById('gameOptions');
+      optionsEl.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'game-option';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => checkAnswer(opt, btn));
+        optionsEl.appendChild(btn);
+      });
+      
+      // Play sound after a short delay
+      setTimeout(() => speakLetter(gameLetter), 500);
+    }
+
+    function checkAnswer(answer, btn) {
+      const buttons = document.querySelectorAll('.game-option');
+      buttons.forEach(b => b.disabled = true);
+      
+      if (answer === gameLetter) {
+        btn.classList.add('correct');
+        gameScore += 10;
+        document.getElementById('gameFeedback').textContent = '🎉 太棒了！';
+        document.getElementById('gameDisplay').textContent = gameLetter;
+        showCelebration();
+      } else {
+        btn.classList.add('wrong');
+        document.getElementById('gameFeedback').textContent = '😅 再试试！正确答案是 ' + gameLetter;
+        document.getElementById('gameDisplay').textContent = gameLetter;
+        // Show correct answer
+        buttons.forEach(b => {
+          if (b.textContent === gameLetter) {
+            b.classList.add('correct');
+          }
+        });
+      }
+      
+      document.getElementById('scoreValue').textContent = gameScore;
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    function showCelebration() {
+      const cel = document.getElementById('celebration');
+      cel.classList.add('show');
+      setTimeout(() => cel.classList.remove('show'), 1500);
+    }
+
+    // ABC Song
+    function playSong(slow = false) {
+      if (isPlaying) {
+        window.speechSynthesis.cancel();
+        isPlaying = false;
+        document.querySelectorAll('.song-letter').forEach(el => {
+          el.classList.remove('active', 'sung');
+        });
+        return;
+      }
+
+      isPlaying = true;
+      const songLetters = document.querySelectorAll('.song-letter');
+      let index = 0;
+      const delay = slow ? 800 : 400;
+
+      function playNext() {
+        if (index >= letters.length || !isPlaying) {
+          isPlaying = false;
+          songLetters.forEach(el => el.classList.remove('active'));
+          return;
+        }
+
+        songLetters.forEach(el => el.classList.remove('active'));
+        songLetters[index].classList.add('active', 'sung');
+        
+        speakLetter(letters[index], () => {
+          index++;
+          setTimeout(playNext, delay);
+        });
+      }
+
+      // Reset
+      songLetters.forEach(el => el.classList.remove('sung'));
+      playNext();
+    }
+
+    // Tab navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        
+        if (tab === 'game') {
+          startGame();
+        }
+        if (tab === 'write') {
+          updateWriteSection();
+        }
+      });
+    });
+
+    // Event listeners
+    document.getElementById('playSoundBtn').addEventListener('click', () => {
+      speakLetter(currentLetter);
+      setTimeout(() => {
+        speakWord(letterData[currentLetter].word);
+      }, 800);
+    });
+
+    document.getElementById('gamePlayBtn').addEventListener('click', () => {
+      speakLetter(gameLetter);
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', startGame);
+
+    document.getElementById('playSongBtn').addEventListener('click', () => playSong(false));
+    document.getElementById('slowSongBtn').addEventListener('click', () => playSong(true));
+
+    // Initialize
+    initLetterGrids();
+    initSongVisual();
+    initCanvas();
+    selectLetter('A');
+  </script>
+</body>
+</html>
