@@ -944,69 +944,36 @@
       speakLetter(letter);
     }
 
-    // Load ResponsiveVoice for high-quality American English pronunciation
-    const rvScript = document.createElement('script');
-    rvScript.src = 'https://code.responsivevoice.org/responsivevoice.js?key=vHLeNbKp';
-    rvScript.async = true;
-    document.head.appendChild(rvScript);
+    // Preload audio files (Google TTS - authentic American English)
+    const audioCache = {};
+    const audioBase = 'audio/';
     
-    let rvReady = false;
-    rvScript.onload = () => {
-      rvReady = true;
-      console.log('ResponsiveVoice loaded');
-    };
+    letters.forEach(letter => {
+      const audio = new Audio(audioBase + letter + '.mp3');
+      audio.preload = 'auto';
+      audioCache[letter] = audio;
+    });
 
-    // Letter names as they should be pronounced
-    const letterNames = {
-      A: 'A', B: 'B', C: 'C', D: 'D', E: 'E',
-      F: 'F', G: 'G', H: 'H', I: 'I', J: 'J',
-      K: 'K', L: 'L', M: 'M', N: 'N', O: 'O',
-      P: 'P', Q: 'Q', R: 'R', S: 'S', T: 'T',
-      U: 'U', V: 'V', W: 'W', X: 'X', Y: 'Y', Z: 'Z'
-    };
-
-    // Speak letter with ResponsiveVoice (American English)
+    // Speak letter using preloaded audio
     function speakLetter(letter, callback) {
-      if (rvReady && typeof responsiveVoice !== 'undefined') {
-        responsiveVoice.cancel();
-        responsiveVoice.speak(letter, 'US English Female', {
-          pitch: 1,
-          rate: 0.9,
-          volume: 1,
-          onend: callback
-        });
-      } else {
-        // Fallback to Web Speech API
-        speakLetterFallback(letter, callback);
+      const audio = audioCache[letter];
+      if (audio) {
+        audio.currentTime = 0;
+        if (callback) {
+          audio.onended = callback;
+        }
+        audio.play().catch(e => console.log('Audio play failed:', e));
       }
     }
-    
-    // Fallback using Web Speech API
-    function speakLetterFallback(letter, callback) {
+
+    // Speak word using Web Speech API
+    function speakWord(word) {
       if (!('speechSynthesis' in window)) return;
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(letter);
+      const utterance = new SpeechSynthesisUtterance(word);
       utterance.lang = 'en-US';
-      utterance.rate = 0.85;
-      if (callback) utterance.onend = callback;
+      utterance.rate = 0.8;
       speechSynthesis.speak(utterance);
-    }
-
-    // Speak word
-    function speakWord(word) {
-      if (rvReady && typeof responsiveVoice !== 'undefined') {
-        responsiveVoice.speak(word, 'US English Female', {
-          pitch: 1,
-          rate: 0.85,
-          volume: 1
-        });
-      } else if ('speechSynthesis' in window) {
-        speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.8;
-        speechSynthesis.speak(utterance);
-      }
     }
 
     // Writing canvas
