@@ -190,11 +190,6 @@
     <div class="pixel-owl" id="owl"></div>
     <div class="owl-hitbox" id="owlHitbox"></div>
   </div>
-  
-  <div class="text">
-    <h1 id="title">HOOT HOOT</h1>
-    <p id="subtitle">click the owl</p>
-  </div>
 
   <script>
     // 星星
@@ -237,12 +232,8 @@
       if (clicks <= responses.length) {
         const r = responses[clicks - 1];
         speech.textContent = r.text;
-        title.textContent = r.title;
-        subtitle.textContent = r.sub;
       } else {
         speech.textContent = angry[Math.floor(Math.random() * angry.length)];
-        title.textContent = ['💢','😡','🤬','💀','😫'][Math.floor(Math.random()*5)];
-        subtitle.textContent = `#${clicks} ...why?`;
         owl.classList.add('angry');
         setTimeout(() => owl.classList.remove('angry'), 400);
       }

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>孔明一局定三国 | 2分钟军师挑战</title>
+  <meta name="description" content="不用长读，2分钟扮演诸葛亮：六次抉择，一局定三国。">
+  <meta property="og:title" content="孔明一局定三国 | 2分钟军师挑战">
+  <meta property="og:description" content="别读长文，直接救蜀。六次抉择，一局见军师成色。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kunlundesign.github.io/sanguozhi-kongming-blitz/">
+  <meta property="og:image" content="https://kunlundesign.github.io/sanguozhi-kongming-blitz/images/scene-chibi.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#090807">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KHG3NZZ7LH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KHG3NZZ7LH');
+  </script>
+  <style>
+    :root {
+      --ink: #f6efe2;
+      --muted: #c8b899;
+      --dim: #88765d;
+      --gold: #f2c765;
+      --red: #d84c3f;
+      --cyan: #58c5c8;
+      --green: #75c46b;
+      --violet: #a879d8;
+      --panel: rgba(18, 15, 12, 0.78);
+      --line: rgba(242, 199, 101, 0.22);
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #090807;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    button, a { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .game {
+      position: relative;
+      min-height: 100vh;
+      isolation: isolate;
+      background: #090807;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      background-image: var(--scene-img);
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.04);
+      transition: background-image 480ms ease, filter 480ms ease, transform 1200ms ease;
+      z-index: -3;
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 26% 20%, rgba(242, 199, 101, 0.18), transparent 30%),
+        radial-gradient(circle at 80% 16%, rgba(88, 197, 200, 0.12), transparent 26%),
+        linear-gradient(100deg, rgba(8, 6, 5, 0.94) 0%, rgba(8, 6, 5, 0.68) 42%, rgba(8, 6, 5, 0.55) 100%),
+        linear-gradient(0deg, rgba(8, 6, 5, 0.92) 0%, transparent 45%);
+    }
+
+    .embers {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .ember {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 99px;
+      background: rgba(242, 199, 101, 0.85);
+      box-shadow: 0 0 16px rgba(242, 199, 101, 0.8);
+      animation: drift linear infinite;
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 105vh, 0); opacity: 0; }
+      10% { opacity: 1; }
+      to { transform: translate3d(var(--x), -12vh, 0); opacity: 0; }
+    }
+
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px clamp(16px, 4vw, 42px);
+      background: linear-gradient(180deg, rgba(9, 8, 7, 0.86), rgba(9, 8, 7, 0));
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .seal {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(216, 76, 63, 0.7);
+      color: #ffddd5;
+      background: rgba(216, 76, 63, 0.18);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: clamp(18px, 2.4vw, 30px);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .hud-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: rgba(12, 10, 8, 0.58);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      backdrop-filter: blur(10px);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .icon-btn:hover { transform: translateY(-1px); border-color: rgba(242, 199, 101, 0.58); background: rgba(242, 199, 101, 0.12); }
+
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(300px, 440px) minmax(340px, 1fr);
+      gap: clamp(18px, 4vw, 58px);
+      align-items: end;
+      padding: 104px clamp(16px, 4vw, 52px) 34px;
+    }
+
+    .commander {
+      align-self: stretch;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 420px;
+      position: relative;
+    }
+
+    .portrait {
+      width: min(86vw, 390px);
+      aspect-ratio: 0.74;
+      object-fit: cover;
+      object-position: center top;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(242, 199, 101, 0.22);
+      filter: saturate(1.08) contrast(1.04);
+    }
+
+    .rank-chip {
+      position: absolute;
+      left: 22px;
+      bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(9, 8, 7, 0.78);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+    }
+
+    .rank-chip strong { color: var(--gold); font-size: 20px; }
+    .rank-chip span { color: var(--muted); font-size: 12px; }
+
+    .board {
+      align-self: end;
+      max-width: 880px;
+    }
+
+    .meters {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .meter {
+      background: rgba(12, 10, 8, 0.62);
+      border: 1px solid var(--line);
+      padding: 10px;
+      min-width: 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .meter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .meter b { color: var(--ink); font-size: 15px; }
+    .bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .fill {
+      width: var(--value);
+      height: 100%;
+      background: var(--color);
+      box-shadow: 0 0 18px var(--color);
+      transition: width 420ms ease;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      padding: clamp(18px, 3vw, 30px);
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .dot {
+      height: 4px;
+      flex: 1;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .dot.done { background: var(--gold); box-shadow: 0 0 16px rgba(242, 199, 101, 0.65); }
+
+    .kicker {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    .title {
+      font-size: clamp(32px, 6vw, 70px);
+      line-height: 0.96;
+      letter-spacing: 0;
+      max-width: 780px;
+      margin-bottom: 18px;
+    }
+
+    .scene-title {
+      font-size: clamp(28px, 4.6vw, 54px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      margin-bottom: 12px;
+    }
+
+    .brief {
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.65;
+      max-width: 720px;
+    }
+
+    .impact {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .impact div {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.055);
+      padding: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .impact b {
+      display: block;
+      color: var(--ink);
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .choice {
+      position: relative;
+      min-height: 138px;
+      text-align: left;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 16px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .choice::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 220ms ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--accent) 70%, white 30%);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .choice:hover::after { transform: scaleX(1); }
+
+    .choice strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .choice span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tags {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 4px 7px;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.26);
+      border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+      font-size: 11px;
+    }
+
+    .feedback {
+      min-height: 36px;
+      margin-top: 14px;
+      color: var(--gold);
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .primary {
+      border: 0;
+      color: #21160b;
+      background: var(--gold);
+      padding: 14px 20px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 14px 38px rgba(242, 199, 101, 0.24);
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .primary:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+    .ghost {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 13px 18px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .start-actions, .end-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .result.active { display: block; }
+
+    .sharebox {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+    }
+
+    .modal.active { display: grid; }
+
+    .pay-card {
+      width: min(520px, 100%);
+      background: #11100e;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      color: var(--ink);
+    }
+
+    .pay-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .pay-card h2 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .pay-card p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .qr {
+      width: min(100%, 320px);
+      display: block;
+      margin: 18px auto;
+      border: 8px solid #fff;
+      background: #fff;
+    }
+
+    .close {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(12px);
+      color: #21160b;
+      background: var(--gold);
+      padding: 11px 14px;
+      font-weight: 800;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: 80;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 880px) {
+      body { overflow: auto; }
+      .wrap {
+        min-height: 100svh;
+        grid-template-columns: 1fr;
+        align-items: end;
+        padding-top: 94px;
+      }
+
+      .commander {
+        min-height: 132px;
+        align-items: end;
+        justify-content: flex-start;
+      }
+
+      .portrait {
+        width: 96px;
+        height: 128px;
+        aspect-ratio: auto;
+      }
+
+      .rank-chip {
+        left: 80px;
+        bottom: 14px;
+      }
+
+      .meters { grid-template-columns: repeat(2, 1fr); }
+      .choices { grid-template-columns: 1fr; }
+      .choice { min-height: 116px; }
+      .brand-subtitle { display: none; }
+    }
+
+    @media (max-width: 520px) {
+      .hud { padding: 12px; }
+      .seal, .icon-btn { width: 36px; height: 36px; }
+      .brand-title { font-size: 17px; }
+      .wrap { padding: 82px 12px 18px; gap: 12px; }
+      .card { padding: 16px; }
+      .scene-title { font-size: 29px; }
+      .title { font-size: 36px; }
+      .meter { padding: 8px; }
+      .meter-row { font-size: 11px; }
+      .impact { grid-template-columns: repeat(3, 1fr); margin: 14px 0; }
+      .impact div { padding: 8px; font-size: 11px; }
+      .impact b { font-size: 18px; }
+      .choice strong { font-size: 17px; }
+      .tags { position: static; margin-top: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <div class="scene" id="scene"></div>
+    <div class="embers" id="embers"></div>
+
+    <header class="hud">
+      <div class="brand">
+        <div class="seal">令</div>
+        <div>
+          <div class="brand-title">孔明一局定三国</div>
+          <div class="brand-subtitle">2分钟军师挑战 · 六次抉择见真章</div>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="icon-btn" id="soundBtn" aria-label="音乐开关" title="音乐开关">♪</button>
+        <button class="icon-btn" id="restartBtn" aria-label="重开" title="重开">↻</button>
+      </div>
+    </header>
+
+    <section class="wrap">
+      <aside class="commander">
+        <img class="portrait" src="images/zhugeliang.jpg" alt="诸葛亮">
+        <div class="rank-chip">
+          <strong id="liveRank">S</strong>
+          <span id="liveRankText">军师评级</span>
+        </div>
+      </aside>
+
+      <section class="board">
+        <div class="meters" id="meters"></div>
+
+        <article class="card" id="startCard">
+          <div class="kicker">Kongming Blitz</div>
+          <h1 class="title">别读长文，<br>直接救蜀。</h1>
+          <p class="brief">你只有六次判断。每次选择都会改变军心、粮草、天命与健康。不是每条路都能赢，乱点也会输。</p>
+          <div class="impact">
+            <div><b>6</b>个高压局</div>
+            <div><b>120s</b>平均通关</div>
+            <div><b>5</b>种真实结局</div>
+          </div>
+          <div class="start-actions">
+            <button class="primary" id="startBtn">开局：我来执羽扇</button>
+            <button class="ghost" id="payIntroBtn">支持作者 / 解锁彩蛋</button>
+          </div>
+        </article>
+
+        <article class="card hidden" id="playCard">
+          <div class="progress">
+            <span id="roundText">第 1 / 6 局</span>
+            <div class="dots" id="dots"></div>
+          </div>
+          <div class="kicker" id="place"></div>
+          <h2 class="scene-title" id="sceneTitle"></h2>
+          <p class="brief" id="brief"></p>
+          <div class="choices" id="choices"></div>
+          <div class="feedback" id="feedback"></div>
+        </article>
+
+        <article class="card result" id="resultCard">
+          <div class="kicker" id="resultKicker">终局判定</div>
+          <h2 class="scene-title" id="resultTitle"></h2>
+          <p class="brief" id="resultBrief"></p>
+          <div class="impact" id="resultStats"></div>
+          <div class="sharebox" id="shareText"></div>
+          <div class="end-actions">
+            <button class="primary" id="copyBtn">复制战报</button>
+            <button class="ghost" id="payBtn">打赏解锁隐藏军报</button>
+            <button class="ghost" id="againBtn">再来一局</button>
+            <a class="ghost" href="../sanguozhi-experiments/zhuge-life.html">返回长篇《孔明传》</a>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <section class="modal" id="payModal" aria-modal="true" role="dialog">
+    <div class="pay-card">
+      <div class="pay-head">
+        <div>
+          <h2>支持这个实验</h2>
+          <p>静态站不能自动验单，但这个按钮会记录“付费意愿”事件。你可以用它测试：多少人愿意为了隐藏结局、作者更新、下一章而扫码。</p>
+        </div>
+        <button class="close" id="closePay" aria-label="关闭">×</button>
+      </div>
+      <img class="qr" src="images/wechat-pay.jpg" alt="微信支付收款码">
+      <div class="end-actions">
+        <button class="primary" id="unlockBtn">我已支持，解锁隐藏军报</button>
+        <button class="ghost" id="laterBtn">稍后再说</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast">已复制</div>
+  <audio id="audio" loop preload="none" src="audio/bgm.mp3"></audio>
+
+  <script>
+    const clamp = (n) => Math.max(0, Math.min(100, n));
+    const $ = (id) => document.getElementById(id);
+
+    const colors = {
+      morale: "var(--red)",
+      grain: "var(--gold)",
+      fate: "var(--violet)",
+      health: "var(--green)"
+    };
+
+    const labels = {
+      morale: "军心",
+      grain: "粮草",
+      fate: "天命",
+      health: "健康"
+    };
+
+    const rounds = [
+      {
+        place: "隆中 · 出山前夜",
+        title: "刘备第三次来了。你先问什么？",
+        brief: "这不是面试，是下注。主公的答案会决定你的一生押给谁。",
+        bg: "images/scene-longzhong.png",
+        choices: [
+          { text: "问他愿为百姓输到何处", sub: "先验仁心，再谈天下。", accent: "var(--green)", delta: { morale: 10, fate: 8, health: 2 }, flash: "刘备沉默良久：愿输到无人再流离。" },
+          { text: "直接献《隆中对》", sub: "先抢节奏，定战略。", accent: "var(--gold)", delta: { grain: 8, fate: 12, health: -3 }, flash: "天下三分的图，在草庐里亮了起来。" },
+          { text: "婉拒，继续观望", sub: "保全自己，也保全可能。", accent: "var(--cyan)", delta: { health: 12, morale: -14, fate: -10 }, flash: "你保住了清静，却错过了最燃的乱世入场券。" }
+        ]
+      },
+      {
+        place: "赤壁 · 东风之前",
+        title: "曹军压境，东吴还在摇摆。",
+        brief: "一句话要让孙权拔剑，也要让周瑜不翻脸。",
+        bg: "images/scene-chibi.png",
+        choices: [
+          { text: "激孙权：江东可降，公不可降", sub: "把面子点成火。", accent: "var(--red)", delta: { morale: 16, fate: 6, health: -4 }, flash: "孙权拔剑斩案，江东从此不能退。" },
+          { text: "递收益表：赢则鼎足，降则为臣", sub: "成年人看利害。", accent: "var(--gold)", delta: { grain: 15, fate: 4 }, flash: "账算明白了，联盟比热血更牢。" },
+          { text: "把功劳让给周瑜", sub: "不争一时，借他的锋芒。", accent: "var(--cyan)", delta: { morale: 6, grain: 8, health: 5 }, flash: "周郎笑了。聪明人最爱不抢戏的聪明人。" }
+        ]
+      },
+      {
+        place: "白帝城 · 托孤",
+        title: "刘备说：君可自取。",
+        brief: "这句话可能是真心，也可能是帝王最后的测试。",
+        bg: "images/scene-baidi.png",
+        choices: [
+          { text: "伏地痛哭，誓死辅佐后主", sub: "忠诚立刻满格。", accent: "var(--green)", delta: { morale: 14, fate: 8, health: -6 }, flash: "殿内所有人都知道，蜀汉还有脊梁。" },
+          { text: "请求制度分权，防止幼主误国", sub: "忠诚之外，要有机制。", accent: "var(--gold)", delta: { grain: 10, fate: 12, morale: -2 }, flash: "你把悲伤压成了制度，后人未必懂。" },
+          { text: "暗握兵权，必要时摄政", sub: "先保国家，再保名声。", accent: "var(--violet)", delta: { fate: 18, morale: -12, health: -4 }, flash: "历史线开始偏移：你离圣人远了，离胜利近了。" }
+        ]
+      },
+      {
+        place: "街亭 · 马谡败报",
+        title: "北伐第一刀，断在自己人手里。",
+        brief: "这一局不处理情绪，只处理秩序。",
+        bg: "images/scene-beifa.png",
+        choices: [
+          { text: "挥泪斩马谡", sub: "军法必须比友情硬。", accent: "var(--red)", delta: { morale: 13, fate: 6, health: -10 }, flash: "泪是真的，刀也是真的。军中再无人敢轻令。" },
+          { text: "贬为庶民，留其复盘", sub: "人才很贵，错误更贵。", accent: "var(--cyan)", delta: { grain: 8, health: 5, morale: -8 }, flash: "诸将不服，但你得到了一份血写的失败样本。" },
+          { text: "亲自揽责，公开降级", sub: "把锅背在自己身上。", accent: "var(--gold)", delta: { morale: 5, fate: 10, health: -4 }, flash: "你降了自己的位，却升了全军的心。" }
+        ]
+      },
+      {
+        place: "祁山 · 粮道将断",
+        title: "司马懿不出战，你的粮快没了。",
+        brief: "敌人不犯错时，最危险的是自己急。",
+        bg: "images/scene-wuzhangyuan.png",
+        choices: [
+          { text: "木牛流马，稳住补给", sub: "工程赢过豪赌。", accent: "var(--gold)", delta: { grain: 20, health: -5 }, flash: "蜀道再次吞吐粮车，慢，但活。" },
+          { text: "送女装激司马懿出战", sub: "心理战，赌他破防。", accent: "var(--red)", delta: { morale: 10, fate: 12, grain: -8 }, flash: "魏营大笑，司马懿不笑。他更稳了。" },
+          { text: "退回汉中，养兵一年", sub: "难看的选择，常常正确。", accent: "var(--green)", delta: { health: 14, grain: 8, morale: -10 }, flash: "你没有赢下今天，但可能赢下明年。" }
+        ]
+      },
+      {
+        place: "五丈原 · 星夜",
+        title: "你的身体已经报警。最后一令？",
+        brief: "真正的终局不是能不能死撑，而是把未来交给怎样的系统。",
+        bg: "images/scene-victory.png",
+        choices: [
+          { text: "点七星灯，赌命续局", sub: "燃到最后一刻。", accent: "var(--violet)", delta: { fate: 20, health: -22, morale: 8 }, flash: "星火暴涨。你把寿命换成了又一次机会。" },
+          { text: "交棒姜维，撤军保国", sub: "赢不了天下，也别输掉蜀。", accent: "var(--green)", delta: { health: 8, grain: 10, fate: -4 }, flash: "营帐安静下来。活着的国家，才有下一章。" },
+          { text: "公开北伐账本，逼后主改革", sub: "把谜底留给制度。", accent: "var(--gold)", delta: { grain: 8, fate: 16, morale: -4 }, flash: "这不是遗言，是一颗迟到的雷。" }
+        ]
+      }
+    ];
+
+    const endings = [
+      {
+        id: "han",
+        test: (s) => s.fate >= 78 && s.morale >= 62 && s.grain >= 52,
+        rank: "SSS",
+        title: "汉室再兴线",
+        brief: "你没有靠奇迹赢，而是用联盟、粮道和制度把奇迹拆成步骤。历史被你硬生生拧开一道缝。",
+        bg: "images/ending-zhongxing.jpg"
+      },
+      {
+        id: "legend",
+        test: (s) => s.fate >= 70 && s.health < 35,
+        rank: "S",
+        title: "星落神话线",
+        brief: "你把自己烧成了蜀汉最后的火。玩家会记得你赢过几局，历史会记得你太累了。",
+        bg: "images/ending-heroic.jpg"
+      },
+      {
+        id: "stable",
+        test: (s) => s.grain >= 66 && s.health >= 48,
+        rank: "A",
+        title: "稳国长线",
+        brief: "你少了惊天逆转，却保住了蜀汉的体力。不是最炸的结局，但这是管理者会羡慕的结局。",
+        bg: "images/ending-retire.jpg"
+      },
+      {
+        id: "tragic",
+        test: (s) => s.morale >= 72 && s.grain < 45,
+        rank: "B",
+        title: "热血断粮线",
+        brief: "军心被你点燃，粮草却没跟上。所有人都愿意冲，问题是明天吃什么。",
+        bg: "images/ending-wuzhang.jpg"
+      },
+      {
+        id: "fall",
+        test: () => true,
+        rank: "C",
+        title: "蜀道渐暗线",
+        brief: "你的选择并非无效，只是不够连贯。三国不是答题，每一次爽快都要有人买单。",
+        bg: "images/ending-shufall.jpg"
+      }
+    ];
+
+    const state = {
+      started: false,
+      round: 0,
+      score: { morale: 50, grain: 50, fate: 50, health: 72 },
+      log: [],
+      paid: localStorage.getItem("kongming_blitz_paid") === "1",
+      audio: false
+    };
+
+    function track(name, params = {}) {
+      if (window.gtag) gtag("event", name, params);
+    }
+
+    function makeEmbers() {
+      const box = $("embers");
+      box.innerHTML = "";
+      for (let i = 0; i < 38; i++) {
+        const e = document.createElement("i");
+        e.className = "ember";
+        e.style.left = Math.random() * 100 + "%";
+        e.style.setProperty("--x", `${(Math.random() - 0.5) * 220}px`);
+        e.style.animationDuration = `${8 + Math.random() * 12}s`;
+        e.style.animationDelay = `${Math.random() * -16}s`;
+        box.appendChild(e);
+      }
+    }
+
+    function renderMeters() {
+      $("meters").innerHTML = Object.keys(labels).map((key) => `
+        <div class="meter">
+          <div class="meter-row"><span>${labels[key]}</span><b>${state.score[key]}</b></div>
+          <div class="bar"><div class="fill" style="--value:${state.score[key]}%;--color:${colors[key]}"></div></div>
+        </div>
+      `).join("");
+
+      const avg = Math.round((state.score.morale + state.score.grain + state.score.fate + state.score.health) / 4);
+      $("liveRank").textContent = avg >= 78 ? "SS" : avg >= 66 ? "S" : avg >= 54 ? "A" : avg >= 42 ? "B" : "C";
+      $("liveRankText").textContent = `综合 ${avg}`;
+    }
+
+    function renderDots() {
+      $("dots").innerHTML = rounds.map((_, i) => `<i class="dot ${i <= state.round ? "done" : ""}"></i>`).join("");
+    }
+
+    function setScene(bg) {
+      $("scene").style.setProperty("--scene-img", `url("${bg}")`);
+    }
+
+    function startGame() {
+      state.started = true;
+      state.round = 0;
+      state.score = { morale: 50, grain: 50, fate: 50, health: 72 };
+      state.log = [];
+      $("startCard").classList.add("hidden");
+      $("resultCard").classList.remove("active");
+      $("playCard").classList.remove("hidden");
+      track("kongming_blitz_start");
+      renderRound();
+    }
+
+    function renderRound() {
+      const round = rounds[state.round];
+      setScene(round.bg);
+      renderMeters();
+      renderDots();
+      $("roundText").textContent = `第 ${state.round + 1} / ${rounds.length} 局`;
+      $("place").textContent = round.place;
+      $("sceneTitle").textContent = round.title;
+      $("brief").textContent = round.brief;
+      $("feedback").classList.remove("show");
+      $("feedback").textContent = "";
+      $("choices").innerHTML = round.choices.map((choice, i) => {
+        const tags = Object.entries(choice.delta).map(([key, value]) => {
+          const sign = value > 0 ? "+" : "";
+          return `<span class="tag">${labels[key]} ${sign}${value}</span>`;
+        }).join("");
+        return `
+          <button class="choice" style="--accent:${choice.accent}" data-choice="${i}">
+            <strong>${choice.text}</strong>
+            <span>${choice.sub}</span>
+            <div class="tags">${tags}</div>
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".choice").forEach((button) => {
+        button.addEventListener("click", () => choose(Number(button.dataset.choice)), { once: true });
+      });
+    }
+
+    function choose(index) {
+      const round = rounds[state.round];
+      const choice = round.choices[index];
+      document.querySelectorAll(".choice").forEach((btn) => btn.disabled = true);
+
+      Object.entries(choice.delta).forEach(([key, value]) => {
+        state.score[key] = clamp(state.score[key] + value);
+      });
+
+      state.log.push({
+        round: state.round + 1,
+        place: round.place,
+        choice: choice.text,
+        delta: choice.delta
+      });
+
+      $("feedback").textContent = choice.flash;
+      $("feedback").classList.add("show");
+      renderMeters();
+      track("kongming_blitz_choice", { round: state.round + 1, choice: choice.text });
+
+      setTimeout(() => {
+        state.round += 1;
+        if (state.round >= rounds.length) showResult();
+        else renderRound();
+      }, 900);
+    }
+
+    function getEnding() {
+      return endings.find((ending) => ending.test(state.score));
+    }
+
+    function showResult() {
+      const ending = getEnding();
+      setScene(ending.bg);
+      $("playCard").classList.add("hidden");
+      $("resultCard").classList.add("active");
+      $("resultKicker").textContent = `终局判定 · ${ending.rank}`;
+      $("resultTitle").textContent = ending.title;
+      $("resultBrief").textContent = ending.brief;
+      $("resultStats").innerHTML = Object.keys(labels).map((key) => `<div><b>${state.score[key]}</b>${labels[key]}</div>`).join("");
+      $("shareText").textContent = makeShareText(ending);
+      $("payBtn").textContent = state.paid ? "查看隐藏军报" : "打赏解锁隐藏军报";
+      track("kongming_blitz_finish", { ending: ending.id, rank: ending.rank, ...state.score });
+    }
+
+    function makeShareText(ending) {
+      return `我在《孔明一局定三国》打出【${ending.rank} · ${ending.title}】：军心${state.score.morale} / 粮草${state.score.grain} / 天命${state.score.fate} / 健康${state.score.health}。六次抉择，一局见军师成色。`;
+    }
+
+    async function copyReport() {
+      try {
+        await navigator.clipboard.writeText($("shareText").textContent + "\nhttps://kunlundesign.github.io/sanguozhi-kongming-blitz/");
+        showToast("战报已复制");
+        track("kongming_blitz_share_copy");
+      } catch (err) {
+        showToast("复制失败，可手动选中文案");
+      }
+    }
+
+    function showPay(source = "end") {
+      $("payModal").classList.add("active");
+      track("kongming_blitz_pay_open", { source });
+    }
+
+    function closePay() {
+      $("payModal").classList.remove("active");
+    }
+
+    function unlockPaid() {
+      state.paid = true;
+      localStorage.setItem("kongming_blitz_paid", "1");
+      closePay();
+      showToast("隐藏军报已解锁");
+      track("kongming_blitz_pay_confirm");
+
+      if ($("resultCard").classList.contains("active")) {
+        const last = state.log[state.log.length - 1];
+        $("shareText").textContent += ` 隐藏军报：你最后选择了「${last.choice}」，这说明你的玩法偏向${state.score.fate >= state.score.grain ? "改写历史" : "稳态经营"}。`;
+        $("payBtn").textContent = "隐藏军报已解锁";
+      }
+    }
+
+    function showToast(text) {
+      $("toast").textContent = text;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 1500);
+    }
+
+    function toggleAudio() {
+      const audio = $("audio");
+      state.audio = !state.audio;
+      if (state.audio) {
+        audio.volume = 0.28;
+        audio.play().catch(() => {});
+        $("soundBtn").textContent = "Ⅱ";
+      } else {
+        audio.pause();
+        $("soundBtn").textContent = "♪";
+      }
+    }
+
+    $("startBtn").addEventListener("click", startGame);
+    $("againBtn").addEventListener("click", startGame);
+    $("restartBtn").addEventListener("click", startGame);
+    $("copyBtn").addEventListener("click", copyReport);
+    $("payBtn").addEventListener("click", () => state.paid ? unlockPaid() : showPay("ending"));
+    $("payIntroBtn").addEventListener("click", () => showPay("intro"));
+    $("closePay").addEventListener("click", closePay);
+    $("laterBtn").addEventListener("click", closePay);
+    $("unlockBtn").addEventListener("click", unlockPaid);
+    $("soundBtn").addEventListener("click", toggleAudio);
+    $("payModal").addEventListener("click", (event) => {
+      if (event.target.id === "payModal") closePay();
+    });
+
+    makeEmbers();
+    setScene("images/scene-chibi.png");
+    renderMeters();
+  </script>
+</body>
+</html>

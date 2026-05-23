@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三国志 · 天下大势 — 互动地图</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://webapi.amap.com/maps?v=2.0&key=12073ae6e28fcd015d4e79c03c2c162a"></script>
+<style>
+:root{--bg-primary:#1a1612;--bg-secondary:#241f1a;--bg-card:#2a2420;--text-primary:#e8e4df;--text-secondary:#a09080;--accent-gold:#c9a55c;--accent-red:#b33c3f;--accent-blue:#4a6b8a;--accent-green:#5a8a5a;--border:rgba(201,165,92,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Serif SC',serif;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;height:100vh;width:100vw}
+#loading{position:fixed;inset:0;z-index:9999;background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1.5s}
+#loading.hide{opacity:0;pointer-events:none}
+#loading h1{font-family:'Ma Shan Zheng',cursive;font-size:clamp(2rem,6vw,4.5rem);color:var(--accent-gold);opacity:0;animation:brushReveal 2s ease forwards .3s;letter-spacing:.15em}
+#loading .sub{color:var(--text-secondary);font-size:1rem;opacity:0;animation:fadeUp 1.5s ease forwards 1.5s}
+@keyframes brushReveal{0%{opacity:0;clip-path:inset(0 100% 0 0)}60%{opacity:1;clip-path:inset(0 0 0 0)}100%{opacity:1}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}from{opacity:0;transform:translateY(10px)}}
+
+/* Top bar */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:linear-gradient(180deg,rgba(26,22,18,.95),rgba(26,22,18,0));pointer-events:none}
+#topbar>*{pointer-events:auto}
+.title-sm{font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--accent-gold);white-space:nowrap}
+.stats{display:flex;gap:16px;font-size:.8rem;color:var(--text-secondary)}
+.stats span{white-space:nowrap}
+.stats b{color:var(--accent-gold)}
+
+/* Controls */
+#controls{position:fixed;top:50px;left:12px;z-index:100;display:flex;flex-direction:column;gap:6px}
+#controls button,.faction-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);width:36px;height:36px;border-radius:6px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+#controls button:hover,.faction-btn:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+.faction-filters{position:fixed;top:50px;right:12px;z-index:100;display:flex;gap:6px}
+.faction-btn{width:auto;padding:0 10px;font-size:.85rem}
+.faction-btn.active{border-color:var(--accent-gold);background:rgba(201,165,92,.15)}
+#searchBox{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:100;background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);padding:6px 14px;border-radius:20px;font-family:'Noto Serif SC',serif;font-size:.85rem;width:clamp(160px,30vw,260px);outline:none;transition:.2s}
+#searchBox:focus{border-color:var(--accent-gold)}
+#searchResults{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:100;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;display:none;width:clamp(160px,30vw,260px)}
+#searchResults div{padding:8px 14px;cursor:pointer;font-size:.85rem}
+#searchResults div:hover{background:rgba(201,165,92,.1)}
+
+/* Map */
+#map{width:100vw;height:100vh}
+
+/* Tooltip */
+#tooltip{position:fixed;z-index:200;background:var(--bg-card);border:1px solid var(--accent-gold);padding:6px 12px;border-radius:6px;font-size:.85rem;pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;color:var(--accent-gold);font-family:'Ma Shan Zheng',cursive;letter-spacing:.05em}
+
+/* Side panel */
+#panel{position:fixed;top:0;right:0;width:clamp(280px,35vw,400px);height:100vh;background:var(--bg-secondary);border-left:1px solid var(--border);z-index:300;transform:translateX(100%);transition:transform .4s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding:24px 20px}
+#panel.open{transform:translateX(0)}
+#panel .close-btn{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer}
+#panel .char-name{font-family:'Ma Shan Zheng',cursive;font-size:2.2rem;color:var(--accent-gold);margin-top:8px}
+#panel .char-name-en{font-size:.9rem;color:var(--text-secondary);margin-bottom:6px}
+.faction-badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:.8rem;margin-bottom:10px}
+.faction-badge.wei{background:rgba(74,107,138,.25);color:#7ab0e0;border:1px solid rgba(74,107,138,.4)}
+.faction-badge.shu{background:rgba(90,138,90,.25);color:#8cc78c;border:1px solid rgba(90,138,90,.4)}
+.faction-badge.wu{background:rgba(179,60,63,.25);color:#e07070;border:1px solid rgba(179,60,63,.4)}
+#panel .years{color:var(--text-secondary);font-size:.85rem;margin-bottom:12px}
+#panel .bio{line-height:1.8;font-size:.9rem;margin-bottom:16px;color:var(--text-primary)}
+#panel .events{list-style:none;margin-bottom:16px}
+#panel .events li{padding:4px 0 4px 16px;position:relative;font-size:.85rem;color:var(--text-secondary);border-left:2px solid var(--border)}
+#panel .events li::before{content:'';position:absolute;left:-5px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--accent-gold)}
+.traj-btn{background:var(--bg-card);border:1px solid var(--accent-gold);color:var(--accent-gold);padding:8px 18px;border-radius:6px;cursor:pointer;font-family:'Noto Serif SC',serif;font-size:.85rem;transition:.2s;width:100%}
+.traj-btn:hover{background:rgba(201,165,92,.15)}
+
+/* Music toggle */
+#musicToggle{position:fixed;bottom:16px;right:16px;z-index:100;background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+#musicToggle.playing{color:var(--accent-gold);border-color:var(--accent-gold)}
+
+/* Legend */
+#legend{position:fixed;bottom:16px;left:12px;z-index:100;background:rgba(42,36,32,.9);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:.75rem}
+#legend div{display:flex;align-items:center;gap:8px;margin:3px 0}
+#legend .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* Particles */
+.particle{position:fixed;width:2px;height:2px;background:var(--accent-gold);border-radius:50%;pointer-events:none;opacity:0;z-index:50}
+
+/* Hide AMap UI */
+.amap-logo,.amap-copyright{display:none!important}
+
+/* Marker dot */
+.marker-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);cursor:pointer;position:relative;transition:transform .2s}
+.marker-dot:hover{transform:scale(1.4)}
+.marker-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;background:inherit;opacity:.25;animation:dotPulse 2.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.8);opacity:.08}}
+
+/* Traj label */
+.traj-marker-label{background:rgba(42,36,32,.85);border:1px solid var(--border);color:var(--text-secondary);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'Noto Serif SC',serif;white-space:nowrap}
+
+/* Territory text */
+.territory-label{font-family:'Ma Shan Zheng',cursive;font-size:64px;color:rgba(201,165,92,0.08);pointer-events:none;white-space:nowrap}
+
+/* Responsive */
+@media(max-width:600px){
+  #panel{width:100vw}
+  .stats{gap:8px;font-size:.7rem}
+  .title-sm{font-size:1.1rem}
+  #searchBox{top:88px;width:calc(100vw - 120px)}
+  #searchResults{top:122px}
+  .faction-filters{top:88px}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading screen -->
+<div id="loading">
+  <h1>三国志 · 天下大势</h1>
+  <p class="sub">天下分久必合 合久必分</p>
+</div>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div class="title-sm">三国志 · 天下大势</div>
+  <div class="stats">
+    <span><b>30</b> 武将</span>
+    <span><b>3</b> 势力</span>
+    <span><b>96</b>年 (184-280)</span>
+  </div>
+</div>
+
+<!-- Search -->
+<input type="text" id="searchBox" placeholder="🔍 搜索武将..." autocomplete="off">
+<div id="searchResults"></div>
+
+<!-- Controls -->
+<div id="controls">
+  <button onclick="map.zoomIn()" title="放大">+</button>
+  <button onclick="map.zoomOut()" title="缩小">−</button>
+  <button onclick="resetView()" title="重置">⟲</button>
+</div>
+
+<!-- Faction filters -->
+<div class="faction-filters">
+  <button class="faction-btn active" data-faction="wei" onclick="toggleFaction(this)">魏</button>
+  <button class="faction-btn active" data-faction="shu" onclick="toggleFaction(this)">蜀</button>
+  <button class="faction-btn active" data-faction="wu" onclick="toggleFaction(this)">吴</button>
+</div>
+
+<!-- Legend -->
+<div id="legend">
+  <div><span class="dot" style="background:var(--accent-blue)"></span>魏 · 曹魏</div>
+  <div><span class="dot" style="background:var(--accent-green)"></span>蜀 · 蜀汉</div>
+  <div><span class="dot" style="background:var(--accent-red)"></span>吴 · 东吴</div>
+</div>
+
+<!-- Music -->
+<button id="musicToggle" onclick="toggleMusic()" title="音乐">♪</button>
+<audio id="bgMusic" loop><source src="../sanguozhi/sanguo_start.mp3" type="audio/mpeg"></audio>
+
+<!-- Tooltip -->
+<div id="tooltip"></div>
+
+<!-- Side panel -->
+<div id="panel">
+  <button class="close-btn" onclick="closePanel()">✕</button>
+  <div id="panelContent"></div>
+</div>
+
+<!-- Map -->
+<div id="map"></div>
+
+<script>
+const factionColors = {wei:'#4a6b8a', shu:'#5a8a5a', wu:'#b33c3f'};
+const factionNames = {wei:'曹魏', shu:'蜀汉', wu:'东吴'};
+
+const characters = [
+  // Wei
+  {id:'caocao',name:'曹操',en:'Cao Cao',faction:'wei',lng:115.78,lat:33.85,place:'沛国谯县(今安徽亳州)',years:'155-220',bio:'魏武帝，东汉末年杰出的政治家、军事家、文学家。挟天子以令诸侯，统一北方，奠定曹魏基业。其诗文慷慨悲凉，被誉为建安文学的领袖。',events:['举孝廉出仕','讨伐董卓','官渡之战大破袁绍','统一北方','封魏王','病逝洛阳'],trajectory:[{label:'谯县起兵',lng:115.78,lat:33.85},{label:'陈留起兵讨董',lng:114.30,lat:34.80},{label:'兖州牧',lng:116.78,lat:35.56},{label:'官渡之战',lng:113.70,lat:34.72},{label:'平定河北·邺城',lng:114.35,lat:36.33},{label:'赤壁之战',lng:113.94,lat:29.72},{label:'魏王·洛阳',lng:112.45,lat:34.62}]},
+  {id:'simayi',name:'司马懿',en:'Sima Yi',faction:'wei',lng:112.93,lat:34.94,place:'河内郡温县',years:'179-251',bio:'曹魏重臣，西晋王朝的实际奠基人。善于隐忍，多次抵御诸葛亮北伐。高平陵之变后独揽大权，为司马氏代魏奠基。',events:['辅佐曹丕','抵御诸葛亮北伐','平定辽东','高平陵之变']},
+  {id:'xunyu',name:'荀彧',en:'Xun Yu',faction:'wei',lng:113.67,lat:34.16,place:'颍川颍阴',years:'163-212',bio:'曹操首席谋臣，有"王佐之才"之称。多次为曹操献策，在官渡之战中坚守后方。后因反对曹操称王，忧愤而死。',events:['投奔曹操','举荐郭嘉等人才','官渡之战守许都','反对曹操称公']},
+  {id:'guojia',name:'郭嘉',en:'Guo Jia',faction:'wei',lng:113.48,lat:34.03,place:'颍川阳翟',years:'170-207',bio:'曹操帐下著名谋士，才策过人。提出"十胜十败"论，助曹操坚定信心。征乌桓途中病逝，曹操痛惜不已。',events:['弃袁投曹','十胜十败论','官渡之战献策','征乌桓病逝']},
+  {id:'zhangliao',name:'张辽',en:'Zhang Liao',faction:'wei',lng:112.43,lat:39.33,place:'雁门马邑',years:'169-222',bio:'曹魏五子良将之首。逍遥津之战以八百破十万，威震东吴，"张辽止啼"传为佳话。',events:['从吕布征战','归降曹操','合肥之战','逍遥津威震江东']},
+  {id:'dianwei',name:'典韦',en:'Dian Wei',faction:'wei',lng:114.30,lat:34.80,place:'陈留己吾',years:'?-197',bio:'曹操麾下猛将，形貌魁梧，勇力过人。宛城之战中为保护曹操撤退，力战而亡，壮烈殉主。',events:['追随曹操','多次救护曹操','宛城之战殉主']},
+  {id:'xiahoudun',name:'夏侯惇',en:'Xiahou Dun',faction:'wei',lng:115.98,lat:33.87,place:'沛国谯县',years:'?-220',bio:'曹操宗族大将，忠勇刚烈。战吕布时左目中箭，拔矢啖睛，勇猛无比。深受曹操信任。',events:['从曹操起兵','拔矢啖睛','守御后方','封大将军']},
+  {id:'xuchu',name:'许褚',en:'Xu Chu',faction:'wei',lng:115.58,lat:33.83,place:'谯国谯县',years:'?-?',bio:'曹操贴身护卫，人称"虎侯"。潼关之战裸衣斗马超，勇冠三军。',events:['投奔曹操','宛城护主','潼关斗马超']},
+  {id:'caoren',name:'曹仁',en:'Cao Ren',faction:'wei',lng:116.00,lat:33.90,place:'沛国谯县',years:'168-223',bio:'曹魏宗室名将，善守城池。樊城之战中坚守孤城抵御关羽，被誉为曹魏第一守将。',events:['从曹操起兵','守江陵','樊城抗关羽']},
+  {id:'jiaxu',name:'贾诩',en:'Jia Xu',faction:'wei',lng:102.63,lat:37.93,place:'武威姑臧',years:'147-223',bio:'三国时期著名谋士，善于审时度势。先后辅佐多位主公，最终归曹。官渡之战献离间计，被誉为"毒士"。',events:['辅佐张绣','归降曹操','官渡献策','辅佐曹丕称帝']},
+  // Shu
+  {id:'liubei',name:'刘备',en:'Liu Bei',faction:'shu',lng:115.97,lat:39.49,place:'涿郡涿县(今河北涿州)',years:'161-223',bio:'蜀汉开国皇帝，汉室宗亲。桃园三结义，三顾茅庐，赤壁之战后据荆州，入蜀建立蜀汉。以仁德著称，知人善任。',events:['桃园三结义','徐州牧','三顾茅庐','赤壁之战','夺取益州','称帝','夷陵之战','白帝城托孤'],trajectory:[{label:'涿郡起兵',lng:115.97,lat:39.49},{label:'徐州牧',lng:117.19,lat:34.26},{label:'依附刘表·新野',lng:112.36,lat:32.52},{label:'赤壁之战',lng:113.94,lat:29.72},{label:'入主益州·成都',lng:104.07,lat:30.67},{label:'白帝城',lng:109.55,lat:31.04}]},
+  {id:'zhugeliang',name:'诸葛亮',en:'Zhuge Liang',faction:'shu',lng:118.47,lat:35.55,place:'琅邪阳都(今山东沂南)',years:'181-234',bio:'蜀汉丞相，"卧龙"先生。三顾茅庐后出山辅佐刘备，提出隆中对战略。治蜀有方，六出祁山北伐，鞠躬尽瘁，死而后已。',events:['隆中对','赤壁之战借东风','入蜀辅政','七擒孟获','六出祁山','五丈原病逝'],trajectory:[{label:'琅邪阳都',lng:118.47,lat:35.55},{label:'隆中隐居',lng:112.02,lat:32.00},{label:'赤壁之战',lng:113.94,lat:29.72},{label:'成都治蜀',lng:104.07,lat:30.67},{label:'南征孟获',lng:100.23,lat:25.60},{label:'五丈原',lng:107.63,lat:34.37}]},
+  {id:'guanyu',name:'关羽',en:'Guan Yu',faction:'shu',lng:110.84,lat:35.03,place:'河东解良',years:'?-220',bio:'蜀汉五虎上将之首，义薄云天。温酒斩华雄，过五关斩六将，水淹七军威震华夏。败走麦城，英雄末路。后世尊为"武圣"。',events:['桃园三结义','温酒斩华雄','过五关斩六将','单刀赴会','水淹七军','败走麦城'],trajectory:[{label:'河东起兵',lng:110.84,lat:35.03},{label:'徐州降曹',lng:117.19,lat:34.26},{label:'千里走单骑',lng:113.00,lat:35.00},{label:'镇守荆州',lng:112.19,lat:30.33},{label:'水淹七军·樊城',lng:112.14,lat:32.04},{label:'败走麦城',lng:111.50,lat:30.69}]},
+  {id:'zhangfei',name:'张飞',en:'Zhang Fei',faction:'shu',lng:116.10,lat:39.52,place:'涿郡(今河北涿州)',years:'?-221',bio:'蜀汉五虎上将，勇猛无敌。长坂坡一声怒吼退曹军，义释严颜。性格暴躁，最终被部下所害。',events:['桃园三结义','长坂坡断桥','义释严颜','阆中遇害']},
+  {id:'zhaoyun',name:'赵云',en:'Zhao Yun',faction:'shu',lng:114.51,lat:38.04,place:'常山真定',years:'?-229',bio:'蜀汉名将，字子龙。长坂坡单骑救主，一身是胆。为人忠勇，深受刘备信赖。',events:['投奔刘备','长坂坡救阿斗','截江夺斗','汉水之战']},
+  {id:'huangzhong',name:'黄忠',en:'Huang Zhong',faction:'shu',lng:112.53,lat:33.00,place:'南阳',years:'?-220',bio:'蜀汉五虎上将，老当益壮。定军山斩夏侯渊，为蜀汉建立汗马功劳。善射术，百步穿杨。',events:['长沙归刘备','定军山斩夏侯渊','封后将军']},
+  {id:'machao',name:'马超',en:'Ma Chao',faction:'shu',lng:108.71,lat:34.30,place:'扶风茂陵',years:'176-222',bio:'蜀汉五虎上将，西凉锦马超。潼关之战杀得曹操割须弃袍，后归降刘备。',events:['潼关战曹操','归降张鲁','投奔刘备','助取成都']},
+  {id:'pangtong',name:'庞统',en:'Pang Tong',faction:'shu',lng:112.14,lat:32.04,place:'襄阳',years:'179-214',bio:'号"凤雏"，与诸葛亮齐名。献连环计助赤壁之战，随刘备入蜀时在落凤坡中箭身亡。',events:['赤壁献连环计','投奔刘备','入蜀献策','落凤坡阵亡']},
+  {id:'jiangwei',name:'姜维',en:'Jiang Wei',faction:'shu',lng:105.72,lat:34.58,place:'天水冀县',years:'202-264',bio:'诸葛亮衣钵传人，蜀汉后期大将军。九伐中原，矢志北伐。蜀亡后仍谋复国，壮志未酬身先死。',events:['天水归蜀','继承诸葛亮遗志','九伐中原','蜀亡殉国']},
+  {id:'weiyan',name:'魏延',en:'Wei Yan',faction:'shu',lng:114.05,lat:32.13,place:'义阳',years:'?-234',bio:'蜀汉名将，善养士卒，勇猛过人。提出子午谷奇谋。诸葛亮死后因内讧被杀。',events:['归降刘备','镇守汉中','子午谷奇谋','被马岱斩杀']},
+  // Wu
+  {id:'sunquan',name:'孙权',en:'Sun Quan',faction:'wu',lng:119.95,lat:30.07,place:'吴郡富春',years:'182-252',bio:'东吴大帝，承父兄基业。赤壁之战联刘抗曹，奠定三分天下格局。善于用人，开发江南，使东吴国力强盛。',events:['继承江东','赤壁之战','夺取荆州','石亭之战','称帝'],trajectory:[{label:'吴郡富春',lng:119.95,lat:30.07},{label:'建业称帝',lng:118.80,lat:32.06},{label:'赤壁之战',lng:113.94,lat:29.72},{label:'夺荆州',lng:112.19,lat:30.33},{label:'石亭之战',lng:117.40,lat:31.10}]},
+  {id:'zhouyu',name:'周瑜',en:'Zhou Yu',faction:'wu',lng:117.05,lat:31.25,place:'庐江舒县',years:'175-210',bio:'东吴名将，"美周郎"。赤壁之战中以火攻大破曹军，奠定三分天下之势。精通音律，文武双全。英年早逝，令人扼腕。',events:['与孙策起兵','赤壁之战','南郡之战','英年早逝'],trajectory:[{label:'庐江舒县',lng:117.05,lat:31.25},{label:'随孙策平江东',lng:120.00,lat:31.00},{label:'赤壁之战',lng:113.94,lat:29.72},{label:'南郡之战',lng:112.19,lat:30.33},{label:'巴丘病逝',lng:113.02,lat:29.15}]},
+  {id:'luxun',name:'陆逊',en:'Lu Xun',faction:'wu',lng:120.63,lat:31.30,place:'吴郡吴县',years:'183-245',bio:'东吴名将，夷陵之战火烧连营大破刘备，石亭之战又败曹休。后任丞相，文武兼备。',events:['辅佐孙权','吕蒙取荆州','夷陵之战','石亭之战']},
+  {id:'lusu',name:'鲁肃',en:'Lu Su',faction:'wu',lng:117.47,lat:33.30,place:'临淮东城',years:'172-217',bio:'东吴重臣，力主孙刘联盟。赤壁之战前积极促成联合抗曹。为人豪爽，识大体。',events:['投奔孙权','促成孙刘联盟','赤壁之战','镇守荆州']},
+  {id:'lvmeng',name:'吕蒙',en:'Lv Meng',faction:'wu',lng:114.82,lat:32.98,place:'汝南富陂',years:'178-220',bio:'东吴名将，白衣渡江奇袭荆州。原为武夫，后发愤读书，"士别三日当刮目相待"。',events:['发愤读书','白衣渡江','擒杀关羽']},
+  {id:'ganning',name:'甘宁',en:'Gan Ning',faction:'wu',lng:106.55,lat:29.56,place:'巴郡临江',years:'?-220',bio:'东吴猛将，曾为锦帆贼。百骑劫曹营，有"孟德有张辽，孤有甘兴霸"之赞。',events:['归降孙权','百骑劫曹营','合肥之战']},
+  {id:'taishici',name:'太史慈',en:'Taishi Ci',faction:'wu',lng:120.40,lat:37.38,place:'东莱黄县',years:'166-206',bio:'东吴猛将，弓马娴熟。曾与孙策大战，后归降。为人信义，知恩图报。',events:['北海救孔融','与孙策单挑','归降孙策','镇守南方']},
+  {id:'huanggai',name:'黄盖',en:'Huang Gai',faction:'wu',lng:111.60,lat:26.43,place:'零陵泉陵',years:'?-?',bio:'东吴老将，赤壁之战中献苦肉计诈降曹操，以火船突袭，为赤壁大胜立下首功。',events:['三朝老臣','赤壁苦肉计','火烧赤壁']},
+  {id:'sunce',name:'孙策',en:'Sun Ce',faction:'wu',lng:119.80,lat:30.10,place:'吴郡富春',years:'175-200',bio:'东吴奠基人，"小霸王"。以传国玉玺借兵，横扫江东六郡。英年遇刺，临终托弟孙权。',events:['借兵起家','横扫江东','遇刺身亡','托孤孙权']},
+  {id:'zhangzhao',name:'张昭',en:'Zhang Zhao',faction:'wu',lng:117.19,lat:34.26,place:'彭城',years:'156-236',bio:'东吴重臣，孙策托孤之臣。主张降曹，虽被孙权否决，但治国理政功勋卓著。',events:['辅佐孙策','托孤重臣','劝降争议','治理东吴']}
+];
+
+let map;
+let allMarkers = []; // {marker, glow, character}
+let trajOverlays = []; // current trajectory overlays
+let activeFilters = {wei:true, shu:true, wu:true};
+
+// Init map
+function initMap() {
+  map = new AMap.Map('map', {
+    center: [110, 33],
+    zoom: 5,
+    mapStyle: 'amap://styles/dark',
+    features: ['bg', 'road', 'point'],
+    pitchEnable: false,
+    rotateEnable: false
+  });
+
+  // Territory labels
+  [{text:'魏',lng:112,lat:35.5,color:'rgba(74,107,138,0.1)'},
+   {text:'蜀',lng:105,lat:31,color:'rgba(90,138,90,0.1)'},
+   {text:'吴',lng:117,lat:29,color:'rgba(179,60,63,0.1)'}
+  ].forEach(t => {
+    new AMap.Text({
+      text: t.text,
+      position: [t.lng, t.lat],
+      style: {'font-family':'Ma Shan Zheng,cursive','font-size':'72px',color:t.color,'background':'transparent','border':'none'},
+      zIndex: 10,
+      map: map
+    });
+  });
+
+  createMarkers();
+}
+
+// Create markers for all characters
+function createMarkers() {
+  characters.forEach((c, i) => {
+    const color = factionColors[c.faction];
+
+    const marker = new AMap.Marker({
+      position: [c.lng, c.lat],
+      content: `<div class="marker-dot" style="background:${color};box-shadow:0 0 8px ${color}"></div>`,
+      offset: new AMap.Pixel(-7, -7),
+      zIndex: 100,
+      extData: c
+    });
+
+    marker.on('mouseover', e => {
+      const t = document.getElementById('tooltip');
+      t.textContent = `${c.name} ${c.en}`;
+      t.style.opacity = '1';
+      const px = e.pixel.x, py = e.pixel.y;
+      t.style.left = px + 'px';
+      t.style.top = (py - 40) + 'px';
+    });
+    marker.on('mouseout', () => {
+      document.getElementById('tooltip').style.opacity = '0';
+    });
+    marker.on('click', () => openPanel(c));
+
+    // Staggered appearance
+    marker.setMap(null);
+    setTimeout(() => marker.setMap(map), 2800 + i * 60);
+
+    allMarkers.push({marker, character: c});
+  });
+}
+
+// Panel
+function openPanel(c) {
+  const p = document.getElementById('panel');
+  let html = `<div class="char-name">${c.name}</div><div class="char-name-en">${c.en}</div>`;
+  html += `<span class="faction-badge ${c.faction}">${factionNames[c.faction]}</span>`;
+  html += `<div class="years">📅 ${c.years} · ${c.place}</div>`;
+  html += `<div class="bio">${c.bio}</div>`;
+  html += `<ul class="events">${c.events.map(e => `<li>${e}</li>`).join('')}</ul>`;
+  if (c.trajectory) {
+    html += `<button class="traj-btn" onclick="showTrajectory('${c.id}')">查看生平轨迹</button>`;
+  }
+  document.getElementById('panelContent').innerHTML = html;
+  p.classList.add('open');
+}
+function closePanel() { document.getElementById('panel').classList.remove('open'); }
+
+// Trajectory
+function showTrajectory(id) {
+  const c = characters.find(ch => ch.id === id);
+  if (!c || !c.trajectory) return;
+
+  // Clear previous
+  clearTrajectory();
+
+  const color = factionColors[c.faction];
+  const path = c.trajectory.map(p => [p.lng, p.lat]);
+
+  // Polyline
+  const polyline = new AMap.Polyline({
+    path: path,
+    strokeColor: color,
+    strokeWeight: 3,
+    strokeOpacity: 0.7,
+    strokeStyle: 'dashed',
+    strokeDasharray: [8, 4],
+    lineJoin: 'round',
+    map: map
+  });
+  trajOverlays.push(polyline);
+
+  // Waypoint markers with labels
+  c.trajectory.forEach((p, i) => {
+    const m = new AMap.Marker({
+      position: [p.lng, p.lat],
+      content: `<div style="width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid ${color};box-shadow:0 0 6px ${color}"></div>`,
+      offset: new AMap.Pixel(-5, -5),
+      zIndex: 120,
+      map: map
+    });
+    const label = new AMap.Marker({
+      position: [p.lng, p.lat],
+      content: `<div class="traj-marker-label">${i + 1}. ${p.label}</div>`,
+      offset: new AMap.Pixel(10, -12),
+      zIndex: 110,
+      map: map
+    });
+    trajOverlays.push(m, label);
+  });
+
+  // Fit view
+  map.setFitView(trajOverlays, false, [100, 100, 100, 100]);
+}
+
+function clearTrajectory() {
+  trajOverlays.forEach(o => map.remove(o));
+  trajOverlays = [];
+}
+
+// Reset
+function resetView() {
+  clearTrajectory();
+  map.setZoomAndCenter(5, [110, 33]);
+}
+
+// Faction filter
+function toggleFaction(btn) {
+  const f = btn.dataset.faction;
+  activeFilters[f] = !activeFilters[f];
+  btn.classList.toggle('active');
+  allMarkers.forEach(({marker, character}) => {
+    if (character.faction === f) {
+      activeFilters[f] ? marker.show() : marker.hide();
+    }
+  });
+}
+
+// Search
+const searchBox = document.getElementById('searchBox');
+const searchResults = document.getElementById('searchResults');
+searchBox.addEventListener('input', () => {
+  const q = searchBox.value.trim().toLowerCase();
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = characters.filter(c => c.name.includes(q) || c.en.toLowerCase().includes(q));
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.innerHTML = matches.map(c => `<div onclick="focusChar('${c.id}')">${c.name} ${c.en}</div>`).join('');
+  searchResults.style.display = 'block';
+});
+function focusChar(id) {
+  const c = characters.find(ch => ch.id === id);
+  if (!c) return;
+  searchResults.style.display = 'none';
+  searchBox.value = '';
+  map.setZoomAndCenter(8, [c.lng, c.lat]);
+  openPanel(c);
+}
+
+// Music
+function toggleMusic() {
+  const audio = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicToggle');
+  if (audio.paused) { audio.play(); btn.classList.add('playing'); btn.textContent = '♫'; }
+  else { audio.pause(); btn.classList.remove('playing'); btn.textContent = '♪'; }
+}
+
+// Particles
+function createParticles() {
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    document.body.appendChild(p);
+    animateParticle(p);
+  }
+}
+function animateParticle(p) {
+  const x = Math.random() * window.innerWidth;
+  const dur = 8 + Math.random() * 12;
+  p.style.left = x + 'px';
+  p.style.top = window.innerHeight + 'px';
+  p.style.width = (1 + Math.random() * 2) + 'px';
+  p.style.height = p.style.width;
+  p.style.opacity = '0';
+  const anim = p.animate([
+    {transform: 'translateY(0)', opacity: 0},
+    {opacity: Math.random() * 0.4 + 0.1, offset: 0.1},
+    {transform: `translateY(-${window.innerHeight + 100}px) translateX(${(Math.random() - 0.5) * 100}px)`, opacity: 0}
+  ], {duration: dur * 1000, easing: 'linear'});
+  anim.onfinish = () => animateParticle(p);
+}
+
+// Init
+window.addEventListener('load', () => {
+  initMap();
+  setTimeout(() => {
+    document.getElementById('loading').classList.add('hide');
+    setTimeout(() => createParticles(), 500);
+  }, 2800);
+});
+</script>
+</body>
+</html>
