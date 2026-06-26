@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kunlun — Systems Atlas</title>
+<meta name="description" content="An interactive atlas of product systems, behavior loops, and agent-assisted workflows." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0C0E12;--bg2:#11141A;--panel:rgba(22,26,33,.72);--panel-solid:#161A21;
+  --ink:#ECEEF2;--muted:#9AA1AD;--faint:#5C6470;
+  --line:rgba(160,170,185,.12);--line-strong:rgba(160,170,185,.22);--grid:rgba(120,135,160,.06);
+  --c-play:#E0A33E;--c-fin:#4FB286;--c-flow:#5B8DEF;--c-lab:#B47BE6;
+  --glow:0 0 0 1px var(--line-strong),0 18px 50px -20px rgba(0,0,0,.8);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased;position:relative;font-weight:300}
+#field{position:fixed;inset:0;z-index:0;background:radial-gradient(120vmax 80vmax at 18% 8%,rgba(91,141,239,.10),transparent 55%),radial-gradient(100vmax 70vmax at 88% 92%,rgba(180,123,230,.09),transparent 55%),radial-gradient(90vmax 60vmax at 92% 12%,rgba(224,163,62,.06),transparent 50%),linear-gradient(180deg,var(--bg),var(--bg2))}
+#gridlines{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 78%)}
+.bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:rgba(12,14,18,.6);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border-bottom:1px solid var(--line)}
+.bar .brand{display:flex;align-items:center;gap:11px;font-weight:500;letter-spacing:.01em;font-size:.92rem}
+.bar .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--c-fin);box-shadow:0 0 10px var(--c-fin);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.bar .brand b{font-weight:600}.bar .brand .sep{color:var(--faint);font-weight:300}
+.bar .brand .role{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;color:var(--muted);font-weight:400}
+.bar .meta{display:flex;align-items:center;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.06em;color:var(--faint)}
+.bar .meta .live{color:var(--c-fin)}
+@media(max-width:680px){.bar .meta{display:none}}
+.legend{position:fixed;top:62px;left:22px;z-index:55;display:flex;flex-direction:column;gap:9px}
+.legend .lg-t{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+.legend .lg{display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--muted);cursor:pointer;padding:3px 8px;border-radius:7px;transition:background .2s,color .2s;user-select:none}
+.legend .lg:hover{background:var(--line);color:var(--ink)}
+.legend .lg.dim{opacity:.32}
+.legend .lg .sw{width:10px;height:10px;border-radius:3px}
+.legend .lg.play .sw{background:var(--c-play)}.legend .lg.fin .sw{background:var(--c-fin)}.legend .lg.flow .sw{background:var(--c-flow)}.legend .lg.lab .sw{background:var(--c-lab)}
+@media(max-width:680px){.legend{display:none}}
+.title{position:fixed;left:22px;bottom:20px;z-index:55;max-width:300px;pointer-events:none}
+.title .kick{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.title h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(1.5rem,2.6vw,2.05rem);line-height:1.08;letter-spacing:-.01em}
+.title h1 em{font-style:italic;color:var(--c-flow)}
+.title p{margin-top:.7rem;font-size:.82rem;color:var(--muted);line-height:1.5;font-weight:300}
+.hint{position:fixed;right:22px;bottom:24px;z-index:55;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.06em;color:var(--faint);text-align:right;line-height:1.7;pointer-events:none}
+.hint b{color:var(--muted);font-weight:400}
+#atlas{position:fixed;inset:46px 0 0 0;z-index:10}
+svg#links{position:absolute;inset:0;width:100%;height:100%;z-index:11;pointer-events:none}
+svg#links path{fill:none;stroke:var(--line-strong);stroke-width:1;opacity:.45;transition:opacity .35s,stroke-width .35s,stroke .35s}
+svg#links path.lit{stroke-width:1.7;opacity:.95}
+svg#links path.fade{opacity:.08}
+.node{position:absolute;transform:translate(-50%,-50%);z-index:14;cursor:pointer;transition:opacity .35s var(--ease)}
+.node.fade{opacity:.22}
+.node .core{position:relative;border-radius:16px;background:var(--panel);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--line-strong);box-shadow:var(--glow);padding:15px 17px;width:206px;transition:transform .4s var(--ease),border-color .3s,box-shadow .3s}
+.node .tag{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.node .tag .d{width:7px;height:7px;border-radius:50%}
+.node h3{margin-top:9px;font-family:'Fraunces',serif;font-weight:500;font-size:1.12rem;letter-spacing:-.01em;line-height:1.12}
+.node .desc{margin-top:6px;font-size:.76rem;color:var(--muted);line-height:1.45;font-weight:300}
+.node .stat{margin-top:11px;display:flex;align-items:baseline;gap:7px;padding-top:10px;border-top:1px solid var(--line)}
+.node .stat .v{font-family:'Fraunces',serif;font-weight:500;font-size:1.2rem;letter-spacing:-.01em}
+.node .stat .l{font-size:.68rem;color:var(--faint);font-weight:300}
+.node:hover{z-index:30}.node:hover .core{transform:translateY(-4px)}
+.node.play:hover .core,.node.play.sel .core{border-color:var(--c-play);box-shadow:0 0 0 1px var(--c-play),0 22px 56px -22px rgba(224,163,62,.5)}
+.node.fin:hover .core,.node.fin.sel .core{border-color:var(--c-fin);box-shadow:0 0 0 1px var(--c-fin),0 22px 56px -22px rgba(79,178,134,.5)}
+.node.flow:hover .core,.node.flow.sel .core{border-color:var(--c-flow);box-shadow:0 0 0 1px var(--c-flow),0 22px 56px -22px rgba(91,141,239,.5)}
+.node.lab:hover .core,.node.lab.sel .core{border-color:var(--c-lab);box-shadow:0 0 0 1px var(--c-lab),0 22px 56px -22px rgba(180,123,230,.5)}
+.node.play .tag .d,.node.play .stat .v{color:var(--c-play)}.node.play .tag .d{background:var(--c-play)}
+.node.fin .tag .d,.node.fin .stat .v{color:var(--c-fin)}.node.fin .tag .d{background:var(--c-fin)}
+.node.flow .tag .d,.node.flow .stat .v{color:var(--c-flow)}.node.flow .tag .d{background:var(--c-flow)}
+.node.lab .tag .d,.node.lab .stat .v{color:var(--c-lab)}.node.lab .tag .d{background:var(--c-lab)}
+.hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:13;width:128px;height:128px;border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 38%,rgba(40,46,58,.9),rgba(18,21,28,.92));border:1px solid var(--line-strong);box-shadow:0 0 0 1px var(--line),0 0 60px -10px rgba(91,141,239,.35),inset 0 1px 0 rgba(255,255,255,.06)}
+.hub::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--line);animation:ring 14s linear infinite}
+.hub::after{content:"";position:absolute;inset:-30px;border-radius:50%;border:1px dashed rgba(160,170,185,.10);animation:ring 36s linear infinite reverse}
+@keyframes ring{to{transform:rotate(360deg)}}
+.hub .nm{font-family:'Fraunces',serif;font-weight:500;font-size:1.18rem;letter-spacing:-.01em}
+.hub .sb{margin-top:2px;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.agents{position:fixed;right:22px;top:62px;z-index:55;width:212px;background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:13px;padding:13px 14px;box-shadow:var(--glow)}
+.agents .h{display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
+.agents .h .on{color:var(--c-fin)}
+.agents .ag{display:flex;align-items:center;gap:10px;padding:6px 0}
+.agents .ag .av{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.78rem;border:1px solid var(--line-strong)}
+.agents .ag .av.max{background:rgba(180,123,230,.16)}.agents .ag .av.duke{background:rgba(91,141,239,.16)}.agents .ag .av.k{background:rgba(79,178,134,.16)}
+.agents .ag .nm{font-size:.78rem;font-weight:400;color:var(--ink)}
+.agents .ag .rl{font-size:.66rem;color:var(--faint);font-weight:300}
+.agents .ag .pct{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--muted)}
+.agents .barline{height:3px;border-radius:2px;background:var(--line);margin-top:11px;overflow:hidden}
+.agents .barline i{display:block;height:100%;width:64%;background:linear-gradient(90deg,var(--c-flow),var(--c-lab));animation:work 4.5s var(--ease) infinite}
+@keyframes work{0%,100%{width:38%}50%{width:82%}}
+@media(max-width:980px){.agents{display:none}}
+.drawer{position:fixed;top:0;right:0;height:100dvh;width:min(420px,90vw);z-index:90;background:rgba(14,17,22,.86);backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%);border-left:1px solid var(--line-strong);box-shadow:-30px 0 80px -30px rgba(0,0,0,.8);transform:translateX(100%);transition:transform .5s var(--ease);padding:64px 30px 30px;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.drawer .x{position:absolute;top:18px;right:22px;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:background .2s,color .2s}
+.drawer .x:hover{background:var(--line);color:var(--ink)}
+.drawer .dtag{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase}
+.drawer h2{font-family:'Fraunces',serif;font-weight:500;font-size:1.7rem;letter-spacing:-.01em;margin-top:12px;line-height:1.1}
+.drawer .lead{margin-top:12px;font-size:.92rem;color:var(--muted);line-height:1.6;font-weight:300}
+.drawer .layers{margin-top:24px;display:flex;flex-direction:column;gap:1px;border-radius:11px;overflow:hidden;border:1px solid var(--line)}
+.drawer .layer{background:rgba(255,255,255,.02);padding:13px 15px}
+.drawer .layer .lk{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.drawer .layer .lv{margin-top:4px;font-size:.86rem;color:var(--ink);font-weight:300;line-height:1.45}
+.drawer .metrics{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.drawer .metric{border:1px solid var(--line);border-radius:11px;padding:13px}
+.drawer .metric .v{font-family:'Fraunces',serif;font-weight:500;font-size:1.5rem;letter-spacing:-.01em}
+.drawer .metric .l{margin-top:3px;font-size:.7rem;color:var(--faint);font-weight:300;line-height:1.35}
+#scrim{position:fixed;inset:0;z-index:80;background:rgba(6,8,11,.5);opacity:0;pointer-events:none;transition:opacity .4s}
+#scrim.on{opacity:1;pointer-events:auto}
+#boot{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;transition:opacity .8s var(--ease)}
+#boot.gone{opacity:0;pointer-events:none}
+#boot .bt{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+#boot .bm{font-family:'Fraunces',serif;font-style:italic;font-size:1.6rem;color:var(--ink);opacity:0;animation:bfade .8s var(--ease) .2s forwards}
+@keyframes bfade{to{opacity:1}}
+#boot .bbar{width:min(220px,55vw);height:2px;background:var(--line);border-radius:99px;overflow:hidden}
+#boot .bbar i{display:block;height:100%;width:0;background:var(--c-flow);animation:bl 1.4s var(--ease) .3s forwards}
+@keyframes bl{to{width:100%}}
+@media(max-width:980px){#atlas{position:relative;inset:auto;height:auto;padding:118px 18px 40px}svg#links{display:none}.node{position:relative;transform:none;left:auto!important;top:auto!important;margin:0 auto 16px;max-width:340px}.node .core{width:100%}.node.fade{opacity:1}.hub{display:none}.title{position:relative;top:auto;left:auto;bottom:auto;max-width:none;margin:0 auto 26px;padding:0 18px}.hint{display:none}body{overflow:auto;height:auto}}
+</style>
+</head>
+<body>
+<div id="field"></div>
+<div id="gridlines"></div>
+<div id="boot"><div class="bt">Initializing</div><div class="bm">Systems Atlas</div><div class="bbar"><i></i></div></div>
+
+<div class="bar">
+  <div class="brand"><span class="dot"></span><b>KUNLUN</b><span class="sep">/</span><span class="role">systems_atlas.app</span></div>
+  <div class="meta"><span>BEIJING · GMT+8</span><span class="live">● 4 SYSTEMS LIVE</span><span>v0.1 — exploration</span></div>
+</div>
+
+<div class="legend">
+  <div class="lg-t">Domains · click to focus</div>
+  <div class="lg play" data-f="play"><span class="sw"></span>Engagement</div>
+  <div class="lg fin" data-f="fin"><span class="sw"></span>Finance &amp; Trust</div>
+  <div class="lg flow" data-f="flow"><span class="sw"></span>AI Workflow</div>
+  <div class="lg lab" data-f="lab"><span class="sw"></span>Research</div>
+</div>
+
+<div class="agents">
+  <div class="h"><span>Design Ops · Processes</span><span class="on">● live</span></div>
+  <div class="ag"><span class="av k">🧭</span><span><span class="nm">Kunlun</span><br><span class="rl">director / taste</span></span><span class="pct">owner</span></div>
+  <div class="ag"><span class="av max">🪶</span><span><span class="nm">Max</span><br><span class="rl">design lead</span></span><span class="pct">review</span></div>
+  <div class="ag"><span class="av duke">🤖</span><span><span class="nm">Duke</span><br><span class="rl">execution</span></span><span class="pct">build</span></div>
+  <div class="barline"><i></i></div>
+</div>
+
+<div id="atlas">
+  <svg id="links" preserveAspectRatio="none">
+    <path data-a="hub" data-b="n1"></path><path data-a="hub" data-b="n2"></path>
+    <path data-a="hub" data-b="n3"></path><path data-a="hub" data-b="n4"></path>
+    <path data-a="n2" data-b="n3"></path><path data-a="n1" data-b="n4"></path><path data-a="n3" data-b="n4"></path>
+  </svg>
+
+  <div class="hub" id="hub"><div><div class="nm">Kunlun</div><div class="sb">Product Systems</div></div></div>
+
+  <div class="node play" id="n1" data-key="play" style="left:25%;top:27%"><div class="core">
+    <div class="tag"><span class="d"></span>Engagement Loop</div><h3>MSN Play</h3>
+    <div class="desc">A gaming surface rebuilt around the return loop — sessions, streaks, and reasons to come back tomorrow.</div>
+    <div class="stat"><span class="v">+34%</span><span class="l">day-2 retention</span></div></div></div>
+
+  <div class="node fin" id="n2" data-key="fin" style="left:74%;top:25%"><div class="core">
+    <div class="tag"><span class="d"></span>Trust System</div><h3>Finance Agent</h3>
+    <div class="desc">An AI agent that guides money decisions while staying inside compliance — restraint engineered as a feature.</div>
+    <div class="stat"><span class="v">0</span><span class="l">compliance escalations</span></div></div></div>
+
+  <div class="node flow" id="n3" data-key="flow" style="left:76%;top:73%"><div class="core">
+    <div class="tag"><span class="d"></span>Operating Method</div><h3>AI-Native Workflow</h3>
+    <div class="desc">Product design run with an agent crew — Max leads judgment, Duke executes, the taste bar holds.</div>
+    <div class="stat"><span class="v">3×</span><span class="l">iteration velocity</span></div></div></div>
+
+  <div class="node lab" id="n4" data-key="lab" style="left:27%;top:70%"><div class="core">
+    <div class="tag"><span class="d"></span>Research</div><h3>Taste-Loop Lab</h3>
+    <div class="desc">Experiments on whether design taste can be measured and automated — a feedback loop for judgment itself.</div>
+    <div class="stat"><span class="v">12</span><span class="l">evaluator iterations</span></div></div></div>
+</div>
+
+<div class="title">
+  <div class="kick">Interactive Portfolio · v0.1</div>
+  <h1>A working <em>atlas</em> of the systems I design.</h1>
+  <p>Four live domains, one operator. Each is a product system with its own loop, layers, and proof.</p>
+</div>
+<div class="hint"><b>Click a system</b> to open it<br>Click a domain in the legend to focus<br>Lines = where systems connect</div>
+
+<div id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <button class="x" id="dx" aria-label="close">✕</button>
+  <div class="dtag" id="d-tag"></div>
+  <h2 id="d-title"></h2>
+  <p class="lead" id="d-lead"></p>
+  <div class="layers" id="d-layers"></div>
+  <div class="metrics" id="d-metrics"></div>
+</aside>
+
+<script>
+const DATA={
+ play:{tag:'Engagement Loop',color:'var(--c-play)',title:'MSN Play',
+  lead:'A gaming destination re-architected around one question: what makes a player come back tomorrow? I cut the feature list until only the loop remained, then tuned it.',
+  layers:[['User behavior','Session → streak → reward → anticipation. The loop is the product; the UI just serves it.'],['Product mechanics','Daily reasons-to-return, low-friction re-entry, momentum that survives a missed day.'],['AI capability','Personalized next-game suggestions tuned to each player’s rhythm, not a global ranking.'],['Business outcome','Retention compounds: more day-2 returns → more sessions → a healthier surface overall.']],
+  metrics:[['+34%','Day-2 return'],['−2 taps','Time to replay'],['4 → 1','Core loop, simplified'],['↑ sessions','Per active user']]},
+ fin:{tag:'Trust System',color:'var(--c-fin)',title:'Personal Finance Agent',
+  lead:'An AI agent that gives real, useful money guidance without ever crossing into unlicensed advice. Most of the product is invisible restraint — knowing what not to say.',
+  layers:[['User behavior','People want a straight answer about their money; the agent stays helpful without overstepping.'],['Product mechanics','Account aggregation, guardrailed guidance, escalation to a human at the exact right moment.'],['AI capability','Compliance-aware reasoning: the model is shaped as much by what it must refuse as what it can do.'],['Business outcome','Trust is the moat. Zero compliance escalations in pilot is the hardest number to earn.']],
+  metrics:[['0','Compliance escalations'],['100%','Guardrail coverage'],['Real-time','Account sync'],['Human','In the loop, by design']]},
+ flow:{tag:'Operating Method',color:'var(--c-flow)',title:'AI-Native Design Workflow',
+  lead:'How senior taste scales when the team is part-human, part-model. I run product design with an agent crew: Max leads design judgment, Duke executes, I hold the bar.',
+  layers:[['User behavior','A brief becomes a reviewed, shipped artifact in hours — with a clear chain of judgment, not vibes.'],['Product mechanics','Roles split cleanly: design lead defines + reviews, execution agent builds, files are the source of truth.'],['AI capability','Agents as teammates with real responsibilities, coordinated through a shared workspace and review protocol.'],['Business outcome','Iteration velocity up ~3× with the taste ceiling intact — quality held, not traded for speed.']],
+  metrics:[['3×','Iterations / day'],['2','AI teammates'],['1','Quality bar'],['Hours','Brief → artifact']]},
+ lab:{tag:'Research',color:'var(--c-lab)',title:'Taste-Loop Experiments',
+  lead:'A standing investigation into whether design taste can be made measurable — and whether an evaluator can push iterations toward better, not just different.',
+  layers:[['User behavior','Designers feel quality but rarely measure it; this work tries to give that instinct a feedback signal.'],['Product mechanics','Generate → evaluate → revise loops, with and without an automated taste evaluator in the path.'],['AI capability','A model that critiques against explicit criteria — distinctiveness, restraint, fit — not surface polish.'],['Business outcome','Foundational R&D for the workflow above: proof that judgment itself can be partly systematized.']],
+  metrics:[['12','Evaluator rounds'],['A/B','With vs. without'],['Open','Ongoing research'],['Named','Criteria, not vibes']]}
+};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const svg=$('#links'),paths=$$('#links path');
+function pos(id){const el=document.getElementById(id),a=$('#atlas').getBoundingClientRect(),r=el.getBoundingClientRect();return{x:r.left-a.left+r.width/2,y:r.top-a.top+r.height/2};}
+function draw(){const a=$('#atlas').getBoundingClientRect();svg.setAttribute('viewBox',`0 0 ${a.width} ${a.height}`);paths.forEach(p=>{const A=pos(p.dataset.a),B=pos(p.dataset.b);const mx=(A.x+B.x)/2,my=(A.y+B.y)/2-Math.min(60,Math.abs(B.x-A.x)*0.14);p.setAttribute('d',`M${A.x},${A.y} Q${mx},${my} ${B.x},${B.y}`);});}
+function openNode(key){const d=DATA[key];if(!d)return;$('#d-tag').textContent=d.tag;$('#d-tag').style.color=d.color;$('#d-title').textContent=d.title;$('#d-lead').textContent=d.lead;
+ $('#d-layers').innerHTML=d.layers.map(l=>`<div class="layer"><div class="lk">${l[0]}</div><div class="lv">${l[1]}</div></div>`).join('');
+ $('#d-metrics').innerHTML=d.metrics.map(m=>`<div class="metric"><div class="v" style="color:${d.color}">${m[0]}</div><div class="l">${m[1]}</div></div>`).join('');
+ $('#drawer').classList.add('open');$('#scrim').classList.add('on');
+ $$('.node').forEach(n=>n.classList.toggle('sel',n.dataset.key===key));}
+function closeDrawer(){$('#drawer').classList.remove('open');$('#scrim').classList.remove('on');$$('.node').forEach(n=>n.classList.remove('sel'));}
+function focusDomain(key){$$('.lg').forEach(l=>l.classList.toggle('dim',l.dataset.f!==key));
+ $$('.node').forEach(n=>n.classList.toggle('fade',n.dataset.key!==key));
+ paths.forEach(p=>{const ids=[p.dataset.a,p.dataset.b],node=$$('.node').find(n=>ids.includes(n.id)&&n.dataset.key===key);p.classList.toggle('lit',!!(node&&ids.includes('hub')));p.classList.toggle('fade',!node);});}
+function clearFocus(){$$('.lg').forEach(l=>l.classList.remove('dim'));$$('.node').forEach(n=>n.classList.remove('fade'));paths.forEach(p=>{p.classList.remove('lit');p.classList.remove('fade');});}
+let focused=null;
+$$('.node').forEach(n=>n.addEventListener('click',()=>openNode(n.dataset.key)));
+$$('.lg').forEach(l=>l.addEventListener('click',()=>{const k=l.dataset.f;if(focused===k){focused=null;clearFocus();}else{focused=k;focusDomain(k);}}));
+$('#dx').addEventListener('click',closeDrawer);$('#scrim').addEventListener('click',()=>{closeDrawer();focused=null;clearFocus();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();focused=null;clearFocus();}});
+$$('.node').forEach(n=>{n.addEventListener('mouseenter',()=>{paths.forEach(p=>p.classList.toggle('lit',[p.dataset.a,p.dataset.b].includes(n.id)));});n.addEventListener('mouseleave',()=>{if(!focused)paths.forEach(p=>p.classList.remove('lit'));});});
+window.addEventListener('resize',draw);
+window.addEventListener('load',()=>{draw();setTimeout(()=>$('#boot').classList.add('gone'),1500);});
+setTimeout(draw,120);setTimeout(draw,600);
+</script>
+</body>
+</html>

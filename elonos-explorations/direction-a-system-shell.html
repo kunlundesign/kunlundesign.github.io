@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kunlun OS — A purpose-built system for AI-native product decisions</title>
+<meta name="description" content="The work of Kunlun, designer, presented as an operating system for AI-native product decisions: applications, running workflows, an agent crew, and system preferences." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#F6F4F0;--panel:#FFFFFF;--panel-2:#FBFAF7;--ink:#16181D;--ink-2:#5B606B;--ink-3:#9298A4;
+--line:rgba(22,24,29,.08);--line-2:rgba(22,24,29,.14);--field:#F2F1EC;
+--accent:#3458E6;--accent-soft:rgba(52,88,230,.10);
+--green:#1FA463;--green-soft:rgba(31,164,99,.12);
+--amber:#C98A14;--amber-soft:rgba(201,138,20,.14);
+--violet:#7A4FE0;--violet-soft:rgba(122,79,224,.12);
+--rose:#D5466B;
+--shadow-s:0 1px 2px rgba(22,24,29,.05),0 4px 14px -8px rgba(22,24,29,.18);
+--shadow-m:0 1px 0 rgba(255,255,255,.7) inset,0 18px 48px -22px rgba(22,24,29,.32),0 4px 14px -8px rgba(22,24,29,.16);
+--ease:cubic-bezier(.22,1,.36,1);
+--r:16px;--r-s:11px;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);
+min-height:100dvh;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;line-height:1.5}
+#field{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#field .blob{position:absolute;border-radius:50%;filter:blur(72px);opacity:.40;mix-blend-mode:multiply;animation:drift 34s ease-in-out infinite}
+#field .b1{width:42vmax;height:42vmax;left:-10vmax;top:-12vmax;background:radial-gradient(circle at 35% 35%,var(--accent),transparent 64%)}
+#field .b2{width:36vmax;height:36vmax;right:-8vmax;top:-6vmax;background:radial-gradient(circle at 60% 40%,var(--violet),transparent 64%);animation-delay:-9s}
+#field .b3{width:40vmax;height:40vmax;right:6vmax;bottom:-18vmax;background:radial-gradient(circle at 50% 50%,var(--green),transparent 66%);animation-delay:-16s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(3vmax,-2vmax) scale(1.06)}66%{transform:translate(-2vmax,3vmax) scale(.97)}}
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.sysbar{position:sticky;top:0;z-index:1000;height:44px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 18px;
+background:rgba(255,255,255,.66);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.6) inset}
+.sb-left{display:flex;align-items:center;gap:6px;min-width:0}
+.sb-mark{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.01em;padding:4px 8px;border-radius:9px}
+.sb-glyph{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--violet));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 2px 6px -2px rgba(52,88,230,.6);position:relative}
+.sb-glyph::after{content:'';position:absolute;inset:5px;border-radius:3px;border:1.5px solid rgba(255,255,255,.85)}
+.sb-menu{display:flex;align-items:center;gap:1px;margin-left:6px}
+.sb-item{font-size:.82rem;color:var(--ink-2);padding:5px 11px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s;user-select:none;font-weight:500}
+.sb-item:hover{background:var(--line);color:var(--ink)}
+.sb-right{display:flex;align-items:center;gap:10px}
+.sb-stat{display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--ink-2);padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2)}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.sb-clock{font-family:'Space Mono',monospace;font-size:.74rem;color:var(--ink-2);min-width:140px;text-align:right;letter-spacing:.02em}
+@media(max-width:880px){.sb-menu{display:none}.sb-clock{min-width:0}}
+.shell{position:relative;z-index:5;max-width:1320px;margin:0 auto;padding:26px 24px 64px;
+display:grid;grid-template-columns:1.62fr .9fr;gap:22px;align-items:start}
+@media(max-width:1040px){.shell{grid-template-columns:1fr}}
+.overview{grid-column:1 / -1;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-m);
+padding:34px 36px 30px;position:relative;overflow:hidden}
+.overview::before{content:'';position:absolute;right:-60px;top:-80px;width:340px;height:340px;border-radius:50%;
+background:radial-gradient(circle at 40% 40%,var(--accent-soft),transparent 70%);pointer-events:none}
+.ov-tag{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.ov-tag::before{content:'';width:22px;height:1px;background:var(--accent)}
+.ov-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:30px;align-items:end}
+@media(max-width:760px){.ov-grid{grid-template-columns:1fr;gap:22px}}
+.ov-grid h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(2.3rem,4.6vw,3.5rem);line-height:1.02;letter-spacing:-.01em}
+.ov-grid h1 em{font-style:italic;color:var(--accent)}
+.ov-sub{margin-top:14px;color:var(--ink-2);font-size:1.02rem;max-width:46ch;line-height:1.6}
+.ov-meta{display:flex;flex-direction:column;gap:12px}
+.ov-row{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:13px;background:var(--panel-2);border:1px solid var(--line)}
+.ov-row .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;font-size:.82rem;font-weight:700;color:#fff}
+.ov-row.r1 .ic{background:linear-gradient(135deg,var(--accent),#5b78ef)}
+.ov-row.r2 .ic{background:linear-gradient(135deg,var(--green),#3fc483)}
+.ov-row.r3 .ic{background:linear-gradient(135deg,var(--violet),#9a73ef)}
+.ov-row .tx b{display:block;font-size:.86rem;font-weight:600}
+.ov-row .tx span{font-size:.78rem;color:var(--ink-2);line-height:1.45}
+.ov-stat-strip{grid-column:1 / -1;margin-top:26px;padding-top:22px;border-top:1px solid var(--line);
+display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:680px){.ov-stat-strip{grid-template-columns:repeat(2,1fr);gap:16px}}
+.stat .num{font-family:'Instrument Serif',serif;font-size:2.1rem;line-height:1;letter-spacing:-.01em}
+.stat .lbl{margin-top:5px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.stat .num.c1{color:var(--accent)}.stat .num.c2{color:var(--green)}.stat .num.c3{color:var(--violet)}.stat .num.c4{color:var(--amber)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-m);overflow:hidden}
+.p-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 22px;border-bottom:1px solid var(--line);background:linear-gradient(rgba(255,255,255,.6),transparent)}
+.p-head .ttl{display:flex;align-items:center;gap:10px;font-weight:600;font-size:.94rem}
+.p-head .ttl .pi{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.82rem;background:var(--field);border:1px solid var(--line)}
+.p-head .meta{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.p-body{padding:20px 22px 24px}
+.col-main{display:flex;flex-direction:column;gap:22px}
+.col-side{display:flex;flex-direction:column;gap:22px}
+.app-list{display:flex;flex-direction:column;gap:13px}
+.app{display:block;text-align:left;width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:15px;
+padding:0;cursor:pointer;transition:transform .22s var(--ease),border-color .2s,box-shadow .25s;overflow:hidden;position:relative}
+.app:hover{transform:translateY(-3px);border-color:var(--line-2);box-shadow:var(--shadow-s)}
+.app:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app-row{display:flex;align-items:center;gap:15px;padding:15px 17px}
+.app-ico{width:46px;height:46px;border-radius:13px;flex-shrink:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.05rem;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 16px -8px rgba(22,24,29,.5);position:relative}
+.app-ico::after{content:'';position:absolute;inset:7px;border-radius:7px;border:1.5px solid rgba(255,255,255,.5);opacity:.8}
+.app.a1 .app-ico{background:linear-gradient(140deg,#3458E6,#6f8bff)}
+.app.a2 .app-ico{background:linear-gradient(140deg,#1FA463,#4ad08c)}
+.app.a3 .app-ico{background:linear-gradient(140deg,#7A4FE0,#a87cf2)}
+.app.a4 .app-ico{background:linear-gradient(140deg,#C98A14,#e7b347)}
+.app-mid{flex:1;min-width:0}
+.app-mid .nm{display:flex;align-items:center;gap:9px;font-weight:600;font-size:1rem}
+.app-mid .nm .ver{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--ink-3);font-weight:400;padding:1px 6px;border:1px solid var(--line);border-radius:99px}
+.app-mid .ds{font-size:.85rem;color:var(--ink-2);margin-top:3px;line-height:1.45}
+.app-state{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.badge{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px;font-weight:700;white-space:nowrap}
+.badge.run{color:var(--green);background:var(--green-soft)}
+.badge.ship{color:var(--accent);background:var(--accent-soft)}
+.badge.res{color:var(--violet);background:var(--violet-soft)}
+.badge.dev{color:var(--amber);background:var(--amber-soft)}
+.app-chev{color:var(--ink-3);transition:transform .25s var(--ease);font-size:1.1rem;line-height:1}
+.app[aria-expanded="true"] .app-chev{transform:rotate(90deg)}
+.app-detail{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+.app-detail-inner{padding:0 17px 18px 78px;border-top:1px solid var(--line);margin-top:-1px}
+.app-detail-inner p{font-size:.86rem;color:var(--ink-2);line-height:1.6;margin-top:14px}
+.app-detail-inner p strong{color:var(--ink);font-weight:600}
+.mini-metrics{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;padding-top:13px;border-top:1px dashed var(--line-2)}
+.mini-metrics .mm{display:flex;flex-direction:column;gap:2px}
+.mini-metrics .mm b{font-family:'Space Mono',monospace;font-size:.95rem;color:var(--ink)}
+.mini-metrics .mm span{font-size:.7rem;color:var(--ink-3)}
+.taglist{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tg{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--ink-2);padding:3px 9px;border-radius:99px;border:1px solid var(--line);background:var(--panel)}
+.proc-table{display:flex;flex-direction:column}
+.proc-head{display:grid;grid-template-columns:1.7fr .8fr .9fr;gap:10px;padding:0 4px 9px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line)}
+.proc{display:grid;grid-template-columns:1.7fr .8fr .9fr;gap:10px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line);transition:background .15s;border-radius:8px}
+.proc:last-child{border-bottom:none}
+.proc:hover{background:var(--panel-2)}
+.proc .who{display:flex;align-items:center;gap:11px;min-width:0}
+.proc .av{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.8rem}
+.proc.max .av{background:linear-gradient(135deg,var(--violet),#a87cf2)}
+.proc.duke .av{background:linear-gradient(135deg,var(--accent),#6f8bff)}
+.proc.kunlun .av{background:linear-gradient(135deg,#16181D,#3a3f4a)}
+.proc .who b{display:block;font-size:.86rem;font-weight:600;line-height:1.2}
+.proc .who span{font-size:.72rem;color:var(--ink-2)}
+.proc .role{font-size:.74rem;color:var(--ink-2)}
+.proc .load{display:flex;flex-direction:column;gap:5px}
+.proc .load .pct{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--ink)}
+.bar{height:5px;border-radius:99px;background:var(--field);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;width:0;transition:width 1.1s var(--ease)}
+.proc.max .bar i{background:var(--violet)}
+.proc.duke .bar i{background:var(--accent)}
+.proc.kunlun .bar i{background:var(--ink)}
+.proc-foot{margin-top:14px;padding-top:13px;border-top:1px solid var(--line);display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--ink-2)}
+.proc-foot .k{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--green);padding:2px 8px;border-radius:99px;background:var(--green-soft);letter-spacing:.06em}
+.pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:520px){.pref-grid{grid-template-columns:1fr}}
+.pref{padding:15px 15px;border-radius:14px;border:1px solid var(--line);background:var(--panel-2);transition:transform .2s var(--ease),border-color .2s;cursor:default}
+.pref:hover{transform:translateY(-2px);border-color:var(--line-2)}
+.pref .ph{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pref .pg{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:.9rem;color:#fff}
+.pref:nth-child(1) .pg{background:linear-gradient(135deg,var(--accent),#6f8bff)}
+.pref:nth-child(2) .pg{background:linear-gradient(135deg,var(--green),#4ad08c)}
+.pref:nth-child(3) .pg{background:linear-gradient(135deg,var(--violet),#a87cf2)}
+.pref:nth-child(4) .pg{background:linear-gradient(135deg,var(--amber),#e7b347)}
+.pref .ph b{font-size:.88rem;font-weight:600}
+.pref p{font-size:.78rem;color:var(--ink-2);line-height:1.5}
+.diag{display:flex;flex-direction:column;gap:11px}
+.diag-row{display:flex;align-items:center;gap:13px;padding:11px 13px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line)}
+.diag-row .chk{width:22px;height:22px;border-radius:7px;flex-shrink:0;display:grid;place-items:center;color:#fff;font-size:.72rem;font-weight:700;background:linear-gradient(135deg,var(--green),#3fc483)}
+.diag-row .dt{flex:1;min-width:0}
+.diag-row .dt b{font-size:.84rem;font-weight:600;display:block}
+.diag-row .dt span{font-size:.74rem;color:var(--ink-2)}
+.diag-row .val{font-family:'Space Mono',monospace;font-size:.78rem;color:var(--green);white-space:nowrap}
+.sig{grid-column:1 / -1;margin-top:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+padding:18px 22px;border-radius:16px;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow-s)}
+.sig .lt{font-family:'Space Mono',monospace;font-size:.74rem;color:var(--ink-2);line-height:1.7}
+.sig .lt b{color:var(--ink)}
+.sig .rt{display:flex;gap:9px}
+.sig .rt a{font-size:.8rem;font-weight:600;color:var(--ink);text-decoration:none;padding:9px 15px;border-radius:11px;border:1px solid var(--line-2);background:var(--panel-2);transition:transform .18s var(--ease),border-color .18s,background .18s}
+.sig .rt a:hover{transform:translateY(-2px);border-color:var(--accent);background:var(--accent-soft)}
+.sig .rt a.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sig .rt a.solid:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.06s!important}#field .blob{animation:none}}
+</style>
+</head>
+<body>
+<div id="field"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div id="grain"></div>
+<header class="sysbar">
+  <div class="sb-left">
+    <div class="sb-mark"><span class="sb-glyph"></span>Kunlun&nbsp;OS</div>
+    <nav class="sb-menu">
+      <span class="sb-item" data-jump="overview">Overview</span>
+      <span class="sb-item" data-jump="apps">Applications</span>
+      <span class="sb-item" data-jump="processes">Design&nbsp;Ops</span>
+      <span class="sb-item" data-jump="prefs">Principles</span>
+      <span class="sb-item" data-jump="diag">Diagnostics</span>
+    </nav>
+  </div>
+  <div class="sb-right">
+    <div class="sb-stat"><span class="sb-dot"></span> 2 agents active</div>
+    <div class="sb-clock" id="clock">--:--:--</div>
+  </div>
+</header>
+<main class="shell">
+  <!-- ===== OVERVIEW ===== -->
+  <section class="overview" id="overview">
+    <div class="ov-tag">System overview &middot; uptime: senior IC &rarr; product owner</div>
+    <div class="ov-grid">
+      <div>
+        <h1>I run my design practice like an <em>operating system</em>.</h1>
+        <p class="ov-sub">Kunlun &mdash; a senior product designer building toward AI-native product leadership. Projects are applications, case studies are running workflows, and a two-agent crew handles design ops. Systems thinking, not just UI craft.</p>
+      </div>
+      <div class="ov-meta">
+        <div class="ov-row r1"><span class="ic">IC</span><span class="tx"><b>Role trajectory</b><span>Senior IC &rarr; product-level owner &rarr; AI-native leader &rarr; possible founder.</span></span></div>
+        <div class="ov-row r2"><span class="ic">OS</span><span class="tx"><b>Operating model</b><span>Decisions encoded as repeatable systems, not one-off screens.</span></span></div>
+        <div class="ov-row r3"><span class="ic">AI</span><span class="tx"><b>Crew on call</b><span>Max leads design strategy; Duke executes. I own the judgment.</span></span></div>
+      </div>
+      <div class="ov-stat-strip">
+        <div class="stat"><div class="num c1">4</div><div class="lbl">Active workflows</div></div>
+        <div class="stat"><div class="num c2">2</div><div class="lbl">Agents in crew</div></div>
+        <div class="stat"><div class="num c3">10+</div><div class="lbl">Years systems craft</div></div>
+        <div class="stat"><div class="num c4">1</div><div class="lbl">Human in the loop</div></div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== MAIN COLUMN: APPLICATIONS / WORKFLOWS ===== -->
+  <div class="col-main">
+    <section class="panel" id="apps">
+      <div class="p-head">
+        <div class="ttl"><span class="pi">&#9707;</span> Applications &amp; running workflows</div>
+        <div class="meta">click to expand</div>
+      </div>
+      <div class="p-body">
+        <div class="app-list">
+          <button class="app a1" aria-expanded="false" data-app>
+            <span class="app-row">
+              <span class="app-ico"></span>
+              <span class="app-mid">
+                <span class="nm">MSN Play <span class="ver">workflow.live</span></span>
+                <span class="ds">Gaming &amp; engagement surface inside a high-traffic consumer product.</span>
+              </span>
+              <span class="app-state"><span class="badge run">Running</span><span class="app-chev">&#8250;</span></span>
+            </span>
+            <span class="app-detail"><span class="app-detail-inner">
+              <p>Designed the play &amp; engagement layer for <strong>MSN</strong> &mdash; turning casual visits into daily habits without cheapening the surface. Worked across the funnel: discovery, first-session hook, retention loops, and the editorial guardrails that keep a games hub feeling premium inside a news product.</p>
+              <div class="mini-metrics">
+                <span class="mm"><b>Daily habit</b><span>engagement loop</span></span>
+                <span class="mm"><b>Funnel-wide</b><span>discovery &rarr; retention</span></span>
+                <span class="mm"><b>Consumer scale</b><span>mass audience</span></span>
+              </div>
+              <span class="taglist"><span class="tg">engagement design</span><span class="tg">retention loops</span><span class="tg">consumer product</span><span class="tg">games UX</span></span>
+            </span></span>
+          </button>
+          <button class="app a2" aria-expanded="false" data-app>
+            <span class="app-row">
+              <span class="app-ico"></span>
+              <span class="app-mid">
+                <span class="nm">Personal Finance Agent <span class="ver">workflow.ai</span></span>
+                <span class="ds">An AI agent for everyday money decisions &mdash; designed compliance-aware.</span>
+              </span>
+              <span class="app-state"><span class="badge ship">Shipping</span><span class="app-chev">&#8250;</span></span>
+            </span>
+            <span class="app-detail"><span class="app-detail-inner">
+              <p>Led product design for an <strong>AI agent that helps people reason about their finances</strong> &mdash; budgeting, tradeoffs, and next actions. The hard part isn't the chat; it's designing trust: making the agent transparent about uncertainty, keeping it inside <strong>regulatory and compliance</strong> boundaries, and giving people a clear sense of control over an automated advisor.</p>
+              <div class="mini-metrics">
+                <span class="mm"><b>Compliance-first</b><span>designed within guardrails</span></span>
+                <span class="mm"><b>Trust UX</b><span>uncertainty made legible</span></span>
+                <span class="mm"><b>Agent product</b><span>not just a chatbot</span></span>
+              </div>
+              <span class="taglist"><span class="tg">AI agent</span><span class="tg">fintech</span><span class="tg">compliance</span><span class="tg">trust &amp; safety</span></span>
+            </span></span>
+          </button>
+          <button class="app a3" aria-expanded="false" data-app>
+            <span class="app-row">
+              <span class="app-ico"></span>
+              <span class="app-mid">
+                <span class="nm">AI-native design workflow <span class="ver">workflow.ops</span></span>
+                <span class="ds">Agent-assisted design operations &mdash; Max as lead, Duke as execution.</span>
+              </span>
+              <span class="app-state"><span class="badge res">Compiling</span><span class="app-chev">&#8250;</span></span>
+            </span>
+            <span class="app-detail"><span class="app-detail-inner">
+              <p>Built a working design org out of <strong>two AI agents</strong>: <strong>Max</strong> runs design lead &mdash; framing, critique, direction &mdash; and <strong>Duke</strong> handles execution. I sit at the center as the taste and product judgment the system can't replace. This is the practice that turns &ldquo;use AI tools&rdquo; into an actual operating model: roles, handoffs, review gates, and a human owner of the decision.</p>
+              <div class="mini-metrics">
+                <span class="mm"><b>2 agents</b><span>lead + execution</span></span>
+                <span class="mm"><b>Defined roles</b><span>handoffs &amp; gates</span></span>
+                <span class="mm"><b>Human-owned</b><span>judgment stays mine</span></span>
+              </div>
+              <span class="taglist"><span class="tg">design ops</span><span class="tg">AI-native</span><span class="tg">orchestration</span><span class="tg">workflow design</span></span>
+            </span></span>
+          </button>
+          <button class="app a4" aria-expanded="false" data-app>
+            <span class="app-row">
+              <span class="app-ico"></span>
+              <span class="app-mid">
+                <span class="nm">Taste-loop experiments <span class="ver">workflow.lab</span></span>
+                <span class="ds">Research on automating design taste evaluation &mdash; can judgment be encoded?</span>
+              </span>
+              <span class="app-state"><span class="badge dev">In&nbsp;research</span><span class="app-chev">&#8250;</span></span>
+            </span>
+            <span class="app-detail"><span class="app-detail-inner">
+              <p>An ongoing experiment: <strong>can design taste be evaluated automatically?</strong> I'm building taste-loops &mdash; structured feedback cycles where an agent critiques work against explicit criteria, and I measure where its judgment agrees or breaks with mine. The goal isn't to replace taste; it's to understand which parts of it are <strong>encodable</strong> and which stay irreducibly human.</p>
+              <div class="mini-metrics">
+                <span class="mm"><b>Taste-loops</b><span>critique cycles</span></span>
+                <span class="mm"><b>Explicit criteria</b><span>judgment as a system</span></span>
+                <span class="mm"><b>Open question</b><span>what stays human</span></span>
+              </div>
+              <span class="taglist"><span class="tg">design research</span><span class="tg">evaluation</span><span class="tg">taste</span><span class="tg">AI</span></span>
+            </span></span>
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- system preferences = principles -->
+    <section class="panel" id="prefs">
+      <div class="p-head">
+        <div class="ttl"><span class="pi">&#9881;</span> System Preferences &middot; design principles</div>
+        <div class="meta">defaults that stay on</div>
+      </div>
+      <div class="p-body">
+        <div class="pref-grid">
+          <div class="pref">
+            <div class="ph"><span class="pg">&#9707;</span><b>Systems before screens</b></div>
+            <p>I design the rules that generate the UI, not just the UI. A good system makes the hundredth screen as right as the first.</p>
+          </div>
+          <div class="pref">
+            <div class="ph"><span class="pg">&#9678;</span><b>Own the decision</b></div>
+            <p>Move from drawing the screen to owning the product call. Capability at the product level, accountable for outcomes.</p>
+          </div>
+          <div class="pref">
+            <div class="ph"><span class="pg">&#9889;</span><b>AI-native by default</b></div>
+            <p>Agents are teammates, not toys. Design the org and the handoffs so automation amplifies judgment instead of diluting it.</p>
+          </div>
+          <div class="pref">
+            <div class="ph"><span class="pg">&#10022;</span><b>Taste, made explicit</b></div>
+            <p>Judgment isn't a vibe. Name the criteria, pressure-test them, and keep refining what &ldquo;good&rdquo; actually means.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- ===== SIDE COLUMN ===== -->
+  <div class="col-side">
+    <!-- processes widget: agent crew -->
+    <section class="panel" id="processes">
+      <div class="p-head">
+        <div class="ttl"><span class="pi">&#9776;</span> Activity Monitor &middot; Design Ops</div>
+        <div class="meta">live crew</div>
+      </div>
+      <div class="p-body">
+        <div class="proc-table">
+          <div class="proc-head"><span>Process</span><span>Role</span><span>Load</span></div>
+          <div class="proc kunlun">
+            <div class="who"><span class="av">K</span><span><b>kunlun</b><span>pid 001 &middot; owner</span></span></div>
+            <div class="role">Judgment &amp; product</div>
+            <div class="load"><span class="pct">priority</span><span class="bar"><i data-w="100"></i></span></div>
+          </div>
+          <div class="proc max">
+            <div class="who"><span class="av">M</span><span><b>max</b><span>pid 002 &middot; agent</span></span></div>
+            <div class="role">Design lead</div>
+            <div class="load"><span class="pct">68%</span><span class="bar"><i data-w="68"></i></span></div>
+          </div>
+          <div class="proc duke">
+            <div class="who"><span class="av">D</span><span><b>duke</b><span>pid 003 &middot; agent</span></span></div>
+            <div class="role">Execution</div>
+            <div class="load"><span class="pct">81%</span><span class="bar"><i data-w="81"></i></span></div>
+          </div>
+        </div>
+        <div class="proc-foot"><span class="k">healthy</span> Crew nominal &middot; human-in-the-loop required for every ship.</div>
+      </div>
+    </section>
+    <!-- diagnostics: results / evidence -->
+    <section class="panel" id="diag">
+      <div class="p-head">
+        <div class="ttl"><span class="pi">&#9745;</span> Diagnostics &middot; evidence</div>
+        <div class="meta">self-check</div>
+      </div>
+      <div class="p-body">
+        <div class="diag">
+          <div class="diag-row"><span class="chk">&#10003;</span><span class="dt"><b>Ships at consumer scale</b><span>MSN Play engagement surface</span></span><span class="val">PASS</span></div>
+          <div class="diag-row"><span class="chk">&#10003;</span><span class="dt"><b>Designs AI agents responsibly</b><span>finance agent within compliance</span></span><span class="val">PASS</span></div>
+          <div class="diag-row"><span class="chk">&#10003;</span><span class="dt"><b>Runs an AI-native practice</b><span>Max + Duke design ops live</span></span><span class="val">PASS</span></div>
+          <div class="diag-row"><span class="chk">&#10003;</span><span class="dt"><b>Treats taste as a system</b><span>taste-loop research in progress</span></span><span class="val">PASS</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- signature -->
+  <div class="sig">
+    <div class="lt">Kunlun OS &middot; v0.1 &mdash; a portfolio that runs like a system.<br>Senior IC &middot; product owner &middot; <b>AI-native design leader in progress</b></div>
+    <div class="rt">
+      <a href="#apps" data-jump="apps">View applications</a>
+      <a class="solid" href="#processes" data-jump="processes">Meet the crew</a>
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  "use strict";
+  function p(n){return (n<10?'0':'')+n;}
+  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function tick(){var d=new Date();var el=document.getElementById('clock');if(el)el.textContent=days[d.getDay()]+'  '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+  tick();setInterval(tick,1000);
+  function fillBars(){document.querySelectorAll('.bar i[data-w]').forEach(function(i){i.style.width=i.getAttribute('data-w')+'%';});}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fillBars();io.disconnect();}});},{threshold:.3});
+    var pn=document.getElementById('processes');if(pn)io.observe(pn);else fillBars();
+  }else{setTimeout(fillBars,400);}
+  document.querySelectorAll('[data-app]').forEach(function(btn){
+    var detail=btn.querySelector('.app-detail');
+    btn.addEventListener('click',function(){
+      var open=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',open?'false':'true');
+      if(detail)detail.style.maxHeight=open?'0':detail.scrollHeight+'px';
+    });
+  });
+  document.querySelectorAll('[data-jump]').forEach(function(el){
+    el.addEventListener('click',function(ev){
+      ev.preventDefault();
+      var t=document.getElementById(el.getAttribute('data-jump'));
+      if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+})();
+</script>
+</body>
+</html>

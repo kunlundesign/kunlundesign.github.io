@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ElonOS Portfolio Explorations</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f6f3ee; --fg:#171717; --muted:#666; --card:#fff; --border:#ddd6c8; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#f3f0ea; --muted:#aaa; --card:#1b1b1b; --border:#333; } }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+    main { max-width:980px; margin:0 auto; padding:72px 24px; }
+    .kicker { font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    h1 { font-size:clamp(40px,8vw,88px); line-height:.92; letter-spacing:-.06em; margin:18px 0 22px; }
+    p { font-size:18px; line-height:1.55; color:var(--muted); max-width:680px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:44px; }
+    a.card { display:block; padding:22px; min-height:190px; border:1px solid var(--border); border-radius:24px; background:color-mix(in srgb, var(--card) 92%, transparent); color:inherit; text-decoration:none; transition:transform .2s ease, border-color .2s ease; }
+    a.card:hover { transform:translateY(-3px); border-color:var(--fg); }
+    .label { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+    h2 { margin:48px 0 8px; font-size:28px; letter-spacing:-.04em; }
+    .card h2 { margin:26px 0 10px; font-size:25px; }
+    .card p { font-size:14px; margin:0; }
+    .note { margin-top:32px; font-size:14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="kicker">Kunlun Portfolio · v0.1 Explorations</div>
+    <h1>Four directions, one portfolio question.</h1>
+    <p>These are early concept prototypes for Kunlun’s AI-native product/design leadership portfolio. Compare archetypes before converging.</p>
+    <section class="grid" aria-label="Preview links">
+      <a class="card" href="direction-a-system-shell.html"><div class="label">Direction A</div><h2>System Shell</h2><p>Personal OS / design practice as operating system.</p></a>
+      <a class="card" href="direction-b-memory-wall.html"><div class="label">Direction B</div><h2>Memory Wall</h2><p>Thinking room, warmth, process, artifacts.</p></a>
+      <a class="card" href="direction-c-strategy-atlas.html"><div class="label">Direction C</div><h2>Strategy Atlas</h2><p>Product systems map / AI-native strategist signal.</p></a>
+      <a class="card" href="direction-d-radical-minimal.html"><div class="label">Direction D</div><h2>Radical Minimal</h2><p>Jobs/Ive restraint: few words, only essential proof.</p></a>
+    </section>
+    <p class="note">Tip: view on desktop width around 1440px for best comparison.</p>
+  </main>
+</body>
+</html>
