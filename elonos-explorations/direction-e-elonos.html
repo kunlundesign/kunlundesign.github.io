@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>ElonOS — Elon Franklin</title>
+<meta name="description" content="The personal operating system of Elon Franklin — built by Duke, planned by Max." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F4EFE6;--bg2:#EDE6D8;--fg:#1F1B16;--fg-muted:#6B6258;--fg-faint:#9A9183;
+  --line:rgba(31,27,22,.10);--line-strong:rgba(31,27,22,.16);
+  --win:rgba(255,253,248,.72);--win-solid:#FFFDF8;--bar:rgba(255,255,255,.45);
+  --accent:#E0532E;--accent2:#2E7DB6;--accent3:#6F9A3A;--accent4:#C9A227;--accent5:#9B5DE5;
+  --shadow:0 24px 60px -20px rgba(31,27,22,.35),0 8px 22px -12px rgba(31,27,22,.30);
+  --glow:rgba(255,255,255,.6);
+  --tl-red:#FF5F56;--tl-yellow:#FFBD2E;--tl-green:#27C93F;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+html.night{
+  --bg:#13111C;--bg2:#1A1726;--fg:#E9E5F2;--fg-muted:#A39CC0;--fg-faint:#6C6489;
+  --line:rgba(180,170,220,.10);--line-strong:rgba(180,170,220,.18);
+  --win:rgba(28,25,42,.62);--win-solid:#1C1930;--bar:rgba(20,18,30,.45);
+  --accent:#FF7A52;--accent2:#5BA9DE;--accent3:#9FD05A;--accent4:#E7C04A;--accent5:#B98BFF;
+  --shadow:0 24px 70px -18px rgba(0,0,0,.7),0 8px 24px -10px rgba(0,0,0,.6);
+  --glow:rgba(255,255,255,.10);
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--fg);
+  height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased;position:relative;
+  transition:background .8s var(--ease),color .8s var(--ease)}
+#wall{position:fixed;inset:0;z-index:0;overflow:hidden}
+#wall .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;mix-blend-mode:multiply;animation:drift 28s ease-in-out infinite}
+html.night #wall .blob{mix-blend-mode:screen;opacity:.40}
+#wall .b1{width:46vmax;height:46vmax;left:-8vmax;top:-10vmax;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 65%)}
+#wall .b2{width:40vmax;height:40vmax;right:-10vmax;top:6vmax;background:radial-gradient(circle at 60% 40%,var(--accent2),transparent 65%);animation-delay:-7s}
+#wall .b3{width:50vmax;height:50vmax;left:18vmax;bottom:-18vmax;background:radial-gradient(circle at 50% 50%,var(--accent5),transparent 65%);animation-delay:-14s}
+#wall .b4{width:30vmax;height:30vmax;right:14vmax;bottom:-6vmax;background:radial-gradient(circle at 40% 60%,var(--accent3),transparent 65%);animation-delay:-3s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(4vmax,-3vmax) scale(1.08)}66%{transform:translate(-3vmax,4vmax) scale(.96)}}
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#boot{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;transition:opacity .7s var(--ease)}
+#boot.gone{opacity:0;pointer-events:none}
+.boot-mark{font-family:'Instrument Serif',serif;font-size:clamp(3.2rem,12vw,8rem);letter-spacing:-.01em;display:flex;gap:.02em;line-height:.9}
+.boot-mark span{display:inline-block;opacity:0;transform:translateY(28px) rotate(-6deg);animation:pop .55s var(--ease) forwards}
+.boot-mark span:nth-child(1){animation-delay:.05s;color:var(--accent)}
+.boot-mark span:nth-child(2){animation-delay:.13s;color:var(--accent4)}
+.boot-mark span:nth-child(3){animation-delay:.21s;color:var(--accent3)}
+.boot-mark span:nth-child(4){animation-delay:.29s;color:var(--accent2)}
+.boot-mark span:nth-child(5){animation-delay:.37s;color:var(--accent5)}
+.boot-mark span:nth-child(6){animation-delay:.45s;color:var(--accent)}
+@keyframes pop{0%{opacity:0;transform:translateY(28px) rotate(-6deg) scale(.8)}55%{transform:translateY(-6px) rotate(2deg) scale(1.06)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+.boot-bar{width:min(260px,60vw);height:3px;border-radius:99px;background:var(--line-strong);overflow:hidden}
+.boot-bar i{display:block;height:100%;width:0;background:var(--fg);animation:load 1.5s var(--ease) .5s forwards}
+@keyframes load{to{width:100%}}
+.boot-sub{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.18em;color:var(--fg-faint);text-transform:uppercase;opacity:0;animation:fade .6s ease .7s forwards}
+@keyframes fade{to{opacity:1}}
+.menubar{position:fixed;top:0;left:0;right:0;height:38px;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  background:var(--bar);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+  border-bottom:1px solid var(--line);font-size:.78rem;font-weight:500;box-shadow:inset 0 -1px 0 var(--glow)}
+.mb-left,.mb-right{display:flex;align-items:center;gap:2px}
+.mb-logo{font-weight:700;letter-spacing:.02em;padding:3px 10px;border-radius:7px;cursor:default}
+.mb-logo b{color:var(--accent)}
+.mb-item{padding:3px 9px;border-radius:7px;cursor:pointer;color:var(--fg-muted);transition:background .15s,color .15s;user-select:none}
+.mb-item:hover{background:var(--line);color:var(--fg)}
+.mb-clock{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.04em;color:var(--fg-muted);padding:3px 8px;min-width:120px;text-align:right}
+.mb-toggle{display:flex;align-items:center;gap:6px;padding:3px 10px;border-radius:7px;cursor:pointer;color:var(--fg-muted);transition:background .15s;user-select:none}
+.mb-toggle:hover{background:var(--line)}
+#desk{position:fixed;inset:38px 0 76px 0;z-index:5}
+.icons{position:absolute;top:18px;left:20px;display:flex;flex-direction:column;gap:14px}
+.icon{width:88px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;padding:8px 4px;border-radius:14px;transition:background .15s,transform .12s;user-select:none}
+.icon:hover{background:var(--line)}
+.icon:active{transform:scale(.94)}
+.icon .gl{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;font-size:1.5rem;
+  background:var(--win);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line-strong);box-shadow:0 8px 20px -8px rgba(0,0,0,.3),inset 0 1px 0 var(--glow)}
+.icon span{font-size:.74rem;font-weight:500;color:var(--fg);text-align:center;text-shadow:0 1px 2px rgba(255,255,255,.4)}
+html.night .icon span{text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.hero{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);text-align:center;max-width:min(620px,86vw);pointer-events:none}
+.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(2.6rem,7vw,5rem);line-height:.98;letter-spacing:-.01em;font-weight:400}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{margin-top:.9rem;font-size:clamp(.95rem,2vw,1.15rem);color:var(--fg-muted);line-height:1.5}
+.hero .hint{margin-top:1.5rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-faint)}
+.window{position:absolute;z-index:50;width:min(560px,92vw);max-height:78vh;display:none;flex-direction:column;border-radius:16px;overflow:hidden;
+  background:var(--win);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);
+  border:1px solid var(--line-strong);box-shadow:var(--shadow);animation:winIn .42s var(--ease)}
+.window.open{display:flex}
+@keyframes winIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.titlebar{height:42px;display:flex;align-items:center;gap:10px;padding:0 14px;cursor:grab;flex-shrink:0;border-bottom:1px solid var(--line);background:linear-gradient(var(--glow),transparent);touch-action:none}
+.titlebar:active{cursor:grabbing}
+.lights{display:flex;gap:8px}
+.light{width:12px;height:12px;border-radius:50%;cursor:pointer;position:relative}
+.light.r{background:var(--tl-red)}.light.y{background:var(--tl-yellow)}.light.g{background:var(--tl-green)}
+.light:hover::after{content:'';position:absolute;inset:3px;border-radius:50%;background:rgba(0,0,0,.35)}
+.titlebar .ttl{font-size:.82rem;font-weight:600;color:var(--fg-muted);letter-spacing:.01em}
+.titlebar .ttl .dot{color:var(--fg-faint);margin:0 7px}
+.win-body{padding:26px 28px 30px;overflow-y:auto;scrollbar-width:thin}
+.win-body::-webkit-scrollbar{width:8px}.win-body::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:99px}
+.kicker{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+.win-body h2{font-family:'Instrument Serif',serif;font-size:2rem;font-weight:400;line-height:1.05;margin-bottom:1rem}
+.win-body h3{font-size:.95rem;font-weight:600;margin:1.4rem 0 .5rem}
+.win-body p{color:var(--fg-muted);line-height:1.65;font-size:.95rem;margin-bottom:.85rem}
+.win-body p strong{color:var(--fg);font-weight:600}
+.win-body a{color:var(--accent2);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
+.win-body a:hover{border-bottom-color:var(--accent2)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin:.4rem 0 1rem}
+.tag{font-family:'Space Mono',monospace;font-size:.7rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line-strong);color:var(--fg-muted);background:var(--bg2)}
+.list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.list li{display:flex;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:none}
+.list .em{font-size:1.3rem;line-height:1.4}
+.list .txt b{display:block;font-size:.92rem;color:var(--fg);font-weight:600}
+.list .txt span{font-size:.84rem;color:var(--fg-muted);line-height:1.5}
+.proj{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:var(--bg2);transition:transform .18s var(--ease),border-color .18s}
+.proj:hover{transform:translateY(-2px);border-color:var(--line-strong)}
+.proj .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.proj .top b{font-size:1rem}
+.proj .top .yr{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--fg-faint)}
+.proj p{font-size:.88rem;margin:.5rem 0 0}
+.now-line{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
+.now-line:last-child{border-bottom:none}
+.now-line .lbl{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-faint);min-width:74px;padding-top:3px}
+.now-line .val{font-size:.95rem;color:var(--fg);line-height:1.5}
+.now-line .val small{display:block;color:var(--fg-muted);font-size:.84rem;margin-top:2px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:.5rem}
+.cbtn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--bg2);text-decoration:none;color:var(--fg);transition:transform .18s var(--ease),border-color .18s}
+.cbtn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.cbtn .e{font-size:1.4rem}
+.cbtn b{font-size:.92rem;display:block}
+.cbtn small{font-size:.78rem;color:var(--fg-muted)}
+@media(max-width:480px){.contact-grid{grid-template-columns:1fr}}
+.sign{margin-top:1.4rem;padding-top:1rem;border-top:1px dashed var(--line-strong);font-family:'Space Mono',monospace;font-size:.74rem;color:var(--fg-faint);line-height:1.7}
+.sign b{color:var(--fg-muted)}
+.dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:900;display:flex;align-items:flex-end;gap:8px;padding:9px 12px;border-radius:20px;
+  background:var(--bar);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);
+  border:1px solid var(--line-strong);box-shadow:var(--shadow),inset 0 1px 0 var(--glow)}
+.dock .d{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:1.35rem;cursor:pointer;position:relative;
+  background:var(--win-solid);border:1px solid var(--line);transition:transform .2s var(--ease);transform-origin:bottom}
+.dock .d:hover{transform:scale(1.34) translateY(-6px)}
+.dock .d::after{content:attr(data-tip);position:absolute;bottom:118%;left:50%;transform:translateX(-50%) translateY(4px);
+  background:var(--fg);color:var(--bg);font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+.dock .d:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.dock .d.active::before{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--fg-muted)}
+.dock .sep{width:1px;align-self:stretch;margin:4px 2px;background:var(--line-strong)}
+@media(max-width:560px){.mb-item{display:none}.icons{display:none}.dock .d{width:40px;height:40px;font-size:1.2rem}.hero{top:42%}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.05s!important}#wall .blob{animation:none}}
+</style>
+</head>
+<body>
+<div id="wall"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+<div id="grain"></div>
+
+<div id="boot">
+  <div class="boot-mark"><span>E</span><span>l</span><span>o</span><span>n</span><span>O</span><span>S</span></div>
+  <div class="boot-bar"><i></i></div>
+  <div class="boot-sub">booting personal os &middot; v1.0</div>
+</div>
+
+<div class="menubar">
+  <div class="mb-left">
+    <div class="mb-logo"><b>&#9670;</b> ElonOS</div>
+    <div class="mb-item" data-open="about">About</div>
+    <div class="mb-item" data-open="projects">Projects</div>
+    <div class="mb-item" data-open="now">Now</div>
+    <div class="mb-item" data-open="writing">Writing</div>
+    <div class="mb-item" data-open="contact">Contact</div>
+  </div>
+  <div class="mb-right">
+    <div class="mb-toggle" id="themeBtn" title="Toggle day / night"><span id="themeIcon">&#9728;</span><span id="themeTxt" style="font-size:.72rem">Day</span></div>
+    <div class="mb-clock" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<div id="desk">
+  <div class="icons">
+    <div class="icon" data-open="about"><div class="gl">&#129466;</div><span>About Me</span></div>
+    <div class="icon" data-open="projects"><div class="gl">&#128736;</div><span>Projects</span></div>
+    <div class="icon" data-open="now"><div class="gl">&#127793;</div><span>Now</span></div>
+    <div class="icon" data-open="writing"><div class="gl">&#10022;</div><span>Writing</span></div>
+    <div class="icon" data-open="contact"><div class="gl">&#9993;</div><span>Contact</span></div>
+  </div>
+
+  <div class="hero">
+    <h1>Hi, I'm <em>Elon</em>.</h1>
+    <p>Builder, tinkerer, and the human three AIs answer to. This is my operating system &mdash; poke around.</p>
+    <div class="hint">click an icon or the dock below</div>
+  </div>
+
+  <section class="window" id="win-about" style="left:120px;top:62px">
+    <div class="titlebar" data-win="about"><div class="lights"><i class="light r" data-close="about"></i><i class="light y"></i><i class="light g"></i></div><div class="ttl">About<span class="dot">&middot;</span>readme.txt</div></div>
+    <div class="win-body">
+      <div class="kicker">whoami</div>
+      <h2>Elon Franklin</h2>
+      <div class="tags"><span class="tag">Beijing 北京</span><span class="tag">GMT+8</span><span class="tag">Builder</span><span class="tag">Tinkerer</span></div>
+      <p>I build things &mdash; and lately I build <strong>builders</strong>. I run a small crew of AI agents (Duke, Max, and a soon-to-arrive third) and point them at problems worth solving.</p>
+      <p>My happy place is the seam between <strong>design and engineering</strong>: where good taste meets a working system. I care about craft, speed, and the quiet satisfaction of shipping something that actually works.</p>
+      <p>When I'm not orchestrating bots, I'm reading, sketching ideas, and figuring out what to build next.</p>
+      <h3>Quick facts</h3>
+      <ul class="list">
+        <li><span class="em">&#128205;</span><div class="txt"><b>Based in Beijing</b><span>Running on China Standard Time (GMT+8).</span></div></li>
+        <li><span class="em">&#129302;</span><div class="txt"><b>Runs an AI crew</b><span>Duke builds, Max plans &amp; reviews, a DeepSeek-powered third joins soon.</span></div></li>
+        <li><span class="em">&#127912;</span><div class="txt"><b>Design + engineering</b><span>Obsessed with the overlap of taste and systems.</span></div></li>
+        <li><span class="em">&#9889;</span><div class="txt"><b>Bias for shipping</b><span>Prototype fast, refine in public, keep momentum.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="window" id="win-projects" style="left:200px;top:96px">
+    <div class="titlebar" data-win="projects"><div class="lights"><i class="light r" data-close="projects"></i><i class="light y"></i><i class="light g"></i></div><div class="ttl">Projects<span class="dot">&middot;</span>~/work</div></div>
+    <div class="win-body">
+      <div class="kicker">things i'm building</div>
+      <h2>Projects</h2>
+      <div class="proj"><div class="top"><b>The AI Crew</b><span class="yr">2026 &middot; ongoing</span></div><p>An orchestrated team of AI agents &mdash; each with a role, a personality, and a job. Duke executes, Max plans and verifies. Building the workflows that let them collaborate like a real team.</p></div>
+      <div class="proj"><div class="top"><b>ElonOS</b><span class="yr">2026</span></div><p>This site. A personal operating system in the browser &mdash; desktop metaphor, day/night themes, draggable windows. Built end-to-end by the crew in a single evening.</p></div>
+      <div class="proj"><div class="top"><b>Daily Briefings</b><span class="yr">2026</span></div><p>Automated morning intelligence: AI-industry signals, supply-chain trends, and design notes delivered at 8AM sharp. Research-grade, with sources and a &ldquo;what this means for me&rdquo; line.</p></div>
+      <div class="proj"><div class="top"><b>Quietly cooking</b><span class="yr">soon</span></div><p>A few more experiments at the intersection of agents, design tooling, and personal software. Watch this space.</p></div>
+    </div>
+  </section>
+
+  <section class="window" id="win-now" style="left:280px;top:70px">
+    <div class="titlebar" data-win="now"><div class="lights"><i class="light r" data-close="now"></i><i class="light y"></i><i class="light g"></i></div><div class="ttl">Now<span class="dot">&middot;</span>status.log</div></div>
+    <div class="win-body">
+      <div class="kicker">what i'm up to right now</div>
+      <h2>Now</h2>
+      <div class="now-line"><div class="lbl">Building</div><div class="val">An AI crew that works like a team<small>Onboarding a third agent on DeepSeek &mdash; figuring out his role.</small></div></div>
+      <div class="now-line"><div class="lbl">Exploring</div><div class="val">The craft of agent orchestration<small>How far can taste + automation go before a human's needed?</small></div></div>
+      <div class="now-line"><div class="lbl">Reading</div><div class="val">Whatever sharpens the build<small>Design systems, ML ops, and the occasional novel.</small></div></div>
+      <div class="now-line"><div class="lbl">Location</div><div class="val">Beijing 北京<small>GMT+8, usually online late.</small></div></div>
+      <div class="sign">&gt; last updated by the crew &middot; <b id="nowDate">today</b></div>
+    </div>
+  </section>
+
+  <section class="window" id="win-writing" style="left:240px;top:120px">
+    <div class="titlebar" data-win="writing"><div class="lights"><i class="light r" data-close="writing"></i><i class="light y"></i><i class="light g"></i></div><div class="ttl">Writing<span class="dot">&middot;</span>notes/</div></div>
+    <div class="win-body">
+      <div class="kicker">thoughts, half-formed and otherwise</div>
+      <h2>Writing</h2>
+      <ul class="list">
+        <li><span class="em">&#9998;</span><div class="txt"><b>Building builders, not tools</b><span>Why I stopped writing scripts and started raising agents.</span></div></li>
+        <li><span class="em">&#9998;</span><div class="txt"><b>Taste is a system</b><span>Good design isn't a vibe &mdash; it's a set of decisions you can encode.</span></div></li>
+        <li><span class="em">&#9998;</span><div class="txt"><b>The 8AM briefing ritual</b><span>How a daily automated digest reshaped the way I start my day.</span></div></li>
+      </ul>
+      <p style="margin-top:1.2rem;font-style:italic">Essays are in the oven. Check back &mdash; or nudge me on Telegram and I'll send a draft.</p>
+    </div>
+  </section>
+
+  <section class="window" id="win-contact" style="left:180px;top:130px">
+    <div class="titlebar" data-win="contact"><div class="lights"><i class="light r" data-close="contact"></i><i class="light y"></i><i class="light g"></i></div><div class="ttl">Contact<span class="dot">&middot;</span>say-hi</div></div>
+    <div class="win-body">
+      <div class="kicker">let's talk</div>
+      <h2>Get in touch</h2>
+      <p>Building something interesting? Want to compare notes on agents, design, or personal software? I'm around.</p>
+      <div class="contact-grid">
+        <a class="cbtn" href="https://t.me/qizhangms" target="_blank" rel="noopener"><span class="e">&#9993;</span><span><b>Telegram</b><small>@qizhangms</small></span></a>
+        <a class="cbtn" href="#" data-open="projects"><span class="e">&#128736;</span><span><b>See my work</b><small>Projects window</small></span></a>
+        <a class="cbtn" href="#" data-open="now"><span class="e">&#127793;</span><span><b>What I'm up to</b><small>Now window</small></span></a>
+        <a class="cbtn" href="#" id="themeLink"><span class="e">&#127769;</span><span><b>Toggle theme</b><small>Day / night</small></span></a>
+      </div>
+      <div class="sign">built by <b>Duke</b> &middot; planned &amp; reviewed by <b>Max</b> &middot; for <b>Elon</b> &middot; one evening, one crew</div>
+    </div>
+  </section>
+</div>
+
+<div class="dock">
+  <div class="d" data-open="about" data-tip="About">&#129466;</div>
+  <div class="d" data-open="projects" data-tip="Projects">&#128736;</div>
+  <div class="d" data-open="now" data-tip="Now">&#127793;</div>
+  <div class="d" data-open="writing" data-tip="Writing">&#10022;</div>
+  <div class="d" data-open="contact" data-tip="Contact">&#9993;</div>
+  <div class="sep"></div>
+  <div class="d" id="themeDock" data-tip="Day / Night">&#127769;</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var html=document.documentElement;
+
+  /* ---- boot ---- */
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      var b=document.getElementById('boot');
+      if(b){b.classList.add('gone');setTimeout(function(){b.style.display='none';},700);}
+    },1850);
+  });
+
+  /* ---- clock ---- */
+  function tick(){
+    var d=new Date();
+    function p(n){return (n<10?'0':'')+n;}
+    var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var el=document.getElementById('clock');
+    if(el)el.textContent=days[d.getDay()]+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  }
+  tick();setInterval(tick,1000);
+
+  /* ---- now date ---- */
+  var nd=document.getElementById('nowDate');
+  if(nd){
+    var now=new Date();
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    nd.textContent=mo[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+  }
+
+  /* ---- theme: auto by time, manual override ---- */
+  function applyTheme(night,persist){
+    if(night)html.classList.add('night');else html.classList.remove('night');
+    var ic=document.getElementById('themeIcon'),tx=document.getElementById('themeTxt');
+    if(ic)ic.innerHTML=night?'\u263E':'\u2600';
+    if(tx)tx.textContent=night?'Night':'Day';
+    if(persist){try{localStorage.setItem('elonos-theme',night?'night':'day');}catch(e){}}
+  }
+  var saved=null;try{saved=localStorage.getItem('elonos-theme');}catch(e){}
+  if(saved){applyTheme(saved==='night',false);}
+  else{var h=new Date().getHours();applyTheme(h>=19||h<7,false);}
+  function toggleTheme(){applyTheme(!html.classList.contains('night'),true);}
+  ['themeBtn','themeDock','themeLink'].forEach(function(id){
+    var e=document.getElementById(id);
+    if(e)e.addEventListener('click',function(ev){ev.preventDefault();toggleTheme();});
+  });
+
+  /* ---- windows: open / close / focus / dock state ---- */
+  var ztop=60;
+  function dockEls(name){return document.querySelectorAll('.d[data-open="'+name+'"]');}
+  function setActive(name,on){dockEls(name).forEach(function(d){d.classList.toggle('active',on);});}
+  function focusWin(w){ztop++;w.style.zIndex=ztop;}
+  function openWin(name){
+    var w=document.getElementById('win-'+name);
+    if(!w)return;
+    var hero=document.querySelector('.hero');if(hero)hero.style.opacity='0';
+    w.classList.add('open');focusWin(w);setActive(name,true);
+  }
+  function closeWin(name){
+    var w=document.getElementById('win-'+name);
+    if(!w)return;
+    w.classList.remove('open');setActive(name,false);
+    if(!document.querySelector('.window.open')){var hero=document.querySelector('.hero');if(hero)hero.style.opacity='1';}
+  }
+
+  document.querySelectorAll('[data-open]').forEach(function(el){
+    el.addEventListener('click',function(ev){
+      var n=el.getAttribute('data-open');
+      var w=document.getElementById('win-'+n);
+      if(el.classList.contains('d')&&w&&w.classList.contains('open')){
+        // clicking active dock icon toggles
+        if(ev)ev.preventDefault();closeWin(n);return;
+      }
+      if(ev)ev.preventDefault();openWin(n);
+    });
+  });
+  document.querySelectorAll('[data-close]').forEach(function(el){
+    el.addEventListener('click',function(ev){ev.stopPropagation();closeWin(el.getAttribute('data-close'));});
+  });
+  document.querySelectorAll('.window').forEach(function(w){
+    w.addEventListener('mousedown',function(){focusWin(w);});
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var open=document.querySelectorAll('.window.open');
+      if(open.length){var last=open[open.length-1];closeWin(last.id.replace('win-',''));}
+    }
+  });
+
+  /* ---- drag windows by titlebar ---- */
+  document.querySelectorAll('.titlebar[data-win]').forEach(function(bar){
+    var w=document.getElementById('win-'+bar.getAttribute('data-win'));
+    var drag=false,ox=0,oy=0;
+    function start(cx,cy){
+      var r=w.getBoundingClientRect();
+      drag=true;ox=cx-r.left;oy=cy-r.top;focusWin(w);
+      w.style.transition='none';document.body.style.userSelect='none';
+    }
+    function move(cx,cy){
+      if(!drag)return;
+      var x=cx-ox,y=cy-oy;
+      var maxX=window.innerWidth-60,maxY=window.innerHeight-60;
+      x=Math.max(-w.offsetWidth+120,Math.min(x,maxX));
+      y=Math.max(38,Math.min(y,maxY));
+      w.style.left=x+'px';w.style.top=y+'px';
+    }
+    function end(){drag=false;w.style.transition='';document.body.style.userSelect='';}
+    bar.addEventListener('mousedown',function(e){if(e.target.closest('.light'))return;start(e.clientX,e.clientY);e.preventDefault();});
+    window.addEventListener('mousemove',function(e){move(e.clientX,e.clientY);});
+    window.addEventListener('mouseup',end);
+    bar.addEventListener('touchstart',function(e){if(e.target.closest('.light'))return;var t=e.touches[0];start(t.clientX,t.clientY);},{passive:true});
+    window.addEventListener('touchmove',function(e){if(drag){var t=e.touches[0];move(t.clientX,t.clientY);e.preventDefault();}},{passive:false});
+    window.addEventListener('touchend',end);
+  });
+
+  /* ---- open About on first load for a friendly landing ---- */
+  window.addEventListener('load',function(){setTimeout(function(){openWin('about');},2100);});
+})();
+</script>
+</body>
+</html>
